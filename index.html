@@ -233,6 +233,20 @@
         </div>
     </div>
 
+    <div id="image-preview-modal" class="modal fixed inset-0 bg-black bg-opacity-70 justify-center items-center z-50">
+        <div class="bg-white rounded-lg shadow-xl m-4 max-w-2xl w-full relative">
+            <button id="preview-modal-close-button" class="absolute -top-3 -right-3 bg-white text-gray-700 w-8 h-8 rounded-full flex items-center justify-center shadow-lg hover:bg-gray-200 focus:outline-none z-10">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="p-6">
+                <h3 id="preview-modal-product-name" class="text-xl font-bold text-gray-800 mb-4"></h3>
+                <img id="preview-modal-main-image" src="" alt="Product Detail" class="w-full h-auto max-h-[60vh] object-contain rounded-md bg-gray-100 mb-4" onerror="this.src='https://placehold.co/600x400/cccccc/333333?text=Image+Not+Available'">
+                <div id="preview-modal-thumbnails" class="flex gap-2 pb-2 overflow-x-auto">
+                    </div>
+            </div>
+        </div>
+    </div>
+
     <footer class="bg-gray-800 text-white py-8 px-4 text-center mt-auto">
         <div class="container mx-auto">
             <p>&copy; 2024 StyleHub. All rights reserved.</p>
@@ -338,6 +352,10 @@
             const totalCount = items.reduce((sum, item) => sum + item.quantity, 0);
             if (desktopCartCount) desktopCartCount.textContent = totalCount;
             if (mobileCartCount) mobileCartCount.textContent = totalCount;
+			
+            document.querySelectorAll('.view-images-btn').forEach(button => {
+				button.addEventListener('click', handleViewImages);
+            });
         }
 
         // 添加商品到購物車
@@ -435,7 +453,8 @@
                     <img src="images/${item.sku}/${imageSrc}" alt="${item.name}" class="w-16 h-16 object-cover rounded-md">
                     <div class="flex-1">
                         <h4 class="font-semibold text-gray-800">${item.name}</h4>
-						<p class="text-sm text-gray-600">尺寸: ${item.size || '未選擇'}</p>
+						<p class="text-sm text-gray-600">尺寸: ${item.size || '未選擇'}</p>  
+						<button class="text-blue-600 hover:text-blue-800 p-2 view-images-btn" data-id="${product.id}" title="檢視圖片"><i class="fas fa-eye"></i></button>
                         <p class="text-sm text-gray-600">單價: $${item.price.toLocaleString()}</p>
                         <div class="flex items-center space-x-2 mt-1">
                             <button class="cart-quantity-btn bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold w-6 h-6 rounded-full flex items-center justify-center" data-action="decrease" data-product-id="${item.id}" data-size="${item.size}">-</button>
@@ -445,6 +464,7 @@
                     </div>
                     <div class="text-right">
                         <p class="text-indigo-600 font-bold text-lg">$${(item.price * item.quantity).toLocaleString()}</p>
+						
                         <button class="cart-remove-btn text-red-500 hover:text-red-700 text-lg ml-4" data-product-id="${item.id}" data-size="${item.size}" title="移除商品">
                             <i class="fas fa-trash-alt"></i>
                         </button>
@@ -534,21 +554,7 @@
                 modalProductDescription.textContent = product.description;
                 modalProductPrice.textContent = `$${product.price.toLocaleString()}`;
                 modalProductSizes.textContent = `尺寸: ${sizesHtml}`;
-				const addToCartBtn = document.getElementById('modal-add-to-cart-button');
 
-				if (addToCartBtn) {
-					if (stock < 1) {
-					addToCartBtn.disabled = true;
-					addToCartBtn.innerHTML = '<i class="fas fa-ban mr-2"></i>已售完';
-					addToCartBtn.classList.remove('bg-indigo-600', 'hover:bg-indigo-700');
-					addToCartBtn.classList.add('bg-gray-300', 'cursor-not-allowed');
-					} else {
-					addToCartBtn.disabled = false;
-					addToCartBtn.innerHTML = '<i class="fas fa-shopping-cart mr-2"></i>加入購物車';
-					addToCartBtn.classList.remove('bg-gray-300', 'cursor-not-allowed');
-					addToCartBtn.classList.add('bg-indigo-600', 'hover:bg-indigo-700');
-					}
-				}
 			
                 modalThumbnails.innerHTML = ''; 
 				console.log('openImageModal product.imageUrls ' )
@@ -931,6 +937,72 @@
 		document.addEventListener('DOMContentLoaded', () => {
 			loadContactInfo();
 		});
+		
+		function handleViewImages(e) {
+		  const id = e.currentTarget.dataset.id;
+		  console.log("View images button clicked for ID:", id);
+            const product = allProductsData.find(p => p.id === productId);
+
+		  if (product) {
+			  openPreviewModal(product);
+		  } else {
+			  console.warn("找不到 ID 為", id, "的商品來預覽圖片。");
+			  alert("找不到該商品來預覽圖片。");
+		  }
+		}
+		
+          // 通用關閉所有 Modal 的函數
+          function closeAllModals() {
+              const modals = document.querySelectorAll('.modal');
+              modals.forEach(modal => {
+                  modal.classList.remove('is-open');
+              });
+              console.log("所有 Modal 已關閉。");
+          }
+		  function openPreviewModal(product) {
+			  closeAllModals(); // 確保關閉所有其他 Modal
+			  console.log("Opening image preview modal...");
+			  const mainImage = document.getElementById('preview-modal-main-image');
+			  const thumbnailsContainer = document.getElementById('preview-modal-thumbnails');
+			  const productNameElement = document.getElementById('preview-modal-product-name');
+
+			  if (!imagePreviewModal || !mainImage || !thumbnailsContainer || !productNameElement) {
+				  console.error("無法找到圖片預覽 Modal 的必要元素。");
+				  return;
+			  }
+
+			  productNameElement.textContent = product.name || '商品圖片預覽';
+			  thumbnailsContainer.innerHTML = '';
+
+			  if (product.imageUrls && product.imageUrls.length > 0) {
+				  mainImage.src = `images/${product.sku}/${product.imageUrls[0]}`;
+				  mainImage.onerror = function() { this.src = 'https://placehold.co/600x400/cccccc/333333?text=Image+Not+Available'; };
+
+				  product.imageUrls.forEach((url, index) => {
+					  const thumb = document.createElement('img');
+					  thumb.src = `images/${product.sku}/${url}`;
+					  thumb.onerror = function() { this.src = 'https://placehold.co/48x48/cccccc/333333?text=N/A'; };
+					  thumb.classList.add('w-16', 'h-16', 'object-cover', 'rounded-md', 'cursor-pointer', 'border-2', 'border-transparent', 'hover:border-indigo-500', 'transition');
+					  if (index === 0) {
+						  thumb.classList.add('thumbnail-active');
+					  }
+					  thumb.addEventListener('click', () => {
+						  mainImage.src = `images/${product.sku}/${url}`;
+						  mainImage.onerror = function() { this.src = 'https://placehold.co/600x400/cccccc/333333?text=Image+Not+Available'; };
+						  thumbnailsContainer.querySelectorAll('img').forEach(img => img.classList.remove('thumbnail-active'));
+						  thumb.classList.add('thumbnail-active');
+					  });
+					  thumbnailsContainer.appendChild(thumb);
+				  });
+			  } else {
+				  mainImage.src = 'https://placehold.co/600x400/cccccc/333333?text=No+Images';
+				  mainImage.onerror = null;
+				  thumbnailsContainer.innerHTML = '<p class="text-center text-gray-500">無縮圖</p>';
+			  }
+
+			  imagePreviewModal.classList.add('is-open');
+			  console.log("Image preview modal opened.");
+		  }
     </script>
 </body>
 </html>
