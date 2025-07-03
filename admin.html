@@ -85,6 +85,9 @@
                 <a href="index.html" target="_blank" class="text-blue-600 hover:text-blue-800 font-semibold">
                     <i class="fas fa-store mr-1"></i>前往前台網站
                 </a>
+				<button id="view-contact-btn" class="bg-gray-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-gray-700 transition duration-300">
+				  <i class="fas fa-address-book mr-1"></i>聯絡資訊
+				</button>
                 <button id="logout-button" class="bg-red-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-red-600 transition duration-300">
                     <i class="fas fa-sign-out-alt mr-1"></i>登出
                 </button>
@@ -105,13 +108,13 @@
                     <input type="number" id="product-price" placeholder="價格" class="p-3 border rounded-lg focus:ring-2 focus:ring-indigo-500" required>
                     <input type="text" id="product-stock" placeholder="庫存數量" class="p-3 border rounded-lg focus:ring-2 focus:ring-indigo-500" disabled>
                     
-<div class="col-span-1 md:col-span-2">
-    <label class="block text-gray-700 mb-2 font-medium">尺寸與數量</label>
-    <div id="size-quantity-container" class="space-y-2"></div>
-    <button type="button" id="add-size-btn" class="mt-2 text-indigo-600 hover:underline">
-        ＋ 新增尺寸
-    </button>
-</div>
+					<div class="col-span-1 md:col-span-2">
+						<label class="block text-gray-700 mb-2 font-medium">尺寸與數量</label>
+						<div id="size-quantity-container" class="space-y-2"></div>
+						<button type="button" id="add-size-btn" class="mt-2 text-indigo-600 hover:underline">
+							＋ 新增尺寸
+						</button>
+					</div>
 
                     <textarea id="product-image-urls" placeholder="圖片網址 (一行一個)" class="p-3 border rounded-lg col-span-1 md:col-span-2 h-24 focus:ring-2 focus:ring-indigo-500"></textarea>
                     <textarea id="product-description" placeholder="商品描述" class="p-3 border rounded-lg col-span-1 md:col-span-2 h-24 focus:ring-2 focus:ring-indigo-500"></textarea>
@@ -248,7 +251,23 @@
             </div>
         </div>
     </div>
-
+	
+	<!-- 聯絡資訊編輯 Modal -->
+	<div id="contact-modal" class="modal fixed inset-0 bg-black bg-opacity-50 justify-center items-center z-50">
+	  <div class="bg-white p-8 rounded-lg shadow-xl w-11/12 md:w-1/2 lg:w-1/3 max-h-[90vh] overflow-y-auto">
+		<h3 class="text-2xl font-bold mb-6">聯絡資訊</h3>
+		<form id="contact-form" class="space-y-4">
+		  <input type="email" id="contact-email" class="w-full border p-2 rounded" placeholder="Email">
+		  <input type="tel" id="contact-phone" class="w-full border p-2 rounded" placeholder="電話">
+		  <input type="text" id="contact-address" class="w-full border p-2 rounded" placeholder="地址">
+		  <input type="text" id="contact-hours" class="w-full border p-2 rounded" placeholder="服務時間">
+		  <div class="flex justify-end space-x-4 mt-6">
+			<button type="button" id="cancel-contact-btn" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">取消</button>
+			<button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700">儲存</button>
+		  </div>
+		</form>
+	  </div>
+	</div>
 
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
@@ -976,84 +995,130 @@ await Promise.all(additions);
 
 
 		  
-// === 尺寸新增/刪除 & 庫存自動加總 ===
-const sizeContainer = document.getElementById('size-quantity-container');
-const addSizeBtn = document.getElementById('add-size-btn');
-const stockInput = document.getElementById('product-stock');
+		// === 尺寸新增/刪除 & 庫存自動加總 ===
+		const sizeContainer = document.getElementById('size-quantity-container');
+		const addSizeBtn = document.getElementById('add-size-btn');
+		const stockInput = document.getElementById('product-stock');
 
-function updateTotalStock() {
-    const quantityInputs = sizeContainer.querySelectorAll('.quantity-input');
-    let total = 0;
-    quantityInputs.forEach(input => {
-        const val = parseInt(input.value);
-        total += isNaN(val) ? 0 : val;
-    });
-	stockInput.value = total;
-}
+		function updateTotalStock() {
+			const quantityInputs = sizeContainer.querySelectorAll('.quantity-input');
+			let total = 0;
+			quantityInputs.forEach(input => {
+				const val = parseInt(input.value);
+				total += isNaN(val) ? 0 : val;
+			});
+			stockInput.value = total;
+		}
 
-addSizeBtn.addEventListener('click', () => {
-    const div = document.createElement('div');
-    div.className = 'flex items-center space-x-2';
-    div.innerHTML = `
-        <input type="text" placeholder="尺寸 (例如：M)" class="size-input p-2 border rounded w-1/2" required>
-        <input type="number" placeholder="數量" class="quantity-input p-2 border rounded w-1/3" min="0" value="0" required>
-        <button type="button" class="text-red-600 remove-size-btn">移除</button>
-    `;
-    sizeContainer.appendChild(div);
-    div.querySelector('.remove-size-btn').addEventListener('click', () => {
-        div.remove();
-        updateTotalStock();
-    });
-    div.querySelector('.quantity-input').addEventListener('input', updateTotalStock);
-    updateTotalStock();
-});
-
-
-
-function addEditSizeRow(size = '', quantity = 0) {
-    const div = document.createElement('div');
-    div.className = 'flex items-center space-x-2';
-    div.innerHTML = `
-        <input type="text" placeholder="尺寸" class="size-input p-2 border rounded w-1/2" value="${size}" required>
-        <input type="number" placeholder="數量" class="quantity-input p-2 border rounded w-1/3" min="0" value="${quantity}" required>
-        <button type="button" class="text-red-600 remove-size-btn">移除</button>
-    `;
-    editSizeContainer.appendChild(div);
-    div.querySelector('.remove-size-btn').addEventListener('click', () => {
-        div.remove();
-        updateEditTotalStock();
-    });
-    div.querySelector('.quantity-input').addEventListener('input', updateEditTotalStock);
-}
-
-if (editAddSizeBtn) {
-    editAddSizeBtn.addEventListener('click', () => {
-        addEditSizeRow();
-        updateEditTotalStock();
-    });
-}
-
-
-// === 編輯商品尺寸欄位 ===
-function updateEditTotalStock() {
-    const quantityInputs = editSizeContainer.querySelectorAll('.quantity-input');
-    let total = 0;
-    quantityInputs.forEach(input => {
-        const val = parseInt(input.value);
-        total += isNaN(val) ? 0 : val;
-    });
-	if (total == 0){
-		editStockInput.value = '無庫存';
-	}else{
-		editStockInput.value = total;
-	}
-}
-
-
-
-console.log("DOMContentLoaded 事件處理完成。");
+		addSizeBtn.addEventListener('click', () => {
+			const div = document.createElement('div');
+			div.className = 'flex items-center space-x-2';
+			div.innerHTML = `
+				<input type="text" placeholder="尺寸 (例如：M)" class="size-input p-2 border rounded w-1/2" required>
+				<input type="number" placeholder="數量" class="quantity-input p-2 border rounded w-1/3" min="0" value="0" required>
+				<button type="button" class="text-red-600 remove-size-btn">移除</button>
+			`;
+			sizeContainer.appendChild(div);
+			div.querySelector('.remove-size-btn').addEventListener('click', () => {
+				div.remove();
+				updateTotalStock();
+			});
+			div.querySelector('.quantity-input').addEventListener('input', updateTotalStock);
+			updateTotalStock();
 		});
 
+
+
+		function addEditSizeRow(size = '', quantity = 0) {
+			const div = document.createElement('div');
+			div.className = 'flex items-center space-x-2';
+			div.innerHTML = `
+				<input type="text" placeholder="尺寸" class="size-input p-2 border rounded w-1/2" value="${size}" required>
+				<input type="number" placeholder="數量" class="quantity-input p-2 border rounded w-1/3" min="0" value="${quantity}" required>
+				<button type="button" class="text-red-600 remove-size-btn">移除</button>
+			`;
+			editSizeContainer.appendChild(div);
+			div.querySelector('.remove-size-btn').addEventListener('click', () => {
+				div.remove();
+				updateEditTotalStock();
+			});
+			div.querySelector('.quantity-input').addEventListener('input', updateEditTotalStock);
+		}
+
+		if (editAddSizeBtn) {
+			editAddSizeBtn.addEventListener('click', () => {
+				addEditSizeRow();
+				updateEditTotalStock();
+			});
+		}
+
+
+		// === 編輯商品尺寸欄位 ===
+		function updateEditTotalStock() {
+			const quantityInputs = editSizeContainer.querySelectorAll('.quantity-input');
+			let total = 0;
+			quantityInputs.forEach(input => {
+				const val = parseInt(input.value);
+				total += isNaN(val) ? 0 : val;
+			});
+			if (total == 0){
+				editStockInput.value = '無庫存';
+			}else{
+				editStockInput.value = total;
+			}
+		}
+		console.log("DOMContentLoaded 事件處理完成。");
+	});
+	
+	
+	// ==== 聯絡資訊功能 ====
+
+	const contactBtn = document.getElementById('view-contact-btn');
+	const contactModal = document.getElementById('contact-modal');
+	const cancelContactBtn = document.getElementById('cancel-contact-btn');
+	const contactForm = document.getElementById('contact-form');
+
+	contactBtn.addEventListener('click', async () => {
+	  try {
+		const doc = await db.collection('settings').doc('contact').get();
+		if (doc.exists) {
+		  const data = doc.data();
+		  document.getElementById('contact-email').value = data.email || '';
+		  document.getElementById('contact-phone').value = data.phone || '';
+		  document.getElementById('contact-address').value = data.address || '';
+		  document.getElementById('contact-hours').value = data.serviceHours || '';
+		} else {
+		  alert('找不到聯絡資訊，將顯示空白欄位');
+		}
+		contactModal.classList.add('is-open');
+	  } catch (error) {
+		console.error("讀取聯絡資訊錯誤：", error);
+		alert("讀取失敗，請稍後重試");
+	  }
+	});
+
+	cancelContactBtn.addEventListener('click', () => {
+	  contactModal.classList.remove('is-open');
+	});
+
+	contactForm.addEventListener('submit', async (e) => {
+	  e.preventDefault();
+	  const newData = {
+		email: document.getElementById('contact-email').value,
+		phone: document.getElementById('contact-phone').value,
+		address: document.getElementById('contact-address').value,
+		serviceHours: document.getElementById('contact-hours').value
+	  };
+
+	  try {
+		await db.collection('settings').doc('contact').set(newData, { merge: true });
+		alert("聯絡資訊已更新！");
+		contactModal.classList.remove('is-open');
+	  } catch (error) {
+		console.error("更新聯絡資訊錯誤：", error);
+		alert("更新失敗，請稍後重試");
+	  }
+	});
       </script>
 
 
