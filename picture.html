@@ -1,491 +1,493 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
+
 <head>
-  <meta charset="UTF-8" />
-  <title>Iris - 圖片管理</title>
-  <style>
-	#dropzone.dragover {
-	  background-color: #e0f2fe;
-	  border-color: #3b82f6;
-	  color: #2563eb;
-	}
-
-	</style>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-  <script src="https://cdn.tailwindcss.com"></script>
+    <meta charset="UTF-8" />
+    <title>Iris - 圖片管理</title>
+    <style>
+        #dropzone.dragover {
+            background-color: #e0f2fe;
+            border-color: #3b82f6;
+            color: #2563eb;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
+
 <body class="bg-gray-100 min-h-screen p-6">
-	<!-- 導覽列 -->
-	<header class="bg-white shadow-md sticky top-0 z-40">
-	  <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
-		<div class="text-2xl font-bold text-gray-800">
-		  <a href="#">圖片管理系統</a>
-		</div>
-		<div class="flex items-center space-x-4">
-		  <a href="admin.html" class="text-blue-600 hover:text-blue-800 font-semibold">
-			<i class="fas fa-cogs mr-1"></i>前往後台管理
-		  </a>
-		  <button id="logout-button" class="bg-red-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-red-600 transition duration-300">
-			<i class="fas fa-sign-out-alt mr-1"></i>登出
-		  </button>
-		</div>
-	  </nav>
-	</header>
+    <!-- 導覽列 -->
+    <header class="bg-white shadow-md sticky top-0 z-40">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="text-2xl font-bold text-gray-800">
+                <a href="#">圖片管理系統</a>
+            </div>
+            <div class="flex items-center space-x-4">
+                <a href="admin.html" class="text-blue-600 hover:text-blue-800 font-semibold">
+                    <i class="fas fa-cogs mr-1"></i>前往後台管理
+                </a>
+                <button id="logout-button" class="bg-red-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-red-600 transition duration-300">
+                    <i class="fas fa-sign-out-alt mr-1"></i>登出
+                </button>
+            </div>
+        </nav>
+    </header>
 
-	<!-- 主要內容（你的圖片上傳 + 搜尋區塊等） -->
-	<main class="p-6">
-	  <div id="app-content">
-		<div class="max-w-3xl mx-auto bg-white rounded shadow p-6">
-			<h1 class="text-2xl font-bold mb-4 text-gray-800">Iris - 圖片管理</h1>
-			<div class="mb-6">
-			  <label class="block text-sm font-medium text-gray-700 mb-1">商品編號（資料夾）</label>
-			  <input type="text" id="folderInput" class="w-full border p-2 rounded mb-4" placeholder="例如：ABC123" />
+    <!-- 主要內容（你的圖片上傳 + 搜尋區塊等） -->
+    <main class="p-6">
+        <div id="app-content">
+            <div class="max-w-3xl mx-auto bg-white rounded shadow p-6">
+                <h1 class="text-2xl font-bold mb-4 text-gray-800">Iris - 圖片管理</h1>
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">商品編號（資料夾）</label>
+                    <input type="text" id="folderInput" class="w-full border p-2 rounded mb-4" placeholder="例如：ABC123" />
 
-			  <label class="block text-sm font-medium text-gray-700 mb-2">選擇圖片上傳</label>
-			  <div
-				  id="dropzone"
-				  class="w-full border-2 border-dashed border-gray-300 p-6 rounded text-center text-gray-500 cursor-pointer hover:border-blue-400 transition-all"
-				>
-				  將圖片拖拉到此區域，或點擊選擇
-				</div>
-				<input type="file" id="imageInput" accept="image/*" multiple class="hidden" />
+                    <label class="block text-sm font-medium text-gray-700 mb-2">選擇圖片上傳</label>
+                    <div id="dropzone" class="w-full border-2 border-dashed border-gray-300 p-6 rounded text-center text-gray-500 cursor-pointer hover:border-blue-400 transition-all">
+                        將圖片拖拉到此區域，或點擊選擇
+                    </div>
+                    <input type="file" id="imageInput" accept="image/*" multiple class="hidden" />
 
-				<button id="uploadBtn"
-				  class="mt-4 mb-2 w-full bg-indigo-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-indigo-700 transition disabled:opacity-50"
-				  disabled>
-				  <i class="fas fa-upload mr-2"></i>上傳圖片
-				</button>
-			  
-				<!-- 預覽區 -->
-				<div id="previewArea" class="flex flex-wrap gap-4 mt-4"></div>
-			</div>
-			<div class="mb-6 border-t pt-6">
-			  <label for="folderFilter" class="block text-sm font-medium text-gray-700 mb-2">
-				搜尋資料夾
-			  </label>
-			  <input
-				type="text"
-				id="folderFilter"
-				placeholder="輸入資料夾名稱..."
-				class="w-full p-2 border rounded"
-			  />
-			</div>
-			<div>
-			  <h2 class="text-lg font-semibold mb-2">圖片清單</h2>
-			  <div id="imageList" class="space-y-6"></div>
-			</div>
-		  </div>
-	  </div>
-	</main>
-  
+                    <button id="uploadBtn" class="mt-4 mb-2 w-full bg-indigo-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-indigo-700 transition disabled:opacity-50" disabled>
+                        <i class="fas fa-upload mr-2"></i>上傳圖片
+                    </button>
 
-  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
-  <script>
-  
-	// 你的 Firebase 配置物件 (從 Firebase 控制台取得並貼到這裡)
-	const firebaseConfig = {
-	  apiKey: "AIzaSyB7JlDaqB3dm9hpuXrLmxHNr9lBKDznkD0",
-	  authDomain: "iris-wear.firebaseapp.com",
-	  projectId: "iris-wear",
-	  storageBucket: "iris-wear.firebasestorage.app",
-	  messagingSenderId: "720824939218",
-	  appId: "1:720824939218:web:13594d0ff6954ee726330b",
-	  measurementId: "G-53QJG70PJT"
-	};
-
-	// 初始化 Firebase
-	try {
-		firebase.initializeApp(firebaseConfig);
-		console.log("Firebase 初始化成功！");
-	} catch (error) {
-		console.error("Firebase 初始化失敗：", error);
-		document.body.innerHTML = '<div class="text-center p-12 text-red-600">Firebase 初始化失敗，請檢查控制台錯誤訊息和配置。</div>';
-		throw new Error("Firebase initialization failed");
-	}
+                    <!-- 預覽區 -->
+                    <div id="previewArea" class="flex flex-wrap gap-4 mt-4"></div>
+                </div>
+                <div class="mb-6 border-t pt-6">
+                    <label for="folderFilter" class="block text-sm font-medium text-gray-700 mb-2">
+                        搜尋資料夾
+                    </label>
+                    <input type="text" id="folderFilter" placeholder="輸入資料夾名稱..." class="w-full p-2 border rounded" />
+                </div>
+                <div>
+                    <h2 class="text-lg font-semibold mb-2">圖片清單</h2>
+                    <div id="imageList" class="space-y-6"></div>
+                </div>
+            </div>
+        </div>
+    </main>
 
 
-	// 取得 Auth 實例
-	const auth = firebase.auth();
-	console.log("Firebase Auth 實例已取得");
-	
-	// !!! Firebase 認證檢查 !!!
-	auth.onAuthStateChanged(user => {
-		if (user) {
-			console.log("使用者已登入，電子郵件:", user.email);
-			document.body.style.display = 'block'; // 顯示 body 內容
-		} else {
-			console.log("沒有使用者登入，重新導向到登入頁面。");
-			window.location.href = 'login.html'; // 重新導向到您的登入頁面
-		}
-	});
-	// !!! 認證檢查結束 !!!
-	
-	// 取得 Firestore 實例
-	const db = firebase.firestore();
-	
-    let GITHUB_TOKEN = '';
-	function loadToken() {
-	  return db.collection('settings').doc('git').get().then(doc => {
-		if (doc.exists && doc.data().token) {
-		  GITHUB_TOKEN = doc.data().token;
-		  console.log("✔ 取得 GITHUB_TOKEN：");
-		} else {
-		  console.warn("⚠️ 找不到 GitHub token 設定");
-		}
-	  }).catch(error => {
-		console.error("讀取 GitHub token 時出錯：", error);
-	  });
-	}
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
+    <script>
+        // 你的 Firebase 配置物件 (從 Firebase 控制台取得並貼到這裡)
+        const firebaseConfig = {
+            apiKey: "AIzaSyB7JlDaqB3dm9hpuXrLmxHNr9lBKDznkD0",
+            authDomain: "iris-wear.firebaseapp.com",
+            projectId: "iris-wear",
+            storageBucket: "iris-wear.firebasestorage.app",
+            messagingSenderId: "720824939218",
+            appId: "1:720824939218:web:13594d0ff6954ee726330b",
+            measurementId: "G-53QJG70PJT"
+        };
 
-	// 頁面載入後執行
-	document.addEventListener('DOMContentLoaded', () => {
-	  loadToken().then(() => {
-		loadFolderImages(); // ✅ 等 token 後才載入清單
-	  });
-	});
-	
-	
-    const REPO_OWNER = 'kijmothy';
-    const REPO_NAME = 'iris-site';
-    const BRANCH = 'main';
-    const GITHUB_API = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/images`;
-    const RAW_BASE = `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/${BRANCH}/images`;
+        // 初始化 Firebase
+        try {
+            firebase.initializeApp(firebaseConfig);
+            console.log("Firebase 初始化成功！");
+        } catch (error) {
+            console.error("Firebase 初始化失敗：", error);
+            document.body.innerHTML = '<div class="text-center p-12 text-red-600">Firebase 初始化失敗，請檢查控制台錯誤訊息和配置。</div>';
+            throw new Error("Firebase initialization failed");
+        }
 
-    const uploadBtn = document.getElementById('uploadBtn');
-    const imageInput = document.getElementById('imageInput');
-    const imageList = document.getElementById('imageList');
-    const folderInput = document.getElementById('folderInput');
 
-    imageInput.addEventListener('change', () => {
-      uploadBtn.disabled = !imageInput.files.length;
-	  
-	  const previewArea = document.getElementById('previewArea');
-	  previewArea.innerHTML = ''; // 清空先前預覽
+        // 取得 Auth 實例
+        const auth = firebase.auth();
+        console.log("Firebase Auth 實例已取得");
 
-	  Array.from(imageInput.files).forEach(file => {
-		if (!file.type.startsWith('image/')) return;
-
-		const reader = new FileReader();
-		reader.onload = (e) => {
-		  const img = document.createElement('img');
-		  img.src = e.target.result;
-		  img.className = 'w-24 h-24 object-cover rounded border';
-		  previewArea.appendChild(img);
-		};
-		reader.readAsDataURL(file);
-	  });
-    });
-
-    uploadBtn.addEventListener('click', async () => {
-	  const folder = folderInput.value.trim();
-	  // ✅ 檢查是否有輸入商品編號
-	  if (!folder) {
-		alert('⚠️ 請先輸入商品編號（資料夾名稱）');
-		folderInput.focus();
-		return;
-	  }
-	  const files = selectedFiles.length ? selectedFiles : imageInput.files;
-	  if (!files.length) return;
-
-	  uploadBtn.disabled = true;
-	  uploadBtn.textContent = '上傳中...';
-
-	  for (const file of files) {
-		const filename = file.name;
-		const fullPath = folder ? `${folder}/${filename}` : filename;
-
-		const reader = new FileReader();
-		await new Promise((resolve, reject) => {
-		  reader.onload = async () => {
-			const base64 = reader.result.split(',')[1];
-
-			const url = `${GITHUB_API}/${fullPath}`;
-			const body = {
-			  message: `upload ${fullPath}`,
-			  content: base64,
-			  branch: BRANCH
-			};
-
-			try {
-			  const res = await fetch(url, {
-				method: 'PUT',
-				headers: {
-				  Authorization: `Bearer ${GITHUB_TOKEN}`,
-				  'Content-Type': 'application/json'
-				},
-				body: JSON.stringify(body)
-			  });
-
-			  const data = await res.json();
-			  if (res.ok) {
-				const folderContainer = getOrCreateFolderContainer(folder);
-				renderImageItem({ name: fullPath, url: `${RAW_BASE}/${fullPath}` }, folderContainer.querySelector('.images'));
-			  } else {
-				alert(`上傳 ${filename} 失敗: ` + data.message);
-			  }
-			} catch (err) {
-			  console.error(`上傳 ${filename} 發生錯誤`, err);
-			}
-
-			resolve(); // 確保等待每個 reader.onload 結束再繼續
-		  };
-		  reader.onerror = reject;
-		  reader.readAsDataURL(file);
-		});
-	  }
-
-	  alert('全部上傳完成');
-	  uploadBtn.textContent = '上傳圖片';
-	  imageInput.value = '';                     // 清空 input
-	  folderInput.value = '';                     // 清空 input
-	  document.getElementById('previewArea').innerHTML = '';  // 清空預覽
-	  uploadBtn.disabled = true;                // 避免未選檔仍可點擊
-	});
-
-    function getOrCreateFolderContainer(folder) {
-      const id = `folder-${folder}`;
-      let container = document.getElementById(id);
-      if (container) return container;
-
-      container = document.createElement('div');
-      container.id = id;
-      container.className = 'border rounded p-4';
-
-      const header = document.createElement('div');
-      header.className = 'flex justify-between items-center cursor-pointer select-none';
-      header.innerHTML = `<span class="font-bold text-gray-800">📁 ${folder || '(根目錄)'}</span>`;
-
-      const toggleBtn = document.createElement('button');
-      toggleBtn.textContent = '收合';
-      toggleBtn.className = 'text-sm text-blue-600 hover:underline';
-      toggleBtn.onclick = () => {
-        images.classList.toggle('hidden');
-        toggleBtn.textContent = images.classList.contains('hidden') ? '展開' : '收合';
-      };
-	  if (folder !== '') {
-		  header.appendChild(toggleBtn);
-		  const deleteBtn = document.createElement('button');
-		  //deleteBtn.textContent = '刪除此資料夾';
-		  deleteBtn.innerHTML = '<i class="fas fa-trash-alt" title="刪除此資料夾"></i>';
-		  //deleteBtn.className = 'text-sm text-red-600 hover:underline ml-4';
-		  deleteBtn.className = 'px-3 py-1 text-sm bg-red-500 text-white rounded hover:bg-red-600';
-		  deleteBtn.onclick = async () => {
-			if (!confirm(`確定要刪除整個資料夾 ${folder} 嗎？`)) return;
-
-			const folderUrl = `${GITHUB_API}/${folder}`;
-			const res = await fetch(folderUrl, {
-			  headers: {
-				Authorization: `Bearer ${GITHUB_TOKEN}`
-			  }
-			});
-
-			const files = await res.json();
-			if (!Array.isArray(files)) {
-			  alert('資料夾讀取失敗');
-			  return;
-			}
-
-			for (const file of files) {
-			  const delRes = await fetch(`${GITHUB_API}/${file.path.replace('images/', '')}`, {
-				method: 'DELETE',
-				headers: {
-				  Authorization: `Bearer ${GITHUB_TOKEN}`,
-				  'Content-Type': 'application/json'
-				},
-				body: JSON.stringify({
-				  message: `delete ${file.path}`,
-				  sha: file.sha,
-				  branch: BRANCH
-				})
-			  });
-
-			  if (!delRes.ok) {
-				const err = await delRes.json();
-				alert(`刪除 ${file.name} 失敗: ${err.message}`);
-				return;
-			  }
-			}
-
-			alert('資料夾已刪除');
-			container.remove();
-		  };
-
-		  header.appendChild(deleteBtn);
-	  }
-  	  // 🔽 🔽 🔽 加在這裡
-	  header.addEventListener('click', (e) => {
-	    if (e.target.closest('button')) return; // 避免點到按鈕也觸發
-	    images.classList.toggle('hidden');
-	    toggleBtn.textContent = images.classList.contains('hidden') ? '展開' : '收合';
-	  });
-      const images = document.createElement('div');
-	  images.className = 'images space-y-2 mt-4 hidden'; // ← 加上 hidden
-	  toggleBtn.textContent = '展開';                    // ← 按鈕預設文字為「展開」
-
-      container.appendChild(header);
-      container.appendChild(images);
-      imageList.appendChild(container);
-
-      return container;
-    }
-
-    function renderImageItem(img, container) {
-      const li = document.createElement('div');
-      li.className = 'flex items-center space-x-4';
-
-      const image = document.createElement('img');
-      image.src = img.url;
-      image.alt = img.name;
-      image.className = 'w-20 h-20 object-cover rounded border';
-
-      const name = document.createElement('span');
-      name.textContent = img.name.split('/').pop();
-      name.className = 'flex-1';
-
-      const delBtn = document.createElement('button');
-      //delBtn.textContent = '刪除';
-	  delBtn.innerHTML = '<span title="刪除" class="text-red-500 text-lg hover:text-red-700">❌</span>';
-      delBtn.onclick = async () => {
-        if (!confirm(`確定要刪除 ${img.name} 嗎？`)) return;
-
-        const shaRes = await fetch(`${GITHUB_API}/${img.name}`, {
-          headers: { Authorization: `Bearer ${GITHUB_TOKEN}` }
+        // !!! Firebase 認證檢查 !!!
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                console.log("使用者已登入，電子郵件:", user.email);
+                document.body.style.display = 'block'; // 顯示 body 內容
+            } else {
+                console.log("沒有使用者登入，重新導向到登入頁面。");
+                window.location.href = 'login.html'; // 重新導向到您的登入頁面
+            }
         });
-        const shaData = await shaRes.json();
+        // !!! 認證檢查結束 !!!
 
-        const delRes = await fetch(`${GITHUB_API}/${img.name}`, {
-          method: 'DELETE',
-          headers: {
-            Authorization: `Bearer ${GITHUB_TOKEN}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            message: `delete ${img.name}`,
-            sha: shaData.sha,
-            branch: BRANCH
-          })
+        // 取得 Firestore 實例
+        const db = firebase.firestore();
+
+        let GITHUB_TOKEN = '';
+
+        function loadToken() {
+            return db.collection('settings').doc('git').get().then(doc => {
+                if (doc.exists && doc.data().token) {
+                    GITHUB_TOKEN = doc.data().token;
+                    console.log("✔ 取得 GITHUB_TOKEN：");
+                } else {
+                    console.warn("⚠️ 找不到 GitHub token 設定");
+                }
+            }).catch(error => {
+                console.error("讀取 GitHub token 時出錯：", error);
+            });
+        }
+
+        // 頁面載入後執行
+        document.addEventListener('DOMContentLoaded', () => {
+            loadToken().then(() => {
+                loadFolderImages(); // ✅ 等 token 後才載入清單
+            });
         });
 
-        if (delRes.ok) {
-          alert('刪除成功');
-          li.remove();
 
-          // ✅ 新增：若資料夾內無圖片，自動移除資料夾容器
-          const parentFolder = container.closest('.border.rounded');
-          const remaining = container.querySelectorAll('div.flex');
-          if (parentFolder && remaining.length === 0) {
-            parentFolder.remove();
-          }
+        const REPO_OWNER = 'kijmothy';
+        const REPO_NAME = 'iris-site';
+        const BRANCH = 'main';
+        const GITHUB_API = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/images`;
+        const RAW_BASE = `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/${BRANCH}/images`;
+
+        const uploadBtn = document.getElementById('uploadBtn');
+        const imageInput = document.getElementById('imageInput');
+        const imageList = document.getElementById('imageList');
+        const folderInput = document.getElementById('folderInput');
+
+        imageInput.addEventListener('change', () => {
+            uploadBtn.disabled = !imageInput.files.length;
+
+            const previewArea = document.getElementById('previewArea');
+            previewArea.innerHTML = ''; // 清空先前預覽
+
+            Array.from(imageInput.files).forEach(file => {
+                if (!file.type.startsWith('image/')) return;
+
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.className = 'w-24 h-24 object-cover rounded border';
+                    previewArea.appendChild(img);
+                };
+                reader.readAsDataURL(file);
+            });
+        });
+
+        uploadBtn.addEventListener('click', async () => {
+            const folder = folderInput.value.trim();
+            // ✅ 檢查是否有輸入商品編號
+            if (!folder) {
+                alert('⚠️ 請先輸入商品編號（資料夾名稱）');
+                folderInput.focus();
+                return;
+            }
+            const files = selectedFiles.length ? selectedFiles : imageInput.files;
+            if (!files.length) return;
+
+            uploadBtn.disabled = true;
+            uploadBtn.textContent = '上傳中...';
+
+            for (const file of files) {
+                const filename = file.name;
+                const fullPath = folder ? `${folder}/${filename}` : filename;
+
+                const reader = new FileReader();
+                await new Promise((resolve, reject) => {
+                    reader.onload = async () => {
+                        const base64 = reader.result.split(',')[1];
+
+                        const url = `${GITHUB_API}/${fullPath}`;
+                        const body = {
+                            message: `upload ${fullPath}`,
+                            content: base64,
+                            branch: BRANCH
+                        };
+
+                        try {
+                            const res = await fetch(url, {
+                                method: 'PUT',
+                                headers: {
+                                    Authorization: `Bearer ${GITHUB_TOKEN}`,
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify(body)
+                            });
+
+                            const data = await res.json();
+                            if (res.ok) {
+                                const folderContainer = getOrCreateFolderContainer(folder);
+                                renderImageItem({
+                                    name: fullPath,
+                                    url: `${RAW_BASE}/${fullPath}`
+                                }, folderContainer.querySelector('.images'));
+                            } else {
+                                alert(`上傳 ${filename} 失敗: ` + data.message);
+                            }
+                        } catch (err) {
+                            console.error(`上傳 ${filename} 發生錯誤`, err);
+                        }
+
+                        resolve(); // 確保等待每個 reader.onload 結束再繼續
+                    };
+                    reader.onerror = reject;
+                    reader.readAsDataURL(file);
+                });
+            }
+
+            alert('全部上傳完成');
+            uploadBtn.textContent = '上傳圖片';
+            imageInput.value = ''; // 清空 input
+            folderInput.value = ''; // 清空 input
+            document.getElementById('previewArea').innerHTML = ''; // 清空預覽
+            uploadBtn.disabled = true; // 避免未選檔仍可點擊
+        });
+
+        function getOrCreateFolderContainer(folder) {
+            const id = `folder-${folder}`;
+            let container = document.getElementById(id);
+            if (container) return container;
+
+            container = document.createElement('div');
+            container.id = id;
+            container.className = 'border rounded p-4';
+
+            const header = document.createElement('div');
+            header.className = 'flex justify-between items-center cursor-pointer select-none';
+            header.innerHTML = `<span class="font-bold text-gray-800">📁 ${folder || '(根目錄)'}</span>`;
+
+            const toggleBtn = document.createElement('button');
+            toggleBtn.textContent = '收合';
+            toggleBtn.className = 'text-sm text-blue-600 hover:underline';
+            toggleBtn.onclick = () => {
+                images.classList.toggle('hidden');
+                toggleBtn.textContent = images.classList.contains('hidden') ? '展開' : '收合';
+            };
+            if (folder !== '') {
+                header.appendChild(toggleBtn);
+                const deleteBtn = document.createElement('button');
+                //deleteBtn.textContent = '刪除此資料夾';
+                deleteBtn.innerHTML = '<i class="fas fa-trash-alt" title="刪除此資料夾"></i>';
+                //deleteBtn.className = 'text-sm text-red-600 hover:underline ml-4';
+                deleteBtn.className = 'px-3 py-1 text-sm bg-red-500 text-white rounded hover:bg-red-600';
+                deleteBtn.onclick = async () => {
+                    if (!confirm(`確定要刪除整個資料夾 ${folder} 嗎？`)) return;
+
+                    const folderUrl = `${GITHUB_API}/${folder}`;
+                    const res = await fetch(folderUrl, {
+                        headers: {
+                            Authorization: `Bearer ${GITHUB_TOKEN}`
+                        }
+                    });
+
+                    const files = await res.json();
+                    if (!Array.isArray(files)) {
+                        alert('資料夾讀取失敗');
+                        return;
+                    }
+
+                    for (const file of files) {
+                        const delRes = await fetch(`${GITHUB_API}/${file.path.replace('images/', '')}`, {
+                            method: 'DELETE',
+                            headers: {
+                                Authorization: `Bearer ${GITHUB_TOKEN}`,
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                message: `delete ${file.path}`,
+                                sha: file.sha,
+                                branch: BRANCH
+                            })
+                        });
+
+                        if (!delRes.ok) {
+                            const err = await delRes.json();
+                            alert(`刪除 ${file.name} 失敗: ${err.message}`);
+                            return;
+                        }
+                    }
+
+                    alert('資料夾已刪除');
+                    container.remove();
+                };
+
+                header.appendChild(deleteBtn);
+            }
+            // 🔽 🔽 🔽 加在這裡
+            header.addEventListener('click', (e) => {
+                if (e.target.closest('button')) return; // 避免點到按鈕也觸發
+                images.classList.toggle('hidden');
+                toggleBtn.textContent = images.classList.contains('hidden') ? '展開' : '收合';
+            });
+            const images = document.createElement('div');
+            images.className = 'images space-y-2 mt-4 hidden'; // ← 加上 hidden
+            toggleBtn.textContent = '展開'; // ← 按鈕預設文字為「展開」
+
+            container.appendChild(header);
+            container.appendChild(images);
+            imageList.appendChild(container);
+
+            return container;
+        }
+
+        function renderImageItem(img, container) {
+            const li = document.createElement('div');
+            li.className = 'flex items-center space-x-4';
+
+            const image = document.createElement('img');
+            image.src = img.url;
+            image.alt = img.name;
+            image.className = 'w-20 h-20 object-cover rounded border';
+
+            const name = document.createElement('span');
+            name.textContent = img.name.split('/').pop();
+            name.className = 'flex-1';
+
+            const delBtn = document.createElement('button');
+            //delBtn.textContent = '刪除';
+            delBtn.innerHTML = '<span title="刪除" class="text-red-500 text-lg hover:text-red-700">❌</span>';
+            delBtn.onclick = async () => {
+                if (!confirm(`確定要刪除 ${img.name} 嗎？`)) return;
+
+                const shaRes = await fetch(`${GITHUB_API}/${img.name}`, {
+                    headers: {
+                        Authorization: `Bearer ${GITHUB_TOKEN}`
+                    }
+                });
+                const shaData = await shaRes.json();
+
+                const delRes = await fetch(`${GITHUB_API}/${img.name}`, {
+                    method: 'DELETE',
+                    headers: {
+                        Authorization: `Bearer ${GITHUB_TOKEN}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        message: `delete ${img.name}`,
+                        sha: shaData.sha,
+                        branch: BRANCH
+                    })
+                });
+
+                if (delRes.ok) {
+                    alert('刪除成功');
+                    li.remove();
+
+                    // ✅ 新增：若資料夾內無圖片，自動移除資料夾容器
+                    const parentFolder = container.closest('.border.rounded');
+                    const remaining = container.querySelectorAll('div.flex');
+                    if (parentFolder && remaining.length === 0) {
+                        parentFolder.remove();
+                    }
+                } else {
+                    const err = await delRes.json();
+                    alert('刪除失敗: ' + err.message);
+                }
+            };
+
+            li.appendChild(image);
+            li.appendChild(name);
+            li.appendChild(delBtn);
+            container.appendChild(li);
+        }
+
+        async function loadFolderImages(path = '') {
+            const res = await fetch(`${GITHUB_API}${path ? `/${path}` : ''}`, {
+                headers: {
+                    Authorization: `Bearer ${GITHUB_TOKEN}`
+                }
+            });
+            const data = await res.json();
+            if (Array.isArray(data)) {
+                // ✅ 排序（按檔名 A→Z）
+                data.sort((a, b) => a.name.localeCompare(b.name, 'zh-Hant', {
+                    numeric: true
+                }));
+                for (const file of data) {
+                    if (file.type === 'file' && /\.(png|jpe?g|gif|webp)$/i.test(file.name)) {
+                        const folder = path;
+                        const container = getOrCreateFolderContainer(folder);
+                        renderImageItem({
+                            name: file.path.replace('images/', ''),
+                            url: file.download_url
+                        }, container.querySelector('.images'));
+                    } else if (file.type === 'dir') {
+                        await loadFolderImages(path ? `${path}/${file.name}` : file.name);
+                    }
+                }
+            }
+        }
+
+        document.getElementById('folderFilter').addEventListener('input', (e) => {
+            const keyword = e.target.value.toLowerCase();
+            document.querySelectorAll('#imageList > .border.rounded').forEach(folder => {
+                const folderName = folder.querySelector('span').textContent.toLowerCase();
+                folder.style.display = folderName.includes(keyword) ? 'block' : 'none';
+            });
+        });
+
+
+        const dropzone = document.getElementById('dropzone');
+        const previewArea = document.getElementById('previewArea');
+
+        let selectedFiles = []; // 🔸 保留選取的檔案
+
+        dropzone.addEventListener('click', () => imageInput.click());
+
+        dropzone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropzone.classList.add('dragover');
+        });
+
+        dropzone.addEventListener('dragleave', () => {
+            dropzone.classList.remove('dragover');
+        });
+
+        dropzone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropzone.classList.remove('dragover');
+            const files = Array.from(e.dataTransfer.files).filter(file => file.type.startsWith('image/'));
+            handleFiles(files);
+        });
+
+        function handleFiles(files) {
+            if (!files.length) return;
+
+            // ✅ 清空之前的檔案與預覽
+            selectedFiles = [];
+            previewArea.innerHTML = '';
+
+            // ✅ 加入新檔案
+            selectedFiles = files;
+            uploadBtn.disabled = false;
+
+            files.forEach(file => {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.className = 'w-24 h-24 object-cover rounded border';
+                    previewArea.appendChild(img);
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+
+
+        // 獲取登出按鈕
+        const logoutButton = document.getElementById('logout-button');
+        if (logoutButton) {
+            logoutButton.addEventListener('click', async () => {
+                try {
+                    await auth.signOut();
+                    console.log("使用者已登出！");
+                    window.location.href = 'login.html';
+                } catch (error) {
+                    console.error("登出失敗：", error);
+                    alert("登出失敗，請重試。");
+                }
+            });
+            console.log("登出按鈕事件已綁定。");
         } else {
-          const err = await delRes.json();
-          alert('刪除失敗: ' + err.message);
+            console.warn("找不到 ID 為 'logout-button' 的元素。");
         }
-      };
-
-      li.appendChild(image);
-      li.appendChild(name);
-      li.appendChild(delBtn);
-      container.appendChild(li);
-    }
-
-    async function loadFolderImages(path = '') {
-      const res = await fetch(`${GITHUB_API}${path ? `/${path}` : ''}`, {
-        headers: {
-          Authorization: `Bearer ${GITHUB_TOKEN}`
-        }
-      });
-      const data = await res.json();
-      if (Array.isArray(data)) {
-        // ✅ 排序（按檔名 A→Z）
-        data.sort((a, b) => a.name.localeCompare(b.name, 'zh-Hant', { numeric: true }));
-        for (const file of data) {
-          if (file.type === 'file' && /\.(png|jpe?g|gif|webp)$/i.test(file.name)) {
-            const folder = path;
-            const container = getOrCreateFolderContainer(folder);
-            renderImageItem({ name: file.path.replace('images/', ''), url: file.download_url }, container.querySelector('.images'));
-          } else if (file.type === 'dir') {
-            await loadFolderImages(path ? `${path}/${file.name}` : file.name);
-          }
-        }
-      }
-    }
-
-	document.getElementById('folderFilter').addEventListener('input', (e) => {
-	  const keyword = e.target.value.toLowerCase();
-	  document.querySelectorAll('#imageList > .border.rounded').forEach(folder => {
-		const folderName = folder.querySelector('span').textContent.toLowerCase();
-		folder.style.display = folderName.includes(keyword) ? 'block' : 'none';
-	  });
-	});
-	
-	
-	const dropzone = document.getElementById('dropzone');
-	const previewArea = document.getElementById('previewArea');
-
-	let selectedFiles = []; // 🔸 保留選取的檔案
-
-	dropzone.addEventListener('click', () => imageInput.click());
-
-	dropzone.addEventListener('dragover', (e) => {
-	  e.preventDefault();
-	  dropzone.classList.add('dragover');
-	});
-
-	dropzone.addEventListener('dragleave', () => {
-	  dropzone.classList.remove('dragover');
-	});
-
-	dropzone.addEventListener('drop', (e) => {
-	  e.preventDefault();
-	  dropzone.classList.remove('dragover');
-	  const files = Array.from(e.dataTransfer.files).filter(file => file.type.startsWith('image/'));
-	  handleFiles(files);
-	});
-
-	function handleFiles(files) {
-	  if (!files.length) return;
-
-	  // ✅ 清空之前的檔案與預覽
-	  selectedFiles = [];
-	  previewArea.innerHTML = '';
-
-	  // ✅ 加入新檔案
-	  selectedFiles = files;
-	  uploadBtn.disabled = false;
-
-	  files.forEach(file => {
-		const reader = new FileReader();
-		reader.onload = (e) => {
-		  const img = document.createElement('img');
-		  img.src = e.target.result;
-		  img.className = 'w-24 h-24 object-cover rounded border';
-		  previewArea.appendChild(img);
-		};
-		reader.readAsDataURL(file);
-	  });
-	}
-
-
-		
-	// 獲取登出按鈕
-	const logoutButton = document.getElementById('logout-button');
-	if (logoutButton) {
-	  logoutButton.addEventListener('click', async () => {
-		  try {
-			  await auth.signOut();
-			  console.log("使用者已登出！");
-			  window.location.href = 'login.html';
-		  } catch (error) {
-			  console.error("登出失敗：", error);
-			  alert("登出失敗，請重試。");
-		  }
-	  });
-	  console.log("登出按鈕事件已綁定。");
-	} else {
-	  console.warn("找不到 ID 為 'logout-button' 的元素。");
-	}
-  </script>
+    </script>
 </body>
+
 </html>

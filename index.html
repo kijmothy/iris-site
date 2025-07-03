@@ -1,18 +1,19 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Iris - 站台</title>
     <script src="https://cdn.tailwindcss.com"></script>
-	<!-- ✅ 放在 <head> 區塊 -->
-	<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+    <!-- ✅ 放在 <head> 區塊 -->
+    <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
 
-	<!-- 分三段提供字型 base64 給 jsPDF VFS -->
-	<script src="https://cdn.jsdelivr.net/gh/dwm331/shnormal-font@v1.1/shnormal-normal_1.js"></script>
-	<script src="https://cdn.jsdelivr.net/gh/dwm331/shnormal-font@v1.1/shnormal-normal_2.js"></script>
-	<script src="https://cdn.jsdelivr.net/gh/dwm331/shnormal-font@v1.1/shnormal-normal_3.js"></script>
+    <!-- 分三段提供字型 base64 給 jsPDF VFS -->
+    <script src="https://cdn.jsdelivr.net/gh/dwm331/shnormal-font@v1.1/shnormal-normal_1.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/dwm331/shnormal-font@v1.1/shnormal-normal_2.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/dwm331/shnormal-font@v1.1/shnormal-normal_3.js"></script>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -23,64 +24,83 @@
             font-family: 'Inter', 'Noto Sans TC', sans-serif;
             background-color: #f8f9fa;
         }
+
         .card-hover:hover {
             transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
         }
+
         .tag {
             position: absolute;
             top: 0.75rem;
             left: 0.75rem;
             padding: 0.25rem 0.5rem;
-            border-radius: 9999px; /* rounded-full */
-            font-size: 0.75rem; /* text-xs */
-            font-weight: 700; /* font-bold */
+            border-radius: 9999px;
+            /* rounded-full */
+            font-size: 0.75rem;
+            /* text-xs */
+            font-weight: 700;
+            /* font-bold */
             color: white;
             z-index: 10;
         }
+
         .tag.new {
-            background-color: #ef4444; /* red-500 */
+            background-color: #ef4444;
+            /* red-500 */
         }
+
         .tag.limited {
-            background-color: #f97316; /* orange-500 */
+            background-color: #f97316;
+            /* orange-500 */
         }
+
         .tag.popular {
-            background-color: #22c55e; /* green-500 */
+            background-color: #22c55e;
+            /* green-500 */
         }
+
         .modal {
-            display: none; 
+            display: none;
             transition: opacity 0.3s ease;
-            opacity: 0; 
-            pointer-events: none; 
+            opacity: 0;
+            pointer-events: none;
         }
+
         .modal.is-open {
-            display: flex; 
-            opacity: 1; 
+            display: flex;
+            opacity: 1;
             pointer-events: auto;
         }
+
         .thumbnail-active {
-            border: 2px solid #4f46e5; /* indigo-600 */
+            border: 2px solid #4f46e5;
+            /* indigo-600 */
         }
+
         /* 購物車數量顯示樣式 */
         .cart-count {
             position: absolute;
             top: -8px;
             right: -8px;
-            background-color: #ef4444; /* red-500 */
+            background-color: #ef4444;
+            /* red-500 */
             color: white;
             border-radius: 50%;
             padding: 2px 6px;
-            font-size: 0.75rem; /* text-xs */
+            font-size: 0.75rem;
+            /* text-xs */
             font-weight: bold;
             line-height: 1;
         }
     </style>
 </head>
+
 <body class="relative min-h-screen">
     <nav class="bg-white shadow-md">
         <div class="container mx-auto px-4 py-4 flex justify-between items-center">
             <a href="index.html" class="text-2xl font-bold text-gray-800">Iris - <span class="text-indigo-600">站台</span></a>
-            
+
             <div class="hidden md:flex space-x-8">
                 <a href="#new-arrivals" class="text-gray-600 hover:text-gray-900 font-medium transition duration-300">新品</a>
                 <a href="#popular-items" class="text-gray-600 hover:text-gray-900 font-medium transition duration-300">熱門</a>
@@ -96,7 +116,7 @@
             </div>
 
             <div class="md:hidden flex items-center space-x-4">
-                 <div class="relative">
+                <div class="relative">
                     <button id="mobile-cart-icon" class="text-gray-600 hover:text-gray-900 focus:outline-none">
                         <i class="fas fa-shopping-cart text-2xl"></i>
                         <span id="mobile-cart-count" class="cart-count">0</span>
@@ -107,7 +127,7 @@
                 </button>
             </div>
         </div>
-        
+
         <div id="mobile-menu" class="md:hidden bg-white shadow-lg py-2 hidden">
             <a href="#new-arrivals" class="block px-4 py-2 text-gray-800 hover:bg-gray-100 mobile-menu-link">新品</a>
             <a href="#popular-items" class="block px-4 py-2 text-gray-800 hover:bg-gray-100 mobile-menu-link">熱門</a>
@@ -143,37 +163,37 @@
                 <p class="text-center text-gray-500 col-span-full">載入中...</p>
             </div>
         </section>
-		
-		  <div class="container mx-auto px-4 my-12">
-			<hr class="border-t-2 border-gray-300 w-full mx-auto shadow-md" />
-		</div>
 
-		<section id="contact" class="mb-16">
-			<h2 class="text-3xl font-bold text-gray-800 mb-8 text-center">✉️ 聯絡我們 ✉️</h2>
-			<div class="bg-white rounded-lg shadow-lg p-8 max-w-2xl mx-auto">
-				<p class="text-gray-700 mb-4 text-center">如果您有任何問題或需要協助，請透過以下方式聯絡我們：</p>
-				<ul class="text-gray-600 space-y-3 text-lg text-center">
-					<li><i class="fas fa-envelope mr-3 text-indigo-600"></i> 電子郵件：
-						<a id="contact-email" href="#" class="text-indigo-600 hover:underline ml-2">載入中...</a>
-					</li>
-					<li><i class="fas fa-phone-alt mr-3 text-indigo-600"></i> 電話：
-						<a id="contact-phone" href="#" class="text-indigo-600 hover:underline ml-2">載入中...</a>
-					</li>
-					<li><i class="fas fa-map-marker-alt mr-3 text-indigo-600"></i> 地址：
-						<span id="contact-address">載入中...</span>
-					</li>
-				</ul>
-				<p id="contact-service-hours" class="text-sm text-gray-500 mt-6 text-center">載入中...</p>
-			</div>
-		</section>
+        <div class="container mx-auto px-4 my-12">
+            <hr class="border-t-2 border-gray-300 w-full mx-auto shadow-md" />
+        </div>
+
+        <section id="contact" class="mb-16">
+            <h2 class="text-3xl font-bold text-gray-800 mb-8 text-center">✉️ 聯絡我們 ✉️</h2>
+            <div class="bg-white rounded-lg shadow-lg p-8 max-w-2xl mx-auto">
+                <p class="text-gray-700 mb-4 text-center">如果您有任何問題或需要協助，請透過以下方式聯絡我們：</p>
+                <ul class="text-gray-600 space-y-3 text-lg text-center">
+                    <li><i class="fas fa-envelope mr-3 text-indigo-600"></i> 電子郵件：
+                        <a id="contact-email" href="#" class="text-indigo-600 hover:underline ml-2">載入中...</a>
+                    </li>
+                    <li><i class="fas fa-phone-alt mr-3 text-indigo-600"></i> 電話：
+                        <a id="contact-phone" href="#" class="text-indigo-600 hover:underline ml-2">載入中...</a>
+                    </li>
+                    <li><i class="fas fa-map-marker-alt mr-3 text-indigo-600"></i> 地址：
+                        <span id="contact-address">載入中...</span>
+                    </li>
+                </ul>
+                <p id="contact-service-hours" class="text-sm text-gray-500 mt-6 text-center">載入中...</p>
+            </div>
+        </section>
     </main>
 
     <div id="image-modal" class="modal fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 z-50">
         <div class="bg-white rounded-lg shadow-xl max-w-4xl w-full flex flex-col md:flex-row relative">
-            <button id="modal-close-button" class="absolute top-3 right-3 text-gray-600 hover:text-gray-900 text-3xl z-[60]"> 
+            <button id="modal-close-button" class="absolute top-3 right-3 text-gray-600 hover:text-gray-900 text-3xl z-[60]">
                 <i class="fas fa-times-circle"></i>
             </button>
-            
+
             <div class="relative flex-1 p-4 flex items-center justify-center overflow-hidden">
                 <img id="modal-main-image" src="" alt="Main Product Image" class="max-w-full max-h-[70vh] object-contain rounded-md">
             </div>
@@ -184,16 +204,16 @@
                     <p id="modal-product-description" class="text-gray-600 text-sm mb-4"></p>
                     <p id="modal-product-price" class="text-indigo-600 font-bold text-xl mb-4"></p>
                     <p id="modal-product-sizes" class="text-gray-600 text-sm mb-4"></p>
-					<div class="mb-4">
-						<label for="modal-size-select" class="block text-sm font-medium text-gray-700 mb-1">選擇尺寸</label>
-						<select id="modal-size-select" class="w-full border-gray-300 rounded-md shadow-sm"></select>
-						<p id="size-stock-info" class="text-sm text-gray-600 mt-2"></p> <!-- ✅ 顯示庫存數量 -->
-					</div>
-                    
+                    <div class="mb-4">
+                        <label for="modal-size-select" class="block text-sm font-medium text-gray-700 mb-1">選擇尺寸</label>
+                        <select id="modal-size-select" class="w-full border-gray-300 rounded-md shadow-sm"></select>
+                        <p id="size-stock-info" class="text-sm text-gray-600 mt-2"></p> <!-- ✅ 顯示庫存數量 -->
+                    </div>
+
                     <div id="modal-thumbnails" class="grid grid-cols-4 gap-2 mb-4">
-                        </div>
+                    </div>
                 </div>
-                
+
                 <div class="mt-4">
                     <button id="modal-add-to-cart-button" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-md transition duration-300">加入購物車</button>
                 </div>
@@ -203,32 +223,32 @@
 
     <div id="cart-modal" class="modal fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 z-50">
         <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full p-6 relative">
-            <button id="cart-modal-close-button" class="absolute top-3 right-3 text-gray-600 hover:text-gray-900 text-3xl z-10"> 
+            <button id="cart-modal-close-button" class="absolute top-3 right-3 text-gray-600 hover:text-gray-900 text-3xl z-10">
                 <i class="fas fa-times-circle"></i>
             </button>
-            
+
             <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">我的購物車</h2>
-            
+
             <div id="cart-items-list" class="space-y-4 max-h-[70vh] overflow-y-auto pr-2">
                 <p class="text-center text-gray-500">購物車是空的。</p>
             </div>
 
             <div class="mt-6 pt-4 border-t border-gray-200 flex justify-between items-center flex-wrap gap-2">
-				<span class="text-xl font-bold text-gray-800">總計: <span id="cart-total-price">$0</span></span>
-				<div class="flex gap-3">
-					<button id="clear-cart-button" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-md transition duration-300">
-						清空購物車
-					</button>
-					<button id="export-pdf-button" class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-md transition duration-300">
-						匯出 PDF
-					</button>
-					<!--
+                <span class="text-xl font-bold text-gray-800">總計: <span id="cart-total-price">$0</span></span>
+                <div class="flex gap-3">
+                    <button id="clear-cart-button" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-md transition duration-300">
+                        清空購物車
+                    </button>
+                    <button id="export-pdf-button" class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-md transition duration-300">
+                        匯出 PDF
+                    </button>
+                    <!--
 					<button class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-6 rounded-md transition duration-300">
 						前往結帳
 					</button>
 					-->
-				</div>
-			</div>
+                </div>
+            </div>
 
         </div>
     </div>
@@ -242,7 +262,7 @@
                 <h3 id="preview-modal-product-name" class="text-xl font-bold text-gray-800 mb-4"></h3>
                 <img id="preview-modal-main-image" src="" alt="Product Detail" class="w-full h-auto max-h-[60vh] object-contain rounded-md bg-gray-100 mb-4" onerror="this.src='https://placehold.co/600x400/cccccc/333333?text=Image+Not+Available'">
                 <div id="preview-modal-thumbnails" class="flex gap-2 pb-2 overflow-x-auto">
-                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -270,7 +290,7 @@
             projectId: "iris-wear",
             storageBucket: "iris-wear.firebasestorage.app",
             messagingSenderId: "720824939218",
-            appId: "1:720824939218:web:13594d0ff6954ee726330b", 
+            appId: "1:720824939218:web:13594d0ff6954ee726330b",
             measurementId: "G-53QJG70PJT"
         };
 
@@ -305,10 +325,10 @@
         const modalProductTitle = document.getElementById('modal-product-title');
         const modalProductDescription = document.getElementById('modal-product-description');
         const modalProductPrice = document.getElementById('modal-product-price');
-        const modalProductSizes = document.getElementById('modal-product-sizes'); 
+        const modalProductSizes = document.getElementById('modal-product-sizes');
         const modalSizeSelect = document.getElementById('modal-size-select');
-        const modalAddToCartButton = document.getElementById('modal-add-to-cart-button'); 
-		const stockInfoEl = document.getElementById('size-stock-info');
+        const modalAddToCartButton = document.getElementById('modal-add-to-cart-button');
+        const stockInfoEl = document.getElementById('size-stock-info');
 
         // Cart Count Elements
         const desktopCartCount = document.getElementById('desktop-cart-count');
@@ -321,13 +341,13 @@
         const cartTotalPrice = document.getElementById('cart-total-price');
         const desktopCartIcon = document.getElementById('desktop-cart-icon');
         const mobileCartIcon = document.getElementById('mobile-cart-icon');
-		const exportPdfButton = document.getElementById('export-pdf-button');
-		const clearCartButton = document.getElementById('clear-cart-button');
+        const exportPdfButton = document.getElementById('export-pdf-button');
+        const clearCartButton = document.getElementById('clear-cart-button');
 
 
-		const imagePreviewModal = document.getElementById('image-preview-modal');
-		const previewModalCloseButton = document.getElementById('preview-modal-close-button');
-	  
+        const imagePreviewModal = document.getElementById('image-preview-modal');
+        const previewModalCloseButton = document.getElementById('preview-modal-close-button');
+
         let allProductsData = []; // 儲存所有商品資料
         let currentModalProductId = null; // 儲存目前 Modal 中顯示的商品ID
 
@@ -344,11 +364,11 @@
         // 將購物車資料儲存到 localStorage，並更新 UI
         function saveCartItems(items) {
             localStorage.setItem('cartItems', JSON.stringify(items));
-            updateCartCount(); 
-            renderCartItems(); 
-			updateExportPdfButtonState(); // ✅ 更新匯出按鈕狀態
+            updateCartCount();
+            renderCartItems();
+            updateExportPdfButtonState(); // ✅ 更新匯出按鈕狀態
         }
-        
+
         // 更新頁面上的購物車數量顯示
         function updateCartCount() {
             const items = getCartItems();
@@ -358,7 +378,7 @@
         }
 
         // 添加商品到購物車
-        function addToCart(productId, quantity = 1,size = null) {
+        function addToCart(productId, quantity = 1, size = null) {
             const product = allProductsData.find(p => p.id === productId);
 
             if (!product) {
@@ -366,27 +386,27 @@
                 return;
             }
 
-			// ✅ 新增尺寸庫存判斷
-			if (size) {
-				const selectedSize = product.sizes.find(s => s.size === size);
-				if (!selectedSize) {
-					alert(`選擇的尺寸 ${size} 不存在`);
-					return;
-				}
+            // ✅ 新增尺寸庫存判斷
+            if (size) {
+                const selectedSize = product.sizes.find(s => s.size === size);
+                if (!selectedSize) {
+                    alert(`選擇的尺寸 ${size} 不存在`);
+                    return;
+                }
 
-				// 🔍 檢查目前購物車內此商品尺寸的數量，加總後不能超過庫存
-				const currentCartItems = getCartItems();
-				const existingItem = currentCartItems.find(item => item.id === productId && item.size === size);
-				const existingQty = existingItem ? existingItem.quantity : 0;
+                // 🔍 檢查目前購物車內此商品尺寸的數量，加總後不能超過庫存
+                const currentCartItems = getCartItems();
+                const existingItem = currentCartItems.find(item => item.id === productId && item.size === size);
+                const existingQty = existingItem ? existingItem.quantity : 0;
 
-				if (existingQty + quantity > selectedSize.quantity) {
-					alert(`此尺寸「${size}」的庫存只剩 ${selectedSize.quantity} 件，無法加入更多`);
-					return;
-				}
-			}
-			
+                if (existingQty + quantity > selectedSize.quantity) {
+                    alert(`此尺寸「${size}」的庫存只剩 ${selectedSize.quantity} 件，無法加入更多`);
+                    return;
+                }
+            }
+
             let cartItems = getCartItems();
-			const existingItemIndex = cartItems.findIndex(item => item.id === productId && item.size === size);
+            const existingItemIndex = cartItems.findIndex(item => item.id === productId && item.size === size);
 
 
             if (existingItemIndex > -1) {
@@ -394,10 +414,10 @@
             } else {
                 cartItems.push({
                     id: product.id,
-					sku: product.sku,
+                    sku: product.sku,
                     name: product.name,
                     price: product.price,
-					size: size, // 👈 儲存尺寸
+                    size: size, // 👈 儲存尺寸
                     // 確保購物車項目圖片也有正確的佔位符，使用 imageUrls
                     image: product.imageUrls,
                     quantity: quantity
@@ -405,40 +425,40 @@
             }
             saveCartItems(cartItems);
             console.log(`商品 "${product.name}" 已加入購物車。目前購物車商品總數: ${getCartItems().reduce((sum, item) => sum + item.quantity, 0)}`);
-            console.log('cartItems',cartItems);
-            alert(`"${product.name}" 已成功加入購物車！`); 
+            console.log('cartItems', cartItems);
+            alert(`"${product.name}" 已成功加入購物車！`);
         }
 
         // 減少購物車商品數量
         function decreaseQuantity(productId, size = null) {
-			let cartItems = getCartItems();
-			const index = cartItems.findIndex(item => item.id === productId && item.size === size);
+            let cartItems = getCartItems();
+            const index = cartItems.findIndex(item => item.id === productId && item.size === size);
 
-			if (index > -1) {
-				if (cartItems[index].quantity > 1) {
-					cartItems[index].quantity--;
-				} else {
-					// ✅ 準備要移除該項目，詢問使用者
-					const sizeText = size ? `（尺寸：${size}）` : '';
-					const itemName = cartItems[index].name || '這項商品';
-					const confirmed = confirm(`確定要從購物車移除「${itemName}」${sizeText}嗎？`);
-					if (!confirmed) return;
-					cartItems.splice(index, 1);
-				}
-				saveCartItems(cartItems);
-			}
-		}
+            if (index > -1) {
+                if (cartItems[index].quantity > 1) {
+                    cartItems[index].quantity--;
+                } else {
+                    // ✅ 準備要移除該項目，詢問使用者
+                    const sizeText = size ? `（尺寸：${size}）` : '';
+                    const itemName = cartItems[index].name || '這項商品';
+                    const confirmed = confirm(`確定要從購物車移除「${itemName}」${sizeText}嗎？`);
+                    if (!confirmed) return;
+                    cartItems.splice(index, 1);
+                }
+                saveCartItems(cartItems);
+            }
+        }
 
         // 從購物車中移除商品
-        function removeFromCart(productId,size) {
+        function removeFromCart(productId, size) {
             let cartItems = getCartItems();
             cartItems = cartItems.filter(item => !(item.id === productId && item.size === size));
-			saveCartItems(cartItems);
+            saveCartItems(cartItems);
         }
 
         // 渲染購物車 Modal 中的商品列表
         function renderCartItems() {
-		
+
             const items = getCartItems();
             cartItemsList.innerHTML = ''; // 清空購物車列表
 
@@ -447,11 +467,11 @@
                 cartTotalPrice.textContent = '$0';
                 return;
             }
- 
+
             let total = 0;
             items.forEach(item => {
                 const itemDiv = document.createElement('div');
-				const imageSrc = item.image && item.image.length > 0 ? item.image[0] : ''
+                const imageSrc = item.image && item.image.length > 0 ? item.image[0] : ''
                 itemDiv.className = 'flex items-center space-x-4 bg-gray-50 p-3 rounded-md shadow-sm';
 
                 itemDiv.innerHTML = `
@@ -479,9 +499,9 @@
                 total += item.price * item.quantity;
             });
             cartTotalPrice.textContent = `$${total.toLocaleString()}`;
-			
-			document.querySelectorAll('.view-images-btn').forEach(button => {
-				button.addEventListener('click', handleViewImages);
+
+            document.querySelectorAll('.view-images-btn').forEach(button => {
+                button.addEventListener('click', handleViewImages);
             });
         }
 
@@ -510,77 +530,77 @@
             const defaultPlaceholder = 'https://via.placeholder.com/400x300?text=No+Image';
 
             if (product) {
-				modalSizeSelect.innerHTML = '';
-				let stock = 0
-				let sizesHtml = 'N/A';
-				if (!product.sizes.empty) {
-					const validSizes = [];
-					product.sizes.forEach(data => {
-						const option = document.createElement('option');
-						option.value = data.size;
-						// option.textContent = `${data.size} (庫存: ${data.quantity})`;
-						option.textContent = `${data.size}`;
-						modalSizeSelect.appendChild(option);
-						//加總庫存
-						stock += data.quantity;
-						validSizes.push(`${data.size}(${data.quantity})`); // ✅ 儲存有效尺寸
-					});
-					if (validSizes.length > 0) {
-						sizesHtml = validSizes.join(', ');
-					}
-				}
-				
-                currentModalProductId = productId; 
+                modalSizeSelect.innerHTML = '';
+                let stock = 0
+                let sizesHtml = 'N/A';
+                if (!product.sizes.empty) {
+                    const validSizes = [];
+                    product.sizes.forEach(data => {
+                        const option = document.createElement('option');
+                        option.value = data.size;
+                        // option.textContent = `${data.size} (庫存: ${data.quantity})`;
+                        option.textContent = `${data.size}`;
+                        modalSizeSelect.appendChild(option);
+                        //加總庫存
+                        stock += data.quantity;
+                        validSizes.push(`${data.size}(${data.quantity})`); // ✅ 儲存有效尺寸
+                    });
+                    if (validSizes.length > 0) {
+                        sizesHtml = validSizes.join(', ');
+                    }
+                }
+
+                currentModalProductId = productId;
 
 
-				// 動態控制加入購物車按鈕與庫存文字
-				function updateAddToCartButtonState() {
-					const selectedSize = modalSizeSelect.value;
-					const selectedData = product.sizes.find(s => s.size === selectedSize);
-					const stockInfoEl = document.getElementById('size-stock-info');
+                // 動態控制加入購物車按鈕與庫存文字
+                function updateAddToCartButtonState() {
+                    const selectedSize = modalSizeSelect.value;
+                    const selectedData = product.sizes.find(s => s.size === selectedSize);
+                    const stockInfoEl = document.getElementById('size-stock-info');
 
-					if (!selectedData || selectedData.quantity < 1) {
-						modalAddToCartButton.disabled = true;
-						modalAddToCartButton.innerHTML = '<i class="fas fa-ban mr-2"></i>無庫存';
-						modalAddToCartButton.classList.remove('bg-indigo-600', 'hover:bg-indigo-700');
-						modalAddToCartButton.classList.add('bg-gray-300', 'cursor-not-allowed');
+                    if (!selectedData || selectedData.quantity < 1) {
+                        modalAddToCartButton.disabled = true;
+                        modalAddToCartButton.innerHTML = '<i class="fas fa-ban mr-2"></i>無庫存';
+                        modalAddToCartButton.classList.remove('bg-indigo-600', 'hover:bg-indigo-700');
+                        modalAddToCartButton.classList.add('bg-gray-300', 'cursor-not-allowed');
 
-						stockInfoEl.textContent = `此尺寸已售完`;
-						stockInfoEl.classList.add('text-red-500');
-					} else {
-						modalAddToCartButton.disabled = false;
-						modalAddToCartButton.innerHTML = '<i class="fas fa-shopping-cart mr-2"></i>加入購物車';
-						modalAddToCartButton.classList.remove('bg-gray-300', 'cursor-not-allowed');
-						modalAddToCartButton.classList.add('bg-indigo-600', 'hover:bg-indigo-700');
+                        stockInfoEl.textContent = `此尺寸已售完`;
+                        stockInfoEl.classList.add('text-red-500');
+                    } else {
+                        modalAddToCartButton.disabled = false;
+                        modalAddToCartButton.innerHTML = '<i class="fas fa-shopping-cart mr-2"></i>加入購物車';
+                        modalAddToCartButton.classList.remove('bg-gray-300', 'cursor-not-allowed');
+                        modalAddToCartButton.classList.add('bg-indigo-600', 'hover:bg-indigo-700');
 
-						stockInfoEl.textContent = `剩餘庫存：${selectedData.quantity}`;
-						stockInfoEl.classList.remove('text-red-500');
-					}
-				}
-	
-	
+                        stockInfoEl.textContent = `剩餘庫存：${selectedData.quantity}`;
+                        stockInfoEl.classList.remove('text-red-500');
+                    }
+                }
+
+
                 modalProductTitle.textContent = product.name;
                 modalProductDescription.textContent = product.description;
                 modalProductPrice.textContent = `$${product.price.toLocaleString()}`;
                 modalProductSizes.textContent = `尺寸: ${sizesHtml}`;
 
-			
-                modalThumbnails.innerHTML = ''; 
-				console.log('openImageModal product.imageUrls ' )
-				console.log(product.imageUrls )
+
+                modalThumbnails.innerHTML = '';
+                console.log('openImageModal product.imageUrls ')
+                console.log(product.imageUrls)
 
                 // 檢查 imageUrls 陣列是否存在且有內容
                 if (product.imageUrls && product.imageUrls.length > 0) {
                     modalMainImage.src = `images/${product.sku}/${product.imageUrls[0]}`; // 設定主圖片
-                    
+
                     product.imageUrls.forEach((imageUrl, index) => {
                         const img = document.createElement('img');
                         img.src = `images/${product.sku}/${imageUrl}`; // 設定縮圖圖片
                         img.alt = `Thumbnail ${index + 1}`;
-                        img.dataset.fullUrl = `images/${product.sku}/${imageUrl}`; 
+                        img.dataset.fullUrl = `images/${product.sku}/${imageUrl}`;
                         img.classList.add('w-full', 'h-20', 'object-cover', 'rounded-md', 'cursor-pointer', 'border-2', 'border-transparent', 'hover:border-indigo-400', 'transition', 'duration-200');
                         if (index === 0) {
-                            img.classList.add('thumbnail-active'); 
+                            img.classList.add('thumbnail-active');
                         }
                         modalThumbnails.appendChild(img);
                     });
@@ -589,12 +609,12 @@
                     console.warn(`Product ${productId} has no images. Using placeholder.`);
                 }
 
-				// 當尺寸變更時，自動檢查庫存
-				modalSizeSelect.addEventListener('change', updateAddToCartButtonState);
+                // 當尺寸變更時，自動檢查庫存
+                modalSizeSelect.addEventListener('change', updateAddToCartButtonState);
 
-				// 初始也跑一次（預設第一個尺寸）
-				updateAddToCartButtonState();
-                
+                // 初始也跑一次（預設第一個尺寸）
+                updateAddToCartButtonState();
+
                 openModal(imageModal); // 使用通用函數打開圖片 Modal
             } else {
                 console.error(`Product with ID ${productId} not found.`);
@@ -632,40 +652,40 @@
             }
             // 檢查 is_featured 屬性來決定是否顯示熱門標籤
             if (product.is_featured === true) {
-                 tagHtml += '<span class="tag popular" style="left: 4.5rem;">熱門</span>'; // Offset for multiple tags
+                tagHtml += '<span class="tag popular" style="left: 4.5rem;">熱門</span>'; // Offset for multiple tags
             }
             // 只有當沒有熱門標籤時才考慮限量標籤的偏移
             else if (product.tags && product.tags.includes('限量')) {
-                 tagHtml += '<span class="tag limited" style="left: 4.5rem;">限量</span>'; // Offset for multiple tags
+                tagHtml += '<span class="tag limited" style="left: 4.5rem;">限量</span>'; // Offset for multiple tags
             }
 
 
             // 確保 product.imageUrls 存在且有內容，否則使用佔位符圖片
             const imageUrl = product.imageUrls && product.imageUrls.length > 0 ? product.imageUrls[0] : 'https://via.placeholder.com/400x300?text=No+Image'; // Default placeholder
 
-			let stock = 0
-			let sizesHtml = 'N/A';
-			if (!product.sizes.empty) {
-				const validSizes = [];
-				product.sizes.forEach(data => {
-					//加總庫存
-					stock += data.quantity;
-					validSizes.push(`${data.size}(${data.quantity})`); // ✅ 儲存有效尺寸
-				});
-				if (validSizes.length > 0) {
-					sizesHtml = validSizes.join(', ');
-				}
-			}
-			const isOutOfStock = stock < 1;
+            let stock = 0
+            let sizesHtml = 'N/A';
+            if (!product.sizes.empty) {
+                const validSizes = [];
+                product.sizes.forEach(data => {
+                    //加總庫存
+                    stock += data.quantity;
+                    validSizes.push(`${data.size}(${data.quantity})`); // ✅ 儲存有效尺寸
+                });
+                if (validSizes.length > 0) {
+                    sizesHtml = validSizes.join(', ');
+                }
+            }
+            const isOutOfStock = stock < 1;
 
-			const buttonHtml = isOutOfStock
-			  ? `<button class="add-to-cart-btn bg-gray-300 text-white text-sm font-medium py-2 px-4 rounded-md transition duration-300 cursor-not-allowed" disabled>
+            const buttonHtml = isOutOfStock ?
+                `<button class="add-to-cart-btn bg-gray-300 text-white text-sm font-medium py-2 px-4 rounded-md transition duration-300 cursor-not-allowed" disabled>
 				  <i class="fas fa-ban mr-2"></i>已售完
-				</button>`
-			  : `<button class="add-to-cart-btn bg-indigo-500 hover:bg-indigo-600 text-white text-sm font-medium py-2 px-4 rounded-md transition duration-300" data-product-id="${product.id}">
+				</button>` :
+                `<button class="add-to-cart-btn bg-indigo-500 hover:bg-indigo-600 text-white text-sm font-medium py-2 px-4 rounded-md transition duration-300" data-product-id="${product.id}">
 				  <i class="fas fa-eye mr-2"></i>販售中
 				</button>`;
-			
+
             card.innerHTML = `
 			  ${tagHtml}
 			  <img src="images/${product.sku}/${imageUrl}" alt="${product.name}" class="w-full h-64 object-cover">
@@ -705,11 +725,11 @@
                     id: doc.id,
                     ...doc.data()
                 }));
-				products = products.filter(p => p.is_discontinued !== true); 
+                products = products.filter(p => p.is_discontinued !== true);
                 allProductsData = products; // Store all fetched products globally
 
                 // Filter products for New Arrivals (either based on '新品' tag OR is_new boolean)
-                const newArrivals = products.filter(p => 
+                const newArrivals = products.filter(p =>
                     (p.tags && p.tags.includes('新品')) || p.is_new === true
                 ).slice(0, 4); // Example: show top 4 new
                 renderProducts(newArrivals, 'new-arrivals-products');
@@ -734,10 +754,10 @@
         // 利用事件委派來監聽商品卡片和其內部按鈕的點擊
         document.querySelector('main').addEventListener('click', (event) => {
             const card = event.target.closest('[data-product-id]');
-            const addToCartButtonOnCard = event.target.closest('.add-to-cart-btn'); 
+            const addToCartButtonOnCard = event.target.closest('.add-to-cart-btn');
 
             if (card) {
-				/**
+                /**
                 if (addToCartButtonOnCard && addToCartButtonOnCard.dataset.productId === card.dataset.productId) {
                     // 如果點擊的是卡片上的「加入購物車」按鈕
                     addToCart(card.dataset.productId);
@@ -746,16 +766,16 @@
                     openImageModal(card.dataset.productId);
                 }
 				*/
-				openImageModal(card.dataset.productId);
+                openImageModal(card.dataset.productId);
             }
         });
-        
+
         // 監聽圖片 Modal 關閉按鈕
         modalCloseButton.addEventListener('click', (event) => {
-            event.stopPropagation(); 
+            event.stopPropagation();
             closeImageModal();
         });
-        
+
         // 點擊圖片 Modal 背景也可以關閉
         imageModal.addEventListener('click', (event) => {
             if (event.target === imageModal) {
@@ -765,9 +785,9 @@
 
         // 監聽 Modal 內的「加入購物車」按鈕
         modalAddToCartButton.addEventListener('click', () => {
-			const size = document.getElementById('modal-size-select').value;
+            const size = document.getElementById('modal-size-select').value;
             if (currentModalProductId) {
-                addToCart(currentModalProductId,1,size);
+                addToCart(currentModalProductId, 1, size);
                 closeImageModal(); // 加入購物車後自動關閉圖片 Modal
             }
         });
@@ -778,7 +798,7 @@
                 const clickedThumbnail = event.target;
                 const newSrc = clickedThumbnail.dataset.fullUrl;
                 modalMainImage.src = newSrc;
-                
+
                 modalThumbnails.querySelectorAll('img').forEach(img => {
                     img.classList.remove('thumbnail-active');
                 });
@@ -797,7 +817,7 @@
 
         // 監聽購物車 Modal 關閉按鈕
         cartModalCloseButton.addEventListener('click', (event) => {
-            event.stopPropagation(); 
+            event.stopPropagation();
             closeCartModal();
         });
 
@@ -812,10 +832,10 @@
         cartItemsList.addEventListener('click', (event) => {
             const targetButton = event.target.closest('.cart-quantity-btn, .cart-remove-btn');
 
-            
+
             if (targetButton) {
                 const productId = targetButton.dataset.productId;
-				const size = targetButton.dataset.size;
+                const size = targetButton.dataset.size;
                 if (!productId) {
                     return;
                 }
@@ -823,202 +843,220 @@
                 if (targetButton.classList.contains('cart-quantity-btn')) {
                     const action = targetButton.dataset.action;
                     if (action === 'increase') {
-                        addToCart(productId, 1, size); 
+                        addToCart(productId, 1, size);
                     } else if (action === 'decrease') {
-                        decreaseQuantity(productId, size); 
+                        decreaseQuantity(productId, size);
                     }
                 } else if (targetButton.classList.contains('cart-remove-btn')) {
                     // 使用 alert 替代 confirm 以符合指導原則，但建議實作自訂模態框
                     const confirmed = confirm('確定要從購物車中移除此商品嗎？');
-					if (confirmed) {
-						removeFromCart(productId, size);
-					}
+                    if (confirmed) {
+                        removeFromCart(productId, size);
+                    }
                 }
             }
         });
 
-		clearCartButton.addEventListener('click', () => {
-			const confirmed = confirm('確定要清空購物車嗎？此操作無法復原。');
-			if (confirmed) {
-				localStorage.removeItem('cartItems');
-				updateCartCount();
-				renderCartItems();
-				alert('購物車已清空！');
-			}
-			updateExportPdfButtonState();
-		});
-		function updateExportPdfButtonState() {
-			const cartItems = getCartItems();
-			if (cartItems.length === 0) {
-				exportPdfButton.disabled = true;
-				exportPdfButton.classList.add('bg-gray-400', 'cursor-not-allowed');
-				exportPdfButton.classList.remove('bg-gray-600', 'hover:bg-gray-700');
-			} else {
-				exportPdfButton.disabled = false;
-				exportPdfButton.classList.remove('bg-gray-400', 'cursor-not-allowed');
-				exportPdfButton.classList.add('bg-gray-600', 'hover:bg-gray-700');
-			}
-		}
+        clearCartButton.addEventListener('click', () => {
+            const confirmed = confirm('確定要清空購物車嗎？此操作無法復原。');
+            if (confirmed) {
+                localStorage.removeItem('cartItems');
+                updateCartCount();
+                renderCartItems();
+                alert('購物車已清空！');
+            }
+            updateExportPdfButtonState();
+        });
 
-		// 頁面載入 & 每次購物車變動時呼叫
-		updateExportPdfButtonState();
-		
-		// 匯出 PDF
-		exportPdfButton.addEventListener('click', async () => {
-			// ✅ 檔名為當日年月日時分秒
-			const now = new Date();
-			const filename = `${now.getFullYear()}${(now.getMonth()+1).toString().padStart(2,'0')}${now.getDate().toString().padStart(2,'0')}_${now.getHours().toString().padStart(2,'0')}${now.getMinutes().toString().padStart(2,'0')}${now.getSeconds().toString().padStart(2,'0')}_代購清單`;
+        function updateExportPdfButtonState() {
+            const cartItems = getCartItems();
+            if (cartItems.length === 0) {
+                exportPdfButton.disabled = true;
+                exportPdfButton.classList.add('bg-gray-400', 'cursor-not-allowed');
+                exportPdfButton.classList.remove('bg-gray-600', 'hover:bg-gray-700');
+            } else {
+                exportPdfButton.disabled = false;
+                exportPdfButton.classList.remove('bg-gray-400', 'cursor-not-allowed');
+                exportPdfButton.classList.add('bg-gray-600', 'hover:bg-gray-700');
+            }
+        }
+
+        // 頁面載入 & 每次購物車變動時呼叫
+        updateExportPdfButtonState();
+
+        // 匯出 PDF
+        exportPdfButton.addEventListener('click', async () => {
+            // ✅ 檔名為當日年月日時分秒
+            const now = new Date();
+            const filename = `${now.getFullYear()}${(now.getMonth()+1).toString().padStart(2,'0')}${now.getDate().toString().padStart(2,'0')}_${now.getHours().toString().padStart(2,'0')}${now.getMinutes().toString().padStart(2,'0')}${now.getSeconds().toString().padStart(2,'0')}_代購清單`;
 
 
-			const items = getCartItems();
+            const items = getCartItems();
 
-			const { jsPDF } = window.jspdf;
-			const doc = new jsPDF();
+            const {
+                jsPDF
+            } = window.jspdf;
+            const doc = new jsPDF();
 
-			// 將三段字型拼起來，並註冊給 jsPDF
-			const jsPDFfont = jsPDFfont1 + jsPDFfont2 + jsPDFfont3;
-			doc.addFileToVFS('shnormal-normal.ttf', jsPDFfont);
-			doc.addFont('shnormal-normal.ttf', 'shnormal', 'normal');
-			doc.setFont('shnormal');
+            // 將三段字型拼起來，並註冊給 jsPDF
+            const jsPDFfont = jsPDFfont1 + jsPDFfont2 + jsPDFfont3;
+            doc.addFileToVFS('shnormal-normal.ttf', jsPDFfont);
+            doc.addFont('shnormal-normal.ttf', 'shnormal', 'normal');
+            doc.setFont('shnormal');
 
-			doc.setFontSize(18);
-			doc.text('🛒 '+filename, 14, 20);
-			const rows = items.map(item => {
-				const product = allProductsData.find(p => p.id === item.id);
-				const sku = product?.sku || 'N/A';
-				return [
-					sku,
-					item.name,
-					item.size || '無',
-					item.quantity.toString(),
-					`$${item.price.toLocaleString()}`,                 // ✅ 單價加千分位
-					`$${(item.price * item.quantity).toLocaleString()}` // ✅ 小計加千分位
-				];
-			});
-			doc.autoTable({
-			  head: [['商品編號','商品名稱','尺寸','數量','單價','小計']],
-			  body: rows,
-			  startY: 30,
-			  styles: { font: 'shnormal', fontSize: 10 },
-			  headStyles: { fillColor: [79,70,229] },
-			});
+            doc.setFontSize(18);
+            doc.text('🛒 ' + filename, 14, 20);
+            const rows = items.map(item => {
+                const product = allProductsData.find(p => p.id === item.id);
+                const sku = product?.sku || 'N/A';
+                return [
+                    sku,
+                    item.name,
+                    item.size || '無',
+                    item.quantity.toString(),
+                    `$${item.price.toLocaleString()}`, // ✅ 單價加千分位
+                    `$${(item.price * item.quantity).toLocaleString()}` // ✅ 小計加千分位
+                ];
+            });
+            doc.autoTable({
+                head: [
+                    ['商品編號', '商品名稱', '尺寸', '數量', '單價', '小計']
+                ],
+                body: rows,
+                startY: 30,
+                styles: {
+                    font: 'shnormal',
+                    fontSize: 10
+                },
+                headStyles: {
+                    fillColor: [79, 70, 229]
+                },
+            });
 
-			const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
-			doc.setFontSize(14);
-			doc.text(`總計：$${total.toLocaleString()}`, 14, doc.lastAutoTable.finalY + 10);
+            const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+            doc.setFontSize(14);
+            doc.text(`總計：$${total.toLocaleString()}`, 14, doc.lastAutoTable.finalY + 10);
 
-		
-			doc.save(`${filename}.pdf`);
-		});
-		
-		// 載入聯絡我們
-		function loadContactInfo() {
-			const contactDoc = db.collection('settings').doc('contact');
-			contactDoc.get().then(doc => {
-				if (doc.exists) {
-					const data = doc.data();
-					if (data.email) {
-						const emailEl = document.getElementById('contact-email');
-						emailEl.textContent = data.email;
-						emailEl.href = `mailto:${data.email}`;
-					}
-					if (data.phone) {
-						const phoneEl = document.getElementById('contact-phone');
-						phoneEl.textContent = data.phone;
-						phoneEl.href = `tel:${data.phone}`;
-					}
-					if (data.address) {
-						document.getElementById('contact-address').textContent = data.address;
-					}
-					if (data.serviceHours) {
-						document.getElementById('contact-service-hours').textContent = `服務時間：${data.serviceHours}`;
-					}
-				} else {
-					console.warn("找不到 contact 聯絡資料文件");
-				}
-			}).catch(error => {
-				console.error("讀取聯絡資訊時出錯：", error);
-			});
-		}
 
-		// 頁面載入後執行
-		document.addEventListener('DOMContentLoaded', () => {
-			loadContactInfo();
-			previewModalCloseButton.addEventListener('click', () => {
-			  imagePreviewModal.classList.remove('is-open');
-			});
+            doc.save(`${filename}.pdf`);
+        });
 
-		});
-		
-		function handleViewImages(e) {
-		  const id = e.currentTarget.dataset.id;
-		  console.log("View images button clicked for ID:", id);
-          const product = allProductsData.find(p => p.id === id);
+        // 載入聯絡我們
+        function loadContactInfo() {
+            const contactDoc = db.collection('settings').doc('contact');
+            contactDoc.get().then(doc => {
+                if (doc.exists) {
+                    const data = doc.data();
+                    if (data.email) {
+                        const emailEl = document.getElementById('contact-email');
+                        emailEl.textContent = data.email;
+                        emailEl.href = `mailto:${data.email}`;
+                    }
+                    if (data.phone) {
+                        const phoneEl = document.getElementById('contact-phone');
+                        phoneEl.textContent = data.phone;
+                        phoneEl.href = `tel:${data.phone}`;
+                    }
+                    if (data.address) {
+                        document.getElementById('contact-address').textContent = data.address;
+                    }
+                    if (data.serviceHours) {
+                        document.getElementById('contact-service-hours').textContent = `服務時間：${data.serviceHours}`;
+                    }
+                } else {
+                    console.warn("找不到 contact 聯絡資料文件");
+                }
+            }).catch(error => {
+                console.error("讀取聯絡資訊時出錯：", error);
+            });
+        }
 
-		  if (product) {
-			  openPreviewModal(product);
-		  } else {
-			  console.warn("找不到 ID 為", id, "的商品來預覽圖片。");
-			  alert("找不到該商品來預覽圖片。");
-		  }
-		}
-		
-          // 通用關閉所有 Modal 的函數
-          function closeAllModals() {
-              const modals = document.querySelectorAll('.modal');
-              modals.forEach(modal => {
-                  modal.classList.remove('is-open');
-              });
-              console.log("所有 Modal 已關閉。");
-          }
-		  function openPreviewModal(product) {
-			  //closeAllModals(); // 確保關閉所有其他 Modal
-			  console.log("Opening image preview modal...");
-			  const mainImage = document.getElementById('preview-modal-main-image');
-			  const thumbnailsContainer = document.getElementById('preview-modal-thumbnails');
-			  const productNameElement = document.getElementById('preview-modal-product-name');
+        // 頁面載入後執行
+        document.addEventListener('DOMContentLoaded', () => {
+            loadContactInfo();
+            previewModalCloseButton.addEventListener('click', () => {
+                imagePreviewModal.classList.remove('is-open');
+            });
 
-			  if (!imagePreviewModal || !mainImage || !thumbnailsContainer || !productNameElement) {
-				  console.error("無法找到圖片預覽 Modal 的必要元素。");
-				  return;
-			  }
+        });
 
-			  productNameElement.textContent = product.name || '商品圖片預覽';
-			  thumbnailsContainer.innerHTML = '';
+        function handleViewImages(e) {
+            const id = e.currentTarget.dataset.id;
+            console.log("View images button clicked for ID:", id);
+            const product = allProductsData.find(p => p.id === id);
 
-			  if (product.imageUrls && product.imageUrls.length > 0) {
-				  mainImage.src = `images/${product.sku}/${product.imageUrls[0]}`;
-				  mainImage.onerror = function() { this.src = 'https://placehold.co/600x400/cccccc/333333?text=Image+Not+Available'; };
+            if (product) {
+                openPreviewModal(product);
+            } else {
+                console.warn("找不到 ID 為", id, "的商品來預覽圖片。");
+                alert("找不到該商品來預覽圖片。");
+            }
+        }
 
-				  product.imageUrls.forEach((url, index) => {
-					  const thumb = document.createElement('img');
-					  thumb.src = `images/${product.sku}/${url}`;
-					  thumb.onerror = function() { this.src = 'https://placehold.co/48x48/cccccc/333333?text=N/A'; };
-					  thumb.classList.add('w-16', 'h-16', 'object-cover', 'rounded-md', 'cursor-pointer', 'border-2', 'border-transparent', 'hover:border-indigo-500', 'transition');
-					  if (index === 0) {
-						  thumb.classList.add('thumbnail-active');
-					  }
-					  thumb.addEventListener('click', () => {
-						  mainImage.src = `images/${product.sku}/${url}`;
-						  mainImage.onerror = function() { this.src = 'https://placehold.co/600x400/cccccc/333333?text=Image+Not+Available'; };
-						  thumbnailsContainer.querySelectorAll('img').forEach(img => img.classList.remove('thumbnail-active'));
-						  thumb.classList.add('thumbnail-active');
-					  });
-					  thumbnailsContainer.appendChild(thumb);
-				  });
-			  } else {
-				  mainImage.src = 'https://placehold.co/600x400/cccccc/333333?text=No+Images';
-				  mainImage.onerror = null;
-				  thumbnailsContainer.innerHTML = '<p class="text-center text-gray-500">無縮圖</p>';
-			  }
+        // 通用關閉所有 Modal 的函數
+        function closeAllModals() {
+            const modals = document.querySelectorAll('.modal');
+            modals.forEach(modal => {
+                modal.classList.remove('is-open');
+            });
+            console.log("所有 Modal 已關閉。");
+        }
 
-			  imagePreviewModal.classList.add('is-open');
-			  console.log("Image preview modal opened.");
-		  }
-		  
-		  function closePreviewModal() {
-			  closeAllModals(); // 確保關閉所有 Modal
-		  }
+        function openPreviewModal(product) {
+            //closeAllModals(); // 確保關閉所有其他 Modal
+            console.log("Opening image preview modal...");
+            const mainImage = document.getElementById('preview-modal-main-image');
+            const thumbnailsContainer = document.getElementById('preview-modal-thumbnails');
+            const productNameElement = document.getElementById('preview-modal-product-name');
+
+            if (!imagePreviewModal || !mainImage || !thumbnailsContainer || !productNameElement) {
+                console.error("無法找到圖片預覽 Modal 的必要元素。");
+                return;
+            }
+
+            productNameElement.textContent = product.name || '商品圖片預覽';
+            thumbnailsContainer.innerHTML = '';
+
+            if (product.imageUrls && product.imageUrls.length > 0) {
+                mainImage.src = `images/${product.sku}/${product.imageUrls[0]}`;
+                mainImage.onerror = function() {
+                    this.src = 'https://placehold.co/600x400/cccccc/333333?text=Image+Not+Available';
+                };
+
+                product.imageUrls.forEach((url, index) => {
+                    const thumb = document.createElement('img');
+                    thumb.src = `images/${product.sku}/${url}`;
+                    thumb.onerror = function() {
+                        this.src = 'https://placehold.co/48x48/cccccc/333333?text=N/A';
+                    };
+                    thumb.classList.add('w-16', 'h-16', 'object-cover', 'rounded-md', 'cursor-pointer', 'border-2', 'border-transparent', 'hover:border-indigo-500', 'transition');
+                    if (index === 0) {
+                        thumb.classList.add('thumbnail-active');
+                    }
+                    thumb.addEventListener('click', () => {
+                        mainImage.src = `images/${product.sku}/${url}`;
+                        mainImage.onerror = function() {
+                            this.src = 'https://placehold.co/600x400/cccccc/333333?text=Image+Not+Available';
+                        };
+                        thumbnailsContainer.querySelectorAll('img').forEach(img => img.classList.remove('thumbnail-active'));
+                        thumb.classList.add('thumbnail-active');
+                    });
+                    thumbnailsContainer.appendChild(thumb);
+                });
+            } else {
+                mainImage.src = 'https://placehold.co/600x400/cccccc/333333?text=No+Images';
+                mainImage.onerror = null;
+                thumbnailsContainer.innerHTML = '<p class="text-center text-gray-500">無縮圖</p>';
+            }
+
+            imagePreviewModal.classList.add('is-open');
+            console.log("Image preview modal opened.");
+        }
+
+        function closePreviewModal() {
+            closeAllModals(); // 確保關閉所有 Modal
+        }
     </script>
 </body>
+
 </html>

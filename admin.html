@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,22 +17,28 @@
             /* 預設隱藏 body，直到 Firebase Auth 認證成功才顯示 */
             display: none;
         }
+
         .modal {
             display: none;
             transition: opacity 0.3s ease;
         }
+
         .modal.is-open {
             display: flex;
         }
+
         /* 圖片預覽 Modal 的樣式 */
         .thumbnail-active {
-            border-color: #4f46e5; /* indigo-600 */
+            border-color: #4f46e5;
+            /* indigo-600 */
             outline: 2px solid #4f46e5;
         }
+
         .pagination-controls {
             margin-top: 20px;
             text-align: center;
         }
+
         .pagination-controls button {
             margin: 0 5px;
             padding: 8px 12px;
@@ -39,41 +46,59 @@
             border-radius: 4px;
             cursor: pointer;
         }
+
         .pagination-controls button:disabled {
             opacity: 0.5;
             cursor: not-allowed;
         }
+
         .pagination-controls button.active {
-            background-color: #4f46e5; /* indigo-600 */
+            background-color: #4f46e5;
+            /* indigo-600 */
             color: white;
             border-color: #4f46e5;
         }
-        
+
         /* 固定表頭 */
         .fixed-header-table thead th {
             position: sticky;
-            top: 0; /* 固定在容器頂部 */
-            background-color: #f3f4f6; /* bg-gray-100 */
-            z-index: 10; /* 確保表頭在滾動內容之上 */
-            white-space: nowrap; /* 避免表頭文字換行 */
+            top: 0;
+            /* 固定在容器頂部 */
+            background-color: #f3f4f6;
+            /* bg-gray-100 */
+            z-index: 10;
+            /* 確保表頭在滾動內容之上 */
+            white-space: nowrap;
+            /* 避免表頭文字換行 */
         }
+
         /* 確保單元格內容不換行，並允許水平滾動 */
-        .fixed-header-table th, .fixed-header-table td {
-            padding: 1rem; /* p-4 */
-            border-bottom: 1px solid #e2e8f0; /* border-gray-200 */
-            white-space: nowrap; /* 確保內容不換行，允許水平滾動 */
+        .fixed-header-table th,
+        .fixed-header-table td {
+            padding: 1rem;
+            /* p-4 */
+            border-bottom: 1px solid #e2e8f0;
+            /* border-gray-200 */
+            white-space: nowrap;
+            /* 確保內容不換行，允許水平滾動 */
             /* 設置最小寬度防止內容過長時擠壓過多 */
-            min-width: 100px; /* 根據內容調整此值 */
+            min-width: 100px;
+            /* 根據內容調整此值 */
         }
+
         /* 商品名稱列可以更寬一點 */
         .fixed-header-table td:first-child {
-            min-width: 180px; /* 例如給商品名稱列更多空間 */
+            min-width: 180px;
+            /* 例如給商品名稱列更多空間 */
         }
+
         .fixed-header-table tbody tr:last-child td {
-            border-bottom: none; /* 最後一行沒有底部邊框 */
+            border-bottom: none;
+            /* 最後一行沒有底部邊框 */
         }
     </style>
 </head>
+
 <body class="text-gray-800">
 
     <header class="bg-white shadow-md sticky top-0 z-40">
@@ -85,13 +110,13 @@
                 <a href="index.html" class="text-blue-600 hover:text-blue-800 font-semibold">
                     <i class="fas fa-store mr-1"></i>前往前台網站
                 </a>
-                 <!-- <a href="picture.html"target="_blank" class="text-blue-600 hover:text-blue-800 font-semibold">  -->
+                <!-- <a href="picture.html"target="_blank" class="text-blue-600 hover:text-blue-800 font-semibold">  -->
                 <a href="picture.html" class="text-blue-600 hover:text-blue-800 font-semibold">
                     <i class="fas fa-image"></i>前往圖片管理
                 </a>
-				<button id="view-contact-btn" class="bg-gray-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-gray-700 transition duration-300">
-				  <i class="fas fa-address-book mr-1"></i>聯絡資訊
-				</button>
+                <button id="view-contact-btn" class="bg-gray-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-gray-700 transition duration-300">
+                    <i class="fas fa-address-book mr-1"></i>聯絡資訊
+                </button>
                 <button id="logout-button" class="bg-red-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-red-600 transition duration-300">
                     <i class="fas fa-sign-out-alt mr-1"></i>登出
                 </button>
@@ -111,14 +136,14 @@
                     <input type="text" id="product-sku" placeholder="商品編號 (SKU)" class="p-3 border rounded-lg focus:ring-2 focus:ring-indigo-500" required>
                     <input type="number" id="product-price" placeholder="價格" class="p-3 border rounded-lg focus:ring-2 focus:ring-indigo-500" required>
                     <input type="text" id="product-stock" placeholder="庫存數量" class="p-3 border rounded-lg focus:ring-2 focus:ring-indigo-500" disabled>
-                    
-					<div class="col-span-1 md:col-span-2">
-						<label class="block text-gray-700 mb-2 font-medium">尺寸與數量</label>
-						<div id="size-quantity-container" class="space-y-2"></div>
-						<button type="button" id="add-size-btn" class="mt-2 text-indigo-600 hover:underline">
-							＋ 新增尺寸
-						</button>
-					</div>
+
+                    <div class="col-span-1 md:col-span-2">
+                        <label class="block text-gray-700 mb-2 font-medium">尺寸與數量</label>
+                        <div id="size-quantity-container" class="space-y-2"></div>
+                        <button type="button" id="add-size-btn" class="mt-2 text-indigo-600 hover:underline">
+                            ＋ 新增尺寸
+                        </button>
+                    </div>
 
                     <textarea id="product-image-urls" placeholder="圖片網址 (一行一個)" class="p-3 border rounded-lg col-span-1 md:col-span-2 h-24 focus:ring-2 focus:ring-indigo-500"></textarea>
                     <textarea id="product-description" placeholder="商品描述" class="p-3 border rounded-lg col-span-1 md:col-span-2 h-24 focus:ring-2 focus:ring-indigo-500"></textarea>
@@ -137,7 +162,7 @@
                         </label>
                     </div>
                     <div class="col-span-1 md:col-span-2">
-                         <button type="submit" class="w-full bg-indigo-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-indigo-700 transition duration-300">
+                        <button type="submit" class="w-full bg-indigo-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-indigo-700 transition duration-300">
                             <i class="fas fa-plus mr-2"></i>確認新增
                         </button>
                     </div>
@@ -146,7 +171,7 @@
             <div class="flex flex-wrap items-center justify-between mb-4 gap-4">
                 <div class="flex-grow">
                     <label for="searchProductName" class="sr-only">搜尋商品名稱:</label>
-				    <input type="text" id="searchProductName" placeholder="輸入商品名稱關鍵字" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                    <input type="text" id="searchProductName" placeholder="輸入商品名稱關鍵字" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
                 </div>
                 <div>
                     <label for="itemsPerPageSelect" class="mr-2 text-gray-700 text-sm font-bold">每頁顯示:</label>
@@ -162,7 +187,9 @@
 
             <div>
                 <h3 class="text-xl font-semibold mb-4">管理現有商品</h3>
-                <div class="overflow-x-auto rounded-lg border border-gray-200"> <table class="w-full text-left fixed-header-table"> <thead class="bg-gray-100">
+                <div class="overflow-x-auto rounded-lg border border-gray-200">
+                    <table class="w-full text-left fixed-header-table">
+                        <thead class="bg-gray-100">
                             <tr>
                                 <th class="p-4">商品</th>
                                 <th class="p-4">SKU</th>
@@ -177,14 +204,16 @@
                             </tr>
                         </thead>
                         <tbody id="product-list">
-                            <tr><td colspan="10" class="p-4 text-center text-gray-500">載入中...</td></tr>
+                            <tr>
+                                <td colspan="10" class="p-4 text-center text-gray-500">載入中...</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
 
-			<div id="paginationControls" class="pagination-controls">
-				</div>
+            <div id="paginationControls" class="pagination-controls">
+            </div>
 
         </section>
 
@@ -196,32 +225,32 @@
             <form id="edit-product-form">
                 <input type="hidden" id="edit-product-id">
                 <div class="space-y-4">
-                     <input type="text" id="edit-product-name" placeholder="商品名稱" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-indigo-500" required>
-                     <input type="text" id="edit-product-sku" placeholder="商品編號 (SKU)" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-indigo-500" required>
-                     <input type="number" id="edit-product-price" placeholder="價格" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-indigo-500" required>
-                     <input type="text" id="edit-product-stock" placeholder="庫存數量" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-indigo-500" disabled>
-<div class="col-span-1 md:col-span-2">
-    <label class="block text-gray-700 mb-2 font-medium">尺寸與數量</label>
-    <div class="space-y-2" id="edit-size-quantity-container"></div>
-    <button type="button" id="edit-add-size-btn" class="mt-2 text-indigo-600 hover:underline">＋ 新增尺寸</button>
-</div>
+                    <input type="text" id="edit-product-name" placeholder="商品名稱" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-indigo-500" required>
+                    <input type="text" id="edit-product-sku" placeholder="商品編號 (SKU)" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-indigo-500" required>
+                    <input type="number" id="edit-product-price" placeholder="價格" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-indigo-500" required>
+                    <input type="text" id="edit-product-stock" placeholder="庫存數量" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-indigo-500" disabled>
+                    <div class="col-span-1 md:col-span-2">
+                        <label class="block text-gray-700 mb-2 font-medium">尺寸與數量</label>
+                        <div class="space-y-2" id="edit-size-quantity-container"></div>
+                        <button type="button" id="edit-add-size-btn" class="mt-2 text-indigo-600 hover:underline">＋ 新增尺寸</button>
+                    </div>
 
 
 
-                     <textarea id="edit-product-image-urls" placeholder="圖片網址 (一行一個)" class="w-full p-3 border rounded-lg h-24 focus:ring-2 focus:ring-indigo-500"></textarea>
-                     <textarea id="edit-product-description" placeholder="商品描述" class="w-full p-3 border rounded-lg h-24 focus:ring-2 focus:ring-indigo-500"></textarea>
-                     <label class="flex items-center">
-                         <input type="checkbox" id="edit-product-is-featured" class="h-5 w-5 text-indigo-600 rounded">
-                         <span class="ml-2 text-gray-700">設為熱門商品</span>
-                     </label>
-                     <label class="flex items-center">
-                         <input type="checkbox" id="edit-product-is-new" class="h-5 w-5 text-indigo-600 rounded">
-                         <span class="ml-2 text-gray-700">設為新品</span>
-                     </label>
-                     <label class="flex items-center">
-                         <input type="checkbox" id="edit-product-is-discontinued" class="h-5 w-5 text-red-600 rounded">
-                         <span class="ml-2 text-gray-700">設為停售</span>
-                     </label>
+                    <textarea id="edit-product-image-urls" placeholder="圖片網址 (一行一個)" class="w-full p-3 border rounded-lg h-24 focus:ring-2 focus:ring-indigo-500"></textarea>
+                    <textarea id="edit-product-description" placeholder="商品描述" class="w-full p-3 border rounded-lg h-24 focus:ring-2 focus:ring-indigo-500"></textarea>
+                    <label class="flex items-center">
+                        <input type="checkbox" id="edit-product-is-featured" class="h-5 w-5 text-indigo-600 rounded">
+                        <span class="ml-2 text-gray-700">設為熱門商品</span>
+                    </label>
+                    <label class="flex items-center">
+                        <input type="checkbox" id="edit-product-is-new" class="h-5 w-5 text-indigo-600 rounded">
+                        <span class="ml-2 text-gray-700">設為新品</span>
+                    </label>
+                    <label class="flex items-center">
+                        <input type="checkbox" id="edit-product-is-discontinued" class="h-5 w-5 text-red-600 rounded">
+                        <span class="ml-2 text-gray-700">設為停售</span>
+                    </label>
                 </div>
                 <div class="mt-8 flex justify-end space-x-4">
                     <button type="button" id="cancel-edit" class="px-6 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300">取消</button>
@@ -240,7 +269,7 @@
                 <h3 id="preview-modal-product-name" class="text-xl font-bold text-gray-800 mb-4"></h3>
                 <img id="preview-modal-main-image" src="" alt="Product Detail" class="w-full h-auto max-h-[60vh] object-contain rounded-md bg-gray-100 mb-4" onerror="this.src='https://placehold.co/600x400/cccccc/333333?text=Image+Not+Available'">
                 <div id="preview-modal-thumbnails" class="flex gap-2 pb-2 overflow-x-auto">
-                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -255,39 +284,37 @@
             </div>
         </div>
     </div>
-	
-	<!-- 聯絡資訊編輯 Modal -->
-	<div id="contact-modal" class="modal fixed inset-0 bg-black bg-opacity-50 justify-center items-center z-50">
-	  <div class="bg-white p-8 rounded-lg shadow-xl w-11/12 md:w-1/2 lg:w-1/3 max-h-[90vh] overflow-y-auto">
-		<h3 class="text-2xl font-bold mb-6">聯絡資訊</h3>
-		<form id="contact-form" class="space-y-4">
-		  <input type="email" id="contact-email" class="w-full border p-2 rounded" placeholder="Email">
-		  <input type="tel" id="contact-phone" class="w-full border p-2 rounded" placeholder="電話">
-		  <input type="text" id="contact-address" class="w-full border p-2 rounded" placeholder="地址">
-		  <input type="text" id="contact-hours" class="w-full border p-2 rounded" placeholder="服務時間">
-		  <div class="flex justify-end space-x-4 mt-6">
-			<button type="button" id="cancel-contact-btn" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">取消</button>
-			<button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700">儲存</button>
-		  </div>
-		</form>
-	  </div>
-	</div>
+
+    <!-- 聯絡資訊編輯 Modal -->
+    <div id="contact-modal" class="modal fixed inset-0 bg-black bg-opacity-50 justify-center items-center z-50">
+        <div class="bg-white p-8 rounded-lg shadow-xl w-11/12 md:w-1/2 lg:w-1/3 max-h-[90vh] overflow-y-auto">
+            <h3 class="text-2xl font-bold mb-6">聯絡資訊</h3>
+            <form id="contact-form" class="space-y-4">
+                <input type="email" id="contact-email" class="w-full border p-2 rounded" placeholder="Email">
+                <input type="tel" id="contact-phone" class="w-full border p-2 rounded" placeholder="電話">
+                <input type="text" id="contact-address" class="w-full border p-2 rounded" placeholder="地址">
+                <input type="text" id="contact-hours" class="w-full border p-2 rounded" placeholder="服務時間">
+                <div class="flex justify-end space-x-4 mt-6">
+                    <button type="button" id="cancel-contact-btn" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">取消</button>
+                    <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700">儲存</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
     <script>
-
-
         // 你的 Firebase 配置物件 (從 Firebase 控制台取得並貼到這裡)
         const firebaseConfig = {
-          apiKey: "AIzaSyB7JlDaqB3dm9hpuXrLmxHNr9lBKDznkD0",
-          authDomain: "iris-wear.firebaseapp.com",
-          projectId: "iris-wear",
-          storageBucket: "iris-wear.firebasestorage.app",
-          messagingSenderId: "720824939218",
-          appId: "1:720824939218:web:13594d0ff6954ee726330b",
-          measurementId: "G-53QJG70PJT"
+            apiKey: "AIzaSyB7JlDaqB3dm9hpuXrLmxHNr9lBKDznkD0",
+            authDomain: "iris-wear.firebaseapp.com",
+            projectId: "iris-wear",
+            storageBucket: "iris-wear.firebasestorage.app",
+            messagingSenderId: "720824939218",
+            appId: "1:720824939218:web:13594d0ff6954ee726330b",
+            measurementId: "G-53QJG70PJT"
         };
 
         // 初始化 Firebase
@@ -332,415 +359,435 @@
 
         // 在 DOM 完全載入後執行
         document.addEventListener('DOMContentLoaded', () => {
-    var editSizeContainer = document.getElementById('edit-size-quantity-container');
-    var editAddSizeBtn = document.getElementById('edit-add-size-btn');
-    var editStockInput = document.getElementById('edit-product-stock');
-          console.log("DOMContentLoaded 觸發，開始綁定事件...");
+            var editSizeContainer = document.getElementById('edit-size-quantity-container');
+            var editAddSizeBtn = document.getElementById('edit-add-size-btn');
+            var editStockInput = document.getElementById('edit-product-stock');
+            console.log("DOMContentLoaded 觸發，開始綁定事件...");
 
-          // 獲取登出按鈕
-          const logoutButton = document.getElementById('logout-button');
-          if (logoutButton) {
-              logoutButton.addEventListener('click', async () => {
-                  try {
-                      await auth.signOut();
-                      console.log("使用者已登出！");
-                      window.location.href = 'login.html';
-                  } catch (error) {
-                      console.error("登出失敗：", error);
-                      alert("登出失敗，請重試。");
-                  }
-              });
-              console.log("登出按鈕事件已綁定。");
-          } else {
-              console.warn("找不到 ID 為 'logout-button' 的元素。");
-          }
+            // 獲取登出按鈕
+            const logoutButton = document.getElementById('logout-button');
+            if (logoutButton) {
+                logoutButton.addEventListener('click', async () => {
+                    try {
+                        await auth.signOut();
+                        console.log("使用者已登出！");
+                        window.location.href = 'login.html';
+                    } catch (error) {
+                        console.error("登出失敗：", error);
+                        alert("登出失敗，請重試。");
+                    }
+                });
+                console.log("登出按鈕事件已綁定。");
+            } else {
+                console.warn("找不到 ID 為 'logout-button' 的元素。");
+            }
 
-          // --- DOM 元素 (在 DOMContentLoaded 內取得確保元素存在) ---
-          const productListContainer = document.getElementById('product-list');
-          const addForm = document.getElementById('add-product-form');
-          const editModal = document.getElementById('edit-modal');
-          const editForm = document.getElementById('edit-product-form');
-          const cancelEditBtn = document.getElementById('cancel-edit');
-          const imagePreviewModal = document.getElementById('image-preview-modal');
-          const previewModalCloseButton = document.getElementById('preview-modal-close-button');
-          const deleteConfirmModal = document.getElementById('delete-confirm-modal');
-          let confirmDeleteBtn = document.getElementById('confirm-delete-btn');
-          const cancelDeleteBtn = document.getElementById('cancel-delete-btn');
-          const searchInput = document.getElementById('searchProductName');
-          const itemsPerPageSelector = document.getElementById('itemsPerPageSelect');
-          const paginationControls = document.getElementById('paginationControls');
+            // --- DOM 元素 (在 DOMContentLoaded 內取得確保元素存在) ---
+            const productListContainer = document.getElementById('product-list');
+            const addForm = document.getElementById('add-product-form');
+            const editModal = document.getElementById('edit-modal');
+            const editForm = document.getElementById('edit-product-form');
+            const cancelEditBtn = document.getElementById('cancel-edit');
+            const imagePreviewModal = document.getElementById('image-preview-modal');
+            const previewModalCloseButton = document.getElementById('preview-modal-close-button');
+            const deleteConfirmModal = document.getElementById('delete-confirm-modal');
+            let confirmDeleteBtn = document.getElementById('confirm-delete-btn');
+            const cancelDeleteBtn = document.getElementById('cancel-delete-btn');
+            const searchInput = document.getElementById('searchProductName');
+            const itemsPerPageSelector = document.getElementById('itemsPerPageSelect');
+            const paginationControls = document.getElementById('paginationControls');
 
-          if (!productListContainer || !addForm || !editModal || !editForm || !cancelEditBtn || !imagePreviewModal || !previewModalCloseButton || !deleteConfirmModal || !cancelDeleteBtn || !searchInput || !itemsPerPageSelector || !paginationControls) {
-              console.error("無法取得部分必要的 DOM 元素，部分功能可能無法運作。");
-              console.log({ productListContainer, addForm, editModal, editForm, cancelEditBtn, imagePreviewModal, previewModalCloseButton, deleteConfirmModal, cancelDeleteBtn, searchInput, itemsPerPageSelector, paginationControls });
-          }
-
-
-		  // --- Modal 控制函式 ---
-          // 通用關閉所有 Modal 的函數
-          function closeAllModals() {
-              const modals = document.querySelectorAll('.modal');
-              modals.forEach(modal => {
-                  modal.classList.remove('is-open');
-              });
-              console.log("所有 Modal 已關閉。");
-          }
-
-		  function closeEditModal() {
-			  closeAllModals(); // 確保關閉所有其他 Modal
-		  }
-
-		  function openPreviewModal(product) {
-			  closeAllModals(); // 確保關閉所有其他 Modal
-			  console.log("Opening image preview modal...");
-			  const mainImage = document.getElementById('preview-modal-main-image');
-			  const thumbnailsContainer = document.getElementById('preview-modal-thumbnails');
-			  const productNameElement = document.getElementById('preview-modal-product-name');
-
-			  if (!imagePreviewModal || !mainImage || !thumbnailsContainer || !productNameElement) {
-				  console.error("無法找到圖片預覽 Modal 的必要元素。");
-				  return;
-			  }
-
-			  productNameElement.textContent = product.name || '商品圖片預覽';
-			  thumbnailsContainer.innerHTML = '';
-
-			  if (product.imageUrls && product.imageUrls.length > 0) {
-				  mainImage.src = `images/${product.sku}/${product.imageUrls[0]}`;
-				  mainImage.onerror = function() { this.src = 'https://placehold.co/600x400/cccccc/333333?text=Image+Not+Available'; };
-
-				  product.imageUrls.forEach((url, index) => {
-					  const thumb = document.createElement('img');
-					  thumb.src = `images/${product.sku}/${url}`;
-					  thumb.onerror = function() { this.src = 'https://placehold.co/48x48/cccccc/333333?text=N/A'; };
-					  thumb.classList.add('w-16', 'h-16', 'object-cover', 'rounded-md', 'cursor-pointer', 'border-2', 'border-transparent', 'hover:border-indigo-500', 'transition');
-					  if (index === 0) {
-						  thumb.classList.add('thumbnail-active');
-					  }
-					  thumb.addEventListener('click', () => {
-						  mainImage.src = `images/${product.sku}/${url}`;
-						  mainImage.onerror = function() { this.src = 'https://placehold.co/600x400/cccccc/333333?text=Image+Not+Available'; };
-						  thumbnailsContainer.querySelectorAll('img').forEach(img => img.classList.remove('thumbnail-active'));
-						  thumb.classList.add('thumbnail-active');
-					  });
-					  thumbnailsContainer.appendChild(thumb);
-				  });
-			  } else {
-				  mainImage.src = 'https://placehold.co/600x400/cccccc/333333?text=No+Images';
-				  mainImage.onerror = null;
-				  thumbnailsContainer.innerHTML = '<p class="text-center text-gray-500">無縮圖</p>';
-			  }
-
-			  imagePreviewModal.classList.add('is-open');
-			  console.log("Image preview modal opened.");
-		  }
-
-		  function closePreviewModal() {
-			  closeAllModals(); // 確保關閉所有 Modal
-		  }
-
-		  function openDeleteConfirmModal(product) {
-              closeAllModals(); // 確保關閉所有其他 Modal
-              if (!deleteConfirmModal || !confirmDeleteBtn) {
-                  console.error("Delete confirmation modal or button element not found.");
-                  alert("無法開啟刪除確認視窗，請檢查頁面結構。");
-                  return;
-              }
-
-              document.getElementById('delete-product-name').textContent = product.name || '此商品';
-              productIdToDelete = product.id; // 儲存待刪除的商品 ID 到全域變數
-
-              // 在打開 Modal 時，重新綁定確認刪除按鈕的事件監聽器
-              const oldConfirmDeleteBtn = confirmDeleteBtn;
-              const newConfirmDeleteBtn = oldConfirmDeleteBtn.cloneNode(true);
-              oldConfirmDeleteBtn.parentNode.replaceChild(newConfirmDeleteBtn, oldConfirmDeleteBtn);
-              confirmDeleteBtn = newConfirmDeleteBtn; // 更新 confirmDeleteBtn 變數
-
-              confirmDeleteBtn.addEventListener('click', handleConfirmDelete);
-              console.log("確認刪除按鈕事件已重新綁定 handleConfirmDelete。");
-
-              deleteConfirmModal.classList.add('is-open');
-              console.log("Delete confirmation modal opened for ID:", product.id);
-          }
-
-		  function closeDeleteConfirmModal() {
-			  closeAllModals(); // 確保關閉所有 Modal
-		  }
+            if (!productListContainer || !addForm || !editModal || !editForm || !cancelEditBtn || !imagePreviewModal || !previewModalCloseButton || !deleteConfirmModal || !cancelDeleteBtn || !searchInput || !itemsPerPageSelector || !paginationControls) {
+                console.error("無法取得部分必要的 DOM 元素，部分功能可能無法運作。");
+                console.log({
+                    productListContainer,
+                    addForm,
+                    editModal,
+                    editForm,
+                    cancelEditBtn,
+                    imagePreviewModal,
+                    previewModalCloseButton,
+                    deleteConfirmModal,
+                    cancelDeleteBtn,
+                    searchInput,
+                    itemsPerPageSelector,
+                    paginationControls
+                });
+            }
 
 
-          // === 事件處理函式 ===
+            // --- Modal 控制函式 ---
+            // 通用關閉所有 Modal 的函數
+            function closeAllModals() {
+                const modals = document.querySelectorAll('.modal');
+                modals.forEach(modal => {
+                    modal.classList.remove('is-open');
+                });
+                console.log("所有 Modal 已關閉。");
+            }
 
-          async function handleAdd(e) {
-              e.preventDefault();
-              console.log("handleAdd triggered");
+            function closeEditModal() {
+                closeAllModals(); // 確保關閉所有其他 Modal
+            }
 
-              if (!addForm) {
-                  console.error("Add form element not found.");
-                  return;
-              }
+            function openPreviewModal(product) {
+                closeAllModals(); // 確保關閉所有其他 Modal
+                console.log("Opening image preview modal...");
+                const mainImage = document.getElementById('preview-modal-main-image');
+                const thumbnailsContainer = document.getElementById('preview-modal-thumbnails');
+                const productNameElement = document.getElementById('preview-modal-product-name');
 
-              const imageUrlsText = document.getElementById('product-image-urls').value;
-              const imageUrls = imageUrlsText.split(/\r?\n/).map(url => url.trim()).filter(url => url);
+                if (!imagePreviewModal || !mainImage || !thumbnailsContainer || !productNameElement) {
+                    console.error("無法找到圖片預覽 Modal 的必要元素。");
+                    return;
+                }
 
+                productNameElement.textContent = product.name || '商品圖片預覽';
+                thumbnailsContainer.innerHTML = '';
 
-              
-    const sizesAndQuantities = Array.from(document.querySelectorAll('#size-quantity-container > div')).map(row => {
-        return {
-            size: row.querySelector('.size-input').value,
-            quantity: parseInt(row.querySelector('.quantity-input').value)
-        };
-    });
+                if (product.imageUrls && product.imageUrls.length > 0) {
+                    mainImage.src = `images/${product.sku}/${product.imageUrls[0]}`;
+                    mainImage.onerror = function() {
+                        this.src = 'https://placehold.co/600x400/cccccc/333333?text=Image+Not+Available';
+                    };
 
+                    product.imageUrls.forEach((url, index) => {
+                        const thumb = document.createElement('img');
+                        thumb.src = `images/${product.sku}/${url}`;
+                        thumb.onerror = function() {
+                            this.src = 'https://placehold.co/48x48/cccccc/333333?text=N/A';
+                        };
+                        thumb.classList.add('w-16', 'h-16', 'object-cover', 'rounded-md', 'cursor-pointer', 'border-2', 'border-transparent', 'hover:border-indigo-500', 'transition');
+                        if (index === 0) {
+                            thumb.classList.add('thumbnail-active');
+                        }
+                        thumb.addEventListener('click', () => {
+                            mainImage.src = `images/${product.sku}/${url}`;
+                            mainImage.onerror = function() {
+                                this.src = 'https://placehold.co/600x400/cccccc/333333?text=Image+Not+Available';
+                            };
+                            thumbnailsContainer.querySelectorAll('img').forEach(img => img.classList.remove('thumbnail-active'));
+                            thumb.classList.add('thumbnail-active');
+                        });
+                        thumbnailsContainer.appendChild(thumb);
+                    });
+                } else {
+                    mainImage.src = 'https://placehold.co/600x400/cccccc/333333?text=No+Images';
+                    mainImage.onerror = null;
+                    thumbnailsContainer.innerHTML = '<p class="text-center text-gray-500">無縮圖</p>';
+                }
 
-    const newProductData = {
-                  name: document.getElementById('product-name').value,
-                  sku: document.getElementById('product-sku').value,
-                  price: parseFloat(document.getElementById('product-price').value),
-				  //不需要紀錄
-                  //stock: parseInt(document.getElementById('product-stock').value),
-                  imageUrls: imageUrls,
-                  sizes: sizesAndQuantities,
-                  description: document.getElementById('product-description').value,
-                  is_featured: document.getElementById('product-is-featured').checked,
-                  is_new: document.getElementById('product-is-new').checked,
-                  is_discontinued: document.getElementById('product-is-discontinued').checked,
-                  createdAt: firebase.firestore.FieldValue.serverTimestamp()
-              };
+                imagePreviewModal.classList.add('is-open');
+                console.log("Image preview modal opened.");
+            }
 
-              console.log("Attempting to add product data:", newProductData);
+            function closePreviewModal() {
+                closeAllModals(); // 確保關閉所有 Modal
+            }
 
-              if (!newProductData.name || !newProductData.sku || isNaN(newProductData.price)) {
-                  alert("請填寫所有必填欄位 (商品名稱、SKU、價格)。");
-                  console.warn("Missing required fields:", newProductData);
-                  return;
-              }
+            function openDeleteConfirmModal(product) {
+                closeAllModals(); // 確保關閉所有其他 Modal
+                if (!deleteConfirmModal || !confirmDeleteBtn) {
+                    console.error("Delete confirmation modal or button element not found.");
+                    alert("無法開啟刪除確認視窗，請檢查頁面結構。");
+                    return;
+                }
 
-              try {
-                  const docRef = await productsCollection.add(newProductData);
-                  console.log("商品新增成功！Firestore document ID:", docRef.id);
-                  alert("商品新增成功！");
-                  addForm.reset();
-              } catch (error) {
-                  console.error("新增商品時發生錯誤：", error);
-                  alert("新增商品失敗，請檢查控制台是否有錯誤訊息。\n錯誤：" + error.message);
-              }
-          }
+                document.getElementById('delete-product-name').textContent = product.name || '此商品';
+                productIdToDelete = product.id; // 儲存待刪除的商品 ID 到全域變數
 
-          async function handleEdit(e) {
-              const id = e.currentTarget.dataset.id;
-              console.log("Edit button clicked for ID:", id);
+                // 在打開 Modal 時，重新綁定確認刪除按鈕的事件監聽器
+                const oldConfirmDeleteBtn = confirmDeleteBtn;
+                const newConfirmDeleteBtn = oldConfirmDeleteBtn.cloneNode(true);
+                oldConfirmDeleteBtn.parentNode.replaceChild(newConfirmDeleteBtn, oldConfirmDeleteBtn);
+                confirmDeleteBtn = newConfirmDeleteBtn; // 更新 confirmDeleteBtn 變數
 
-              closeAllModals(); // 確保關閉所有其他 Modal
+                confirmDeleteBtn.addEventListener('click', handleConfirmDelete);
+                console.log("確認刪除按鈕事件已重新綁定 handleConfirmDelete。");
 
-              if (!editModal || !editForm) {
-                  console.error("Edit modal or form element not found.");
-                  alert("無法開啟編輯視窗，請檢查頁面結構。");
-                  return;
-              }
+                deleteConfirmModal.classList.add('is-open');
+                console.log("Delete confirmation modal opened for ID:", product.id);
+            }
 
-              try {
-                  const doc = await productsCollection.doc(id).get();
-                  if (doc.exists) {
-                      const productToEdit = doc.data();
-                      console.log("Fetched product data for editing:", productToEdit);
-
-                      document.getElementById('edit-product-id').value = doc.id;
-                      document.getElementById('edit-product-name').value = productToEdit.name || '';
-                      document.getElementById('edit-product-sku').value = productToEdit.sku || '';
-                      document.getElementById('edit-product-price').value = productToEdit.price !== undefined ? productToEdit.price : '';
-                      document.getElementById('edit-product-stock').value = productToEdit.stock !== undefined ? productToEdit.stock : '';document.getElementById('edit-product-image-urls').value = productToEdit.imageUrls && Array.isArray(productToEdit.imageUrls) ? productToEdit.imageUrls.join('\n') : '';
-                      document.getElementById('edit-product-description').value = productToEdit.description || '';
-                      document.getElementById('edit-product-is-featured').checked = productToEdit.is_featured || false;
-                      document.getElementById('edit-product-is-new').checked = productToEdit.is_new || false;
-                      document.getElementById('edit-product-is-discontinued').checked = productToEdit.is_discontinued || false;
-
-        editSizeContainer.innerHTML = '';
-        const sizeSnapshot = productToEdit.sizes;
-        console.log('讀取 sizes 子集合，筆數：', sizeSnapshot.size);
-        if (sizeSnapshot.empty) {
-            console.warn('沒有找到尺寸資料');
-        } else {
-            sizeSnapshot.forEach(data => {
-                const size = data.size || '';
-                const quantity = data.quantity || 0;
-                addEditSizeRow(size, quantity);
-            });
-        }
-        updateEditTotalStock();
-    editModal.classList.add('is-open');
-
-                      console.log("Edit modal opened.");
-                  } else {
-                      console.error("找不到該商品文件！ID:", id);
-                      alert("找不到該商品，可能已被刪除。");
-                  }
-              } catch (error) {
-                  console.error("讀取商品資料時發生錯誤：", error);
-                  alert("讀取商品資料失敗，請檢查控制台。");
-                  console.error("詳細錯誤：", error);
-              }
-          }
-
-          function handleViewImages(e) {
-              const id = e.currentTarget.dataset.id;
-              console.log("View images button clicked for ID:", id);
-              const product = currentProductsData.find(p => p.id === id);
-
-              if (product) {
-                  openPreviewModal(product);
-              } else {
-                  console.warn("找不到 ID 為", id, "的商品來預覽圖片。");
-                  alert("找不到該商品來預覽圖片。");
-              }
-          }
-
-          async function handleSaveEdit(e) {
-              e.preventDefault();
-              console.log("handleSaveEdit triggered");
-
-              if (!editForm) {
-                  console.error("Edit form element not found.");
-                  return;
-              }
-
-              const productId = document.getElementById('edit-product-id').value;
-              if (!productId) {
-                  console.error("編輯失敗：找不到商品 ID。");
-                  alert("編輯失敗：找不到商品 ID。");
-                  return;
-              }
-
-              const imageUrlsText = document.getElementById('edit-product-image-urls').value;
-              const imageUrls = imageUrlsText.split(/\r?\n/).map(url => url.trim()).filter(url => url);
+            function closeDeleteConfirmModal() {
+                closeAllModals(); // 確保關閉所有 Modal
+            }
 
 
-              
-const sizesAndQuantities = Array.from(document.querySelectorAll('#edit-size-quantity-container > div')).map(row => {
-    return {
-        size: row.querySelector('.size-input').value,
-        quantity: parseInt(row.querySelector('.quantity-input').value)
-    };
-});
+            // === 事件處理函式 ===
 
-const updatedProductData = {
-                  name: document.getElementById('edit-product-name').value,
-                  sku: document.getElementById('edit-product-sku').value,
-                  price: parseFloat(document.getElementById('edit-product-price').value),
-                  // 不需要紀錄
-				  //stock: parseInt(document.getElementById('edit-product-stock').value),
-                  imageUrls: imageUrls,
-                  sizes: sizesAndQuantities,
-                  description: document.getElementById('edit-product-description').value,
-                  is_featured: document.getElementById('edit-product-is-featured').checked,
-                  is_new: document.getElementById('edit-product-is-new').checked,
-                  is_discontinued: document.getElementById('edit-product-is-discontinued').checked,
-                  updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-              };
+            async function handleAdd(e) {
+                e.preventDefault();
+                console.log("handleAdd triggered");
 
-              console.log("Attempting to update product ID:", productId, "with data:", updatedProductData);
+                if (!addForm) {
+                    console.error("Add form element not found.");
+                    return;
+                }
 
-              if (!updatedProductData.name || !updatedProductData.sku || isNaN(updatedProductData.price)) {
-                   alert("請填寫所有必填欄位 (商品名稱、SKU、價格)。");
-                   console.warn("Missing required fields for update:", updatedProductData);
-                   return;
-               }
-
-              try {
-                  
-await productsCollection.doc(productId).update(updatedProductData);
-
-// 更新 productSizes 子集合：先刪除全部，再重建
-const sizeCollRef = productsCollection.doc(productId).collection('sizes');
-const existing = await sizeCollRef.get();
-const deletions = existing.docs.map(doc => doc.ref.delete());
-await Promise.all(deletions);
-const additions = sizesAndQuantities.map(sq => sizeCollRef.add(sq));
-await Promise.all(additions);
-
-                  console.log("商品更新成功！ID:", productId);
-                  alert("商品更新成功！");
-                  closeEditModal();
-              } catch (error) {
-                  console.error("更新商品時發生錯誤：", error);
-                  alert("更新商品失敗，請檢查控制台是否有錯誤訊息。\n錯誤：" + error.message);
-                  console.error("詳細錯誤：", error);
-              }
-          }
-
-          function handleDelete(e) {
-              const id = e.currentTarget.dataset.id;
-              console.log("Delete button clicked for ID:", id);
-              const productToDelete = currentProductsData.find(p => p.id === id);
-
-              if (productToDelete) {
-                  openDeleteConfirmModal(productToDelete);
-              } else {
-                  console.warn("找不到 ID 為", id, "的商品來刪除。");
-                  alert("找不到該商品來刪除。");
-              }
-          }
-
-          async function handleConfirmDelete() {
-              console.log("handleConfirmDelete triggered for ID:", productIdToDelete);
-              if (!productIdToDelete) {
-                  console.error("沒有指定要刪除的商品 ID。");
-                  alert("刪除失敗：沒有指定商品。");
-                  closeDeleteConfirmModal();
-                  return;
-              }
-
-              try {
-                  await productsCollection.doc(productIdToDelete).delete();
-                  console.log("商品刪除成功！ID:", productIdToDelete);
-                  alert("商品刪除成功！");
-                  productIdToDelete = null;
-                  closeDeleteConfirmModal();
-              } catch (error) {
-                  console.error("刪除商品時發生錯誤：", error);
-                  alert("刪除商品失敗，請檢查控制台是否有錯誤訊息。\n錯誤：" + error.message);
-                  console.error("詳細錯誤：", error);
-              }
-          }
+                const imageUrlsText = document.getElementById('product-image-urls').value;
+                const imageUrls = imageUrlsText.split(/\r?\n/).map(url => url.trim()).filter(url => url);
 
 
-		  /**
-		   * 渲染後台商品列表
-		   * @param {Array<Object>} products - 從 Firestore 取得的商品資料陣列 (包含 Firestore document ID)
-		   */
-		  function renderProductList(products) {
-			  console.log("開始渲染商品列表，共", products.length, "項商品。");
-			  if (!productListContainer) {
-				  console.error("無法找到 productListContainer 元素來渲染列表！");
-				  return;
-			  }
 
-			  productListContainer.innerHTML = '';
-			  currentProductsData = products;
+                const sizesAndQuantities = Array.from(document.querySelectorAll('#size-quantity-container > div')).map(row => {
+                    return {
+                        size: row.querySelector('.size-input').value,
+                        quantity: parseInt(row.querySelector('.quantity-input').value)
+                    };
+                });
 
-			  if (products.length === 0) {
-				  productListContainer.innerHTML = '<tr><td colspan="10" class="p-4 text-center text-gray-500">目前沒有商品</td></tr>';
-				  return;
-			  }
-			  products.forEach(product => {
-					let stock = 0;
-				  let sizesHtml = '<span class="text-gray-400 text-xs">無</span>';
-					if (!product.sizes.empty) {
-					  const validSizes = [];
-					  product.sizes.forEach(data => {
-						//加總庫存
-						stock += data.quantity;
-						  validSizes.push(`${data.size}(${data.quantity})`); // ✅ 儲存有效尺寸
-					  });
-					  if (validSizes.length > 0) {
-						sizesHtml = validSizes.join('<br>');
-					  }
-					}
 
-				  const row = document.createElement('tr');
-				  row.classList.add('border-b', 'hover:bg-gray-50');
-				  
-				  url = `${product.imageUrls && product.imageUrls.length > 0 ? product.imageUrls[0] : 'https://placehold.co/48x48/cccccc/333333?text=N/A'}`
-				  row.innerHTML = `
+                const newProductData = {
+                    name: document.getElementById('product-name').value,
+                    sku: document.getElementById('product-sku').value,
+                    price: parseFloat(document.getElementById('product-price').value),
+                    //不需要紀錄
+                    //stock: parseInt(document.getElementById('product-stock').value),
+                    imageUrls: imageUrls,
+                    sizes: sizesAndQuantities,
+                    description: document.getElementById('product-description').value,
+                    is_featured: document.getElementById('product-is-featured').checked,
+                    is_new: document.getElementById('product-is-new').checked,
+                    is_discontinued: document.getElementById('product-is-discontinued').checked,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                };
+
+                console.log("Attempting to add product data:", newProductData);
+
+                if (!newProductData.name || !newProductData.sku || isNaN(newProductData.price)) {
+                    alert("請填寫所有必填欄位 (商品名稱、SKU、價格)。");
+                    console.warn("Missing required fields:", newProductData);
+                    return;
+                }
+
+                try {
+                    const docRef = await productsCollection.add(newProductData);
+                    console.log("商品新增成功！Firestore document ID:", docRef.id);
+                    alert("商品新增成功！");
+                    addForm.reset();
+                } catch (error) {
+                    console.error("新增商品時發生錯誤：", error);
+                    alert("新增商品失敗，請檢查控制台是否有錯誤訊息。\n錯誤：" + error.message);
+                }
+            }
+
+            async function handleEdit(e) {
+                const id = e.currentTarget.dataset.id;
+                console.log("Edit button clicked for ID:", id);
+
+                closeAllModals(); // 確保關閉所有其他 Modal
+
+                if (!editModal || !editForm) {
+                    console.error("Edit modal or form element not found.");
+                    alert("無法開啟編輯視窗，請檢查頁面結構。");
+                    return;
+                }
+
+                try {
+                    const doc = await productsCollection.doc(id).get();
+                    if (doc.exists) {
+                        const productToEdit = doc.data();
+                        console.log("Fetched product data for editing:", productToEdit);
+
+                        document.getElementById('edit-product-id').value = doc.id;
+                        document.getElementById('edit-product-name').value = productToEdit.name || '';
+                        document.getElementById('edit-product-sku').value = productToEdit.sku || '';
+                        document.getElementById('edit-product-price').value = productToEdit.price !== undefined ? productToEdit.price : '';
+                        document.getElementById('edit-product-stock').value = productToEdit.stock !== undefined ? productToEdit.stock : '';
+                        document.getElementById('edit-product-image-urls').value = productToEdit.imageUrls && Array.isArray(productToEdit.imageUrls) ? productToEdit.imageUrls.join('\n') : '';
+                        document.getElementById('edit-product-description').value = productToEdit.description || '';
+                        document.getElementById('edit-product-is-featured').checked = productToEdit.is_featured || false;
+                        document.getElementById('edit-product-is-new').checked = productToEdit.is_new || false;
+                        document.getElementById('edit-product-is-discontinued').checked = productToEdit.is_discontinued || false;
+
+                        editSizeContainer.innerHTML = '';
+                        const sizeSnapshot = productToEdit.sizes;
+                        console.log('讀取 sizes 子集合，筆數：', sizeSnapshot.size);
+                        if (sizeSnapshot.empty) {
+                            console.warn('沒有找到尺寸資料');
+                        } else {
+                            sizeSnapshot.forEach(data => {
+                                const size = data.size || '';
+                                const quantity = data.quantity || 0;
+                                addEditSizeRow(size, quantity);
+                            });
+                        }
+                        updateEditTotalStock();
+                        editModal.classList.add('is-open');
+
+                        console.log("Edit modal opened.");
+                    } else {
+                        console.error("找不到該商品文件！ID:", id);
+                        alert("找不到該商品，可能已被刪除。");
+                    }
+                } catch (error) {
+                    console.error("讀取商品資料時發生錯誤：", error);
+                    alert("讀取商品資料失敗，請檢查控制台。");
+                    console.error("詳細錯誤：", error);
+                }
+            }
+
+            function handleViewImages(e) {
+                const id = e.currentTarget.dataset.id;
+                console.log("View images button clicked for ID:", id);
+                const product = currentProductsData.find(p => p.id === id);
+
+                if (product) {
+                    openPreviewModal(product);
+                } else {
+                    console.warn("找不到 ID 為", id, "的商品來預覽圖片。");
+                    alert("找不到該商品來預覽圖片。");
+                }
+            }
+
+            async function handleSaveEdit(e) {
+                e.preventDefault();
+                console.log("handleSaveEdit triggered");
+
+                if (!editForm) {
+                    console.error("Edit form element not found.");
+                    return;
+                }
+
+                const productId = document.getElementById('edit-product-id').value;
+                if (!productId) {
+                    console.error("編輯失敗：找不到商品 ID。");
+                    alert("編輯失敗：找不到商品 ID。");
+                    return;
+                }
+
+                const imageUrlsText = document.getElementById('edit-product-image-urls').value;
+                const imageUrls = imageUrlsText.split(/\r?\n/).map(url => url.trim()).filter(url => url);
+
+
+
+                const sizesAndQuantities = Array.from(document.querySelectorAll('#edit-size-quantity-container > div')).map(row => {
+                    return {
+                        size: row.querySelector('.size-input').value,
+                        quantity: parseInt(row.querySelector('.quantity-input').value)
+                    };
+                });
+
+                const updatedProductData = {
+                    name: document.getElementById('edit-product-name').value,
+                    sku: document.getElementById('edit-product-sku').value,
+                    price: parseFloat(document.getElementById('edit-product-price').value),
+                    // 不需要紀錄
+                    //stock: parseInt(document.getElementById('edit-product-stock').value),
+                    imageUrls: imageUrls,
+                    sizes: sizesAndQuantities,
+                    description: document.getElementById('edit-product-description').value,
+                    is_featured: document.getElementById('edit-product-is-featured').checked,
+                    is_new: document.getElementById('edit-product-is-new').checked,
+                    is_discontinued: document.getElementById('edit-product-is-discontinued').checked,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                };
+
+                console.log("Attempting to update product ID:", productId, "with data:", updatedProductData);
+
+                if (!updatedProductData.name || !updatedProductData.sku || isNaN(updatedProductData.price)) {
+                    alert("請填寫所有必填欄位 (商品名稱、SKU、價格)。");
+                    console.warn("Missing required fields for update:", updatedProductData);
+                    return;
+                }
+
+                try {
+
+                    await productsCollection.doc(productId).update(updatedProductData);
+
+                    // 更新 productSizes 子集合：先刪除全部，再重建
+                    const sizeCollRef = productsCollection.doc(productId).collection('sizes');
+                    const existing = await sizeCollRef.get();
+                    const deletions = existing.docs.map(doc => doc.ref.delete());
+                    await Promise.all(deletions);
+                    const additions = sizesAndQuantities.map(sq => sizeCollRef.add(sq));
+                    await Promise.all(additions);
+
+                    console.log("商品更新成功！ID:", productId);
+                    alert("商品更新成功！");
+                    closeEditModal();
+                } catch (error) {
+                    console.error("更新商品時發生錯誤：", error);
+                    alert("更新商品失敗，請檢查控制台是否有錯誤訊息。\n錯誤：" + error.message);
+                    console.error("詳細錯誤：", error);
+                }
+            }
+
+            function handleDelete(e) {
+                const id = e.currentTarget.dataset.id;
+                console.log("Delete button clicked for ID:", id);
+                const productToDelete = currentProductsData.find(p => p.id === id);
+
+                if (productToDelete) {
+                    openDeleteConfirmModal(productToDelete);
+                } else {
+                    console.warn("找不到 ID 為", id, "的商品來刪除。");
+                    alert("找不到該商品來刪除。");
+                }
+            }
+
+            async function handleConfirmDelete() {
+                console.log("handleConfirmDelete triggered for ID:", productIdToDelete);
+                if (!productIdToDelete) {
+                    console.error("沒有指定要刪除的商品 ID。");
+                    alert("刪除失敗：沒有指定商品。");
+                    closeDeleteConfirmModal();
+                    return;
+                }
+
+                try {
+                    await productsCollection.doc(productIdToDelete).delete();
+                    console.log("商品刪除成功！ID:", productIdToDelete);
+                    alert("商品刪除成功！");
+                    productIdToDelete = null;
+                    closeDeleteConfirmModal();
+                } catch (error) {
+                    console.error("刪除商品時發生錯誤：", error);
+                    alert("刪除商品失敗，請檢查控制台是否有錯誤訊息。\n錯誤：" + error.message);
+                    console.error("詳細錯誤：", error);
+                }
+            }
+
+
+            /**
+             * 渲染後台商品列表
+             * @param {Array<Object>} products - 從 Firestore 取得的商品資料陣列 (包含 Firestore document ID)
+             */
+            function renderProductList(products) {
+                console.log("開始渲染商品列表，共", products.length, "項商品。");
+                if (!productListContainer) {
+                    console.error("無法找到 productListContainer 元素來渲染列表！");
+                    return;
+                }
+
+                productListContainer.innerHTML = '';
+                currentProductsData = products;
+
+                if (products.length === 0) {
+                    productListContainer.innerHTML = '<tr><td colspan="10" class="p-4 text-center text-gray-500">目前沒有商品</td></tr>';
+                    return;
+                }
+                products.forEach(product => {
+                    let stock = 0;
+                    let sizesHtml = '<span class="text-gray-400 text-xs">無</span>';
+                    if (!product.sizes.empty) {
+                        const validSizes = [];
+                        product.sizes.forEach(data => {
+                            //加總庫存
+                            stock += data.quantity;
+                            validSizes.push(`${data.size}(${data.quantity})`); // ✅ 儲存有效尺寸
+                        });
+                        if (validSizes.length > 0) {
+                            sizesHtml = validSizes.join('<br>');
+                        }
+                    }
+
+                    const row = document.createElement('tr');
+                    row.classList.add('border-b', 'hover:bg-gray-50');
+
+                    url = `${product.imageUrls && product.imageUrls.length > 0 ? product.imageUrls[0] : 'https://placehold.co/48x48/cccccc/333333?text=N/A'}`
+                    row.innerHTML = `
 					  <td class="p-4 flex items-center space-x-3">
 						  <img src="images/${product.sku}/${url}" class="w-12 h-12 rounded-md object-cover" onerror="this.src='https://placehold.co/48x48/cccccc/333333?text=Img'">
 						  <span class="font-medium">${product.name || '無名稱'}</span>
@@ -764,369 +811,372 @@ await Promise.all(additions);
 						  <button class="text-red-600 hover:text-red-800 p-2 delete-btn" data-id="${product.id}" title="刪除"><i class="fas fa-trash"></i></button>
 					  </td>
 				  `;
-				  productListContainer.appendChild(row);
-			  });
+                    productListContainer.appendChild(row);
+                });
 
-			  addAdminButtonListeners();
-		  }
+                addAdminButtonListeners();
+            }
 
-		  function addAdminButtonListeners() {
-			   console.log("正在綁定商品列表按鈕事件...");
-			  document.querySelectorAll('.view-images-btn').forEach(button => {
-				  button.addEventListener('click', handleViewImages);
-			  });
-			  document.querySelectorAll('.edit-btn').forEach(button => {
-				  button.addEventListener('click', handleEdit);
-			  });
-			  document.querySelectorAll('.delete-btn').forEach(button => {
-				  button.addEventListener('click', handleDelete);
-			  });
-			   console.log("商品列表按鈕事件監聽器已綁定完成。");
-		  }
-
-
-		// === 渲染分頁控制項的函式 ===
-		function renderPaginationControls(totalItems, totalPages) {
-			const paginationContainer = document.getElementById('paginationControls');
-			if (!paginationContainer) {
-				console.error("找不到 ID 為 'paginationControls' 的容器");
-				return;
-			}
-
-			paginationContainer.innerHTML = '';
-
-			if (totalPages <= 1) {
-				return;
-			}
-
-			const prevButton = document.createElement('button');
-			prevButton.textContent = '上一頁';
-			prevButton.disabled = currentPage === 1;
-			prevButton.addEventListener('click', () => {
-				currentPage--;
-				renderPaginatedList(currentFilteredProducts);
-			});
-			paginationContainer.appendChild(prevButton);
-
-			const maxPageButtons = 5;
-			let startPage = Math.max(1, currentPage - Math.floor(maxPageButtons / 2));
-			let endPage = Math.min(totalPages, startPage + maxPageButtons - 1);
-
-			if (endPage === totalPages) {
-				startPage = Math.max(1, endPage - maxPageButtons + 1);
-			}
-
-			for (let i = startPage; i <= endPage; i++) {
-				const pageButton = document.createElement('button');
-				pageButton.textContent = i;
-				pageButton.classList.toggle('active', i === currentPage);
-				pageButton.disabled = i === currentPage;
-				pageButton.addEventListener('click', () => {
-					currentPage = i;
-					renderPaginatedList(currentFilteredProducts);
-				});
-				paginationContainer.appendChild(pageButton);
-			}
-
-			const nextButton = document.createElement('button');
-			nextButton.textContent = '下一頁';
-			nextButton.disabled = currentPage === totalPages;
-			nextButton.addEventListener('click', () => {
-				currentPage++;
-				renderPaginatedList(currentFilteredProducts);
-			});
-			paginationContainer.appendChild(nextButton);
-		}
-
-		// === 根據當前頁碼渲染列表和分頁控制項的函式 (修改) ===
-		function renderPaginatedList(itemsToPaginate) {
-			console.log("--- renderPaginatedList 開始 ---");
-			console.log("傳入的 itemsToPaginate 數量:", itemsToPaginate.length);
-			console.log("當前全域 currentPage (呼叫 slice 前):", currentPage);
-			console.log("每頁商品數量 itemsPerPage:", itemsPerPage);
-
-			const totalItems = itemsToPaginate.length;
-			const totalPages = Math.ceil(totalItems / itemsPerPage);
-
-			if (currentPage > totalPages && totalPages > 0) {
-				currentPage = totalPages;
-			} else if (totalPages === 0) {
-				currentPage = 1;
-			} else if (currentPage < 1) {
-				currentPage = 1;
-			}
-
-			console.log("調整後的全域 currentPage:", currentPage);
-			console.log("總頁數 totalPages:", totalPages);
-
-			const startIndex = (currentPage - 1) * itemsPerPage;
-			const endIndex = startIndex + itemsPerPage;
-
-			console.log("計算出的 startIndex:", startIndex);
-			console.log("計算出的 endIndex:", endIndex);
-
-			const itemsForCurrentPage = itemsToPaginate.slice(startIndex, endIndex);
-
-			console.log("slice 後的 itemsForCurrentPage 數量:", itemsForCurrentPage.length);
-			console.log("slice 後的 itemsForCurrentPage:", itemsForCurrentPage);
-			console.log("--- renderPaginatedList 結束 ---");
-
-			renderProductList(itemsForCurrentPage);
-			renderPaginationControls(totalItems, totalPages);
-		}
+            function addAdminButtonListeners() {
+                console.log("正在綁定商品列表按鈕事件...");
+                document.querySelectorAll('.view-images-btn').forEach(button => {
+                    button.addEventListener('click', handleViewImages);
+                });
+                document.querySelectorAll('.edit-btn').forEach(button => {
+                    button.addEventListener('click', handleEdit);
+                });
+                document.querySelectorAll('.delete-btn').forEach(button => {
+                    button.addEventListener('click', handleDelete);
+                });
+                console.log("商品列表按鈕事件監聽器已綁定完成。");
+            }
 
 
-		// === 增加搜尋功能的函式 ===
-		function addSearchFunctionality() {
-			const searchInput = document.getElementById('searchProductName');
+            // === 渲染分頁控制項的函式 ===
+            function renderPaginationControls(totalItems, totalPages) {
+                const paginationContainer = document.getElementById('paginationControls');
+                if (!paginationContainer) {
+                    console.error("找不到 ID 為 'paginationControls' 的容器");
+                    return;
+                }
 
-			if (!searchInput) {
-				console.error("找不到 ID 為 'searchProductName' 的搜尋輸入框");
-				return;
-			}
+                paginationContainer.innerHTML = '';
 
-			searchInput.addEventListener('input', (event) => {
-				const searchTerm = event.target.value.toLowerCase();
+                if (totalPages <= 1) {
+                    return;
+                }
 
-				const filteredProducts = productsArray.filter(product => {
-					return product && product.name && product.name.toLowerCase().includes(searchTerm);
-				});
+                const prevButton = document.createElement('button');
+                prevButton.textContent = '上一頁';
+                prevButton.disabled = currentPage === 1;
+                prevButton.addEventListener('click', () => {
+                    currentPage--;
+                    renderPaginatedList(currentFilteredProducts);
+                });
+                paginationContainer.appendChild(prevButton);
 
-				currentFilteredProducts = filteredProducts;
-				currentPage = 1;
-				renderPaginatedList(currentFilteredProducts);
-			});
+                const maxPageButtons = 5;
+                let startPage = Math.max(1, currentPage - Math.floor(maxPageButtons / 2));
+                let endPage = Math.min(totalPages, startPage + maxPageButtons - 1);
 
-			console.log("搜尋功能已啟用。");
-		}
-		// === 增加每頁顯示數量選擇功能的函式 (新增) ===
-		function addItemsPerPageSelectorListener() {
-			const selectElement = document.getElementById('itemsPerPageSelect');
+                if (endPage === totalPages) {
+                    startPage = Math.max(1, endPage - maxPageButtons + 1);
+                }
 
-			if (!selectElement) {
-				console.error("找不到 ID 為 'itemsPerPageSelect' 的下拉選單");
-				return;
-			}
+                for (let i = startPage; i <= endPage; i++) {
+                    const pageButton = document.createElement('button');
+                    pageButton.textContent = i;
+                    pageButton.classList.toggle('active', i === currentPage);
+                    pageButton.disabled = i === currentPage;
+                    pageButton.addEventListener('click', () => {
+                        currentPage = i;
+                        renderPaginatedList(currentFilteredProducts);
+                    });
+                    paginationContainer.appendChild(pageButton);
+                }
 
-			selectElement.addEventListener('change', (event) => {
-				const newItemsPerPage = parseInt(event.target.value, 10);
+                const nextButton = document.createElement('button');
+                nextButton.textContent = '下一頁';
+                nextButton.disabled = currentPage === totalPages;
+                nextButton.addEventListener('click', () => {
+                    currentPage++;
+                    renderPaginatedList(currentFilteredProducts);
+                });
+                paginationContainer.appendChild(nextButton);
+            }
 
-				if (!isNaN(newItemsPerPage) && newItemsPerPage > 0) {
-					itemsPerPage = newItemsPerPage;
-					currentPage = 1;
-					renderPaginatedList(currentFilteredProducts);
-					console.log("每頁顯示數量已更新為:", itemsPerPage);
-				} else {
-					console.error("無效的每頁顯示數量選擇:", event.target.value);
-				}
-			});
+            // === 根據當前頁碼渲染列表和分頁控制項的函式 (修改) ===
+            function renderPaginatedList(itemsToPaginate) {
+                console.log("--- renderPaginatedList 開始 ---");
+                console.log("傳入的 itemsToPaginate 數量:", itemsToPaginate.length);
+                console.log("當前全域 currentPage (呼叫 slice 前):", currentPage);
+                console.log("每頁商品數量 itemsPerPage:", itemsPerPage);
 
-			console.log("每頁顯示數量選擇功能已啟用。");
-		}
+                const totalItems = itemsToPaginate.length;
+                const totalPages = Math.ceil(totalItems / itemsPerPage);
 
-		  // --- 綁定主要的事件監聽器 ---
+                if (currentPage > totalPages && totalPages > 0) {
+                    currentPage = totalPages;
+                } else if (totalPages === 0) {
+                    currentPage = 1;
+                } else if (currentPage < 1) {
+                    currentPage = 1;
+                }
 
-		  if (addForm) {
-			  addForm.addEventListener('submit', handleAdd);
-			  console.log("新增商品表單 submit 事件已綁定 handleAdd。");
-		  } else {
-			  console.warn("找不到 ID 為 'add-product-form' 的元素，無法綁定新增事件。");
-		  }
+                console.log("調整後的全域 currentPage:", currentPage);
+                console.log("總頁數 totalPages:", totalPages);
 
-		  if (editForm) {
-			  editForm.addEventListener('submit', handleSaveEdit);
-			   console.log("修改商品表單 submit 事件已綁定 handleSaveEdit。");
-		  } else {
-			   console.warn("找不到 ID 為 'edit-product-form' 的元素，無法綁定修改事件。");
-		  }
+                const startIndex = (currentPage - 1) * itemsPerPage;
+                const endIndex = startIndex + itemsPerPage;
 
-		  if (cancelEditBtn) {
-			  cancelEditBtn.addEventListener('click', closeEditModal);
-			   console.log("取消編輯按鈕事件已綁定 closeEditModal。");
-		  } else {
-			   console.warn("找不到 ID 為 'cancel-edit' 的元素。");
-		  }
+                console.log("計算出的 startIndex:", startIndex);
+                console.log("計算出的 endIndex:", endIndex);
 
-		  if (previewModalCloseButton) {
-			  previewModalCloseButton.addEventListener('click', closePreviewModal);
-			   console.log("圖片預覽 Modal 關閉按鈕事件已綁定 closePreviewModal。");
-		  } else {
-			   console.warn("找不到 ID 為 'preview-modal-close-button' 的元素。");
-		  }
+                const itemsForCurrentPage = itemsToPaginate.slice(startIndex, endIndex);
 
-		  if (cancelDeleteBtn) {
-			  cancelDeleteBtn.addEventListener('click', closeDeleteConfirmModal);
-			   console.log("取消刪除按鈕事件已綁定 closeDeleteConfirmModal。");
-		  } else {
-			   console.warn("找不到 ID 為 'cancel-delete-btn' 的元素。");
-		  }
+                console.log("slice 後的 itemsForCurrentPage 數量:", itemsForCurrentPage.length);
+                console.log("slice 後的 itemsForCurrentPage:", itemsForCurrentPage);
+                console.log("--- renderPaginatedList 結束 ---");
 
-		  // --- Firestore 監聽器 ---
-		  if (typeof productsCollection !== 'undefined') {
-			 productsCollection.onSnapshot(snapshot => {
-				 console.log("Firestore 快照更新，共", snapshot.docs.length, "個文件。");
-				 const products = snapshot.docs.map(doc => ({
-					 id: doc.id,
-					 ...doc.data()
-				 }));
-				 productsArray = products;
-                 console.log("載入所有商品，包含停售商品，數量:", productsArray.length);
-
-				const searchValue = searchInput.value.toLowerCase();
-				if (searchValue) { // 如果搜尋框有內容，則過濾
-					currentFilteredProducts = productsArray.filter(product =>
-						product.name.toLowerCase().includes(searchValue) ||
-						(product.description && product.description.toLowerCase().includes(searchValue))
-					);
-				} else { // 否則顯示所有商品
-					currentFilteredProducts = [...productsArray];
-				}
-
-				currentPage = 1; // 數據更新後，總是回到第一頁
-
-				renderPaginatedList(currentFilteredProducts);
-
-				addSearchFunctionality();
-				addItemsPerPageSelectorListener();
-
-			 }, error => {
-				 console.error("監聽 Firestore 變化時發生錯誤：", error);
-				 alert("讀取商品列表失敗，請檢查網路連線或權限。");
-			 });
-			 console.log("Firestore 監聽器已設定。");
-		  } else {
-			  console.error("Firestore productsCollection 未定義，無法設定監聽器。請檢查 Firebase 初始化是否正確。");
-			  alert("後台功能初始化失敗：無法連接到資料庫。");
-		  }
+                renderProductList(itemsForCurrentPage);
+                renderPaginationControls(totalItems, totalPages);
+            }
 
 
-		  
-		// === 尺寸新增/刪除 & 庫存自動加總 ===
-		const sizeContainer = document.getElementById('size-quantity-container');
-		const addSizeBtn = document.getElementById('add-size-btn');
-		const stockInput = document.getElementById('product-stock');
+            // === 增加搜尋功能的函式 ===
+            function addSearchFunctionality() {
+                const searchInput = document.getElementById('searchProductName');
 
-		function updateTotalStock() {
-			const quantityInputs = sizeContainer.querySelectorAll('.quantity-input');
-			let total = 0;
-			quantityInputs.forEach(input => {
-				const val = parseInt(input.value);
-				total += isNaN(val) ? 0 : val;
-			});
-			stockInput.value = total;
-		}
+                if (!searchInput) {
+                    console.error("找不到 ID 為 'searchProductName' 的搜尋輸入框");
+                    return;
+                }
 
-		addSizeBtn.addEventListener('click', () => {
-			const div = document.createElement('div');
-			div.className = 'flex items-center space-x-2';
-			div.innerHTML = `
+                searchInput.addEventListener('input', (event) => {
+                    const searchTerm = event.target.value.toLowerCase();
+
+                    const filteredProducts = productsArray.filter(product => {
+                        return product && product.name && product.name.toLowerCase().includes(searchTerm);
+                    });
+
+                    currentFilteredProducts = filteredProducts;
+                    currentPage = 1;
+                    renderPaginatedList(currentFilteredProducts);
+                });
+
+                console.log("搜尋功能已啟用。");
+            }
+            // === 增加每頁顯示數量選擇功能的函式 (新增) ===
+            function addItemsPerPageSelectorListener() {
+                const selectElement = document.getElementById('itemsPerPageSelect');
+
+                if (!selectElement) {
+                    console.error("找不到 ID 為 'itemsPerPageSelect' 的下拉選單");
+                    return;
+                }
+
+                selectElement.addEventListener('change', (event) => {
+                    const newItemsPerPage = parseInt(event.target.value, 10);
+
+                    if (!isNaN(newItemsPerPage) && newItemsPerPage > 0) {
+                        itemsPerPage = newItemsPerPage;
+                        currentPage = 1;
+                        renderPaginatedList(currentFilteredProducts);
+                        console.log("每頁顯示數量已更新為:", itemsPerPage);
+                    } else {
+                        console.error("無效的每頁顯示數量選擇:", event.target.value);
+                    }
+                });
+
+                console.log("每頁顯示數量選擇功能已啟用。");
+            }
+
+            // --- 綁定主要的事件監聽器 ---
+
+            if (addForm) {
+                addForm.addEventListener('submit', handleAdd);
+                console.log("新增商品表單 submit 事件已綁定 handleAdd。");
+            } else {
+                console.warn("找不到 ID 為 'add-product-form' 的元素，無法綁定新增事件。");
+            }
+
+            if (editForm) {
+                editForm.addEventListener('submit', handleSaveEdit);
+                console.log("修改商品表單 submit 事件已綁定 handleSaveEdit。");
+            } else {
+                console.warn("找不到 ID 為 'edit-product-form' 的元素，無法綁定修改事件。");
+            }
+
+            if (cancelEditBtn) {
+                cancelEditBtn.addEventListener('click', closeEditModal);
+                console.log("取消編輯按鈕事件已綁定 closeEditModal。");
+            } else {
+                console.warn("找不到 ID 為 'cancel-edit' 的元素。");
+            }
+
+            if (previewModalCloseButton) {
+                previewModalCloseButton.addEventListener('click', closePreviewModal);
+                console.log("圖片預覽 Modal 關閉按鈕事件已綁定 closePreviewModal。");
+            } else {
+                console.warn("找不到 ID 為 'preview-modal-close-button' 的元素。");
+            }
+
+            if (cancelDeleteBtn) {
+                cancelDeleteBtn.addEventListener('click', closeDeleteConfirmModal);
+                console.log("取消刪除按鈕事件已綁定 closeDeleteConfirmModal。");
+            } else {
+                console.warn("找不到 ID 為 'cancel-delete-btn' 的元素。");
+            }
+
+            // --- Firestore 監聽器 ---
+            if (typeof productsCollection !== 'undefined') {
+                productsCollection.onSnapshot(snapshot => {
+                    console.log("Firestore 快照更新，共", snapshot.docs.length, "個文件。");
+                    const products = snapshot.docs.map(doc => ({
+                        id: doc.id,
+                        ...doc.data()
+                    }));
+                    productsArray = products;
+                    console.log("載入所有商品，包含停售商品，數量:", productsArray.length);
+
+                    const searchValue = searchInput.value.toLowerCase();
+                    if (searchValue) { // 如果搜尋框有內容，則過濾
+                        currentFilteredProducts = productsArray.filter(product =>
+                            product.name.toLowerCase().includes(searchValue) ||
+                            (product.description && product.description.toLowerCase().includes(searchValue))
+                        );
+                    } else { // 否則顯示所有商品
+                        currentFilteredProducts = [...productsArray];
+                    }
+
+                    currentPage = 1; // 數據更新後，總是回到第一頁
+
+                    renderPaginatedList(currentFilteredProducts);
+
+                    addSearchFunctionality();
+                    addItemsPerPageSelectorListener();
+
+                }, error => {
+                    console.error("監聽 Firestore 變化時發生錯誤：", error);
+                    alert("讀取商品列表失敗，請檢查網路連線或權限。");
+                });
+                console.log("Firestore 監聽器已設定。");
+            } else {
+                console.error("Firestore productsCollection 未定義，無法設定監聽器。請檢查 Firebase 初始化是否正確。");
+                alert("後台功能初始化失敗：無法連接到資料庫。");
+            }
+
+
+
+            // === 尺寸新增/刪除 & 庫存自動加總 ===
+            const sizeContainer = document.getElementById('size-quantity-container');
+            const addSizeBtn = document.getElementById('add-size-btn');
+            const stockInput = document.getElementById('product-stock');
+
+            function updateTotalStock() {
+                const quantityInputs = sizeContainer.querySelectorAll('.quantity-input');
+                let total = 0;
+                quantityInputs.forEach(input => {
+                    const val = parseInt(input.value);
+                    total += isNaN(val) ? 0 : val;
+                });
+                stockInput.value = total;
+            }
+
+            addSizeBtn.addEventListener('click', () => {
+                const div = document.createElement('div');
+                div.className = 'flex items-center space-x-2';
+                div.innerHTML = `
 				<input type="text" placeholder="尺寸 (例如：M)" class="size-input p-2 border rounded w-1/2" required>
 				<input type="number" placeholder="數量" class="quantity-input p-2 border rounded w-1/3" min="0" value="0" required>
 				<button type="button" class="text-red-600 remove-size-btn">移除</button>
 			`;
-			sizeContainer.appendChild(div);
-			div.querySelector('.remove-size-btn').addEventListener('click', () => {
-				div.remove();
-				updateTotalStock();
-			});
-			div.querySelector('.quantity-input').addEventListener('input', updateTotalStock);
-			updateTotalStock();
-		});
+                sizeContainer.appendChild(div);
+                div.querySelector('.remove-size-btn').addEventListener('click', () => {
+                    div.remove();
+                    updateTotalStock();
+                });
+                div.querySelector('.quantity-input').addEventListener('input', updateTotalStock);
+                updateTotalStock();
+            });
 
 
 
-		function addEditSizeRow(size = '', quantity = 0) {
-			const div = document.createElement('div');
-			div.className = 'flex items-center space-x-2';
-			div.innerHTML = `
+            function addEditSizeRow(size = '', quantity = 0) {
+                const div = document.createElement('div');
+                div.className = 'flex items-center space-x-2';
+                div.innerHTML = `
 				<input type="text" placeholder="尺寸" class="size-input p-2 border rounded w-1/2" value="${size}" required>
 				<input type="number" placeholder="數量" class="quantity-input p-2 border rounded w-1/3" min="0" value="${quantity}" required>
 				<button type="button" class="text-red-600 remove-size-btn">移除</button>
 			`;
-			editSizeContainer.appendChild(div);
-			div.querySelector('.remove-size-btn').addEventListener('click', () => {
-				div.remove();
-				updateEditTotalStock();
-			});
-			div.querySelector('.quantity-input').addEventListener('input', updateEditTotalStock);
-		}
+                editSizeContainer.appendChild(div);
+                div.querySelector('.remove-size-btn').addEventListener('click', () => {
+                    div.remove();
+                    updateEditTotalStock();
+                });
+                div.querySelector('.quantity-input').addEventListener('input', updateEditTotalStock);
+            }
 
-		if (editAddSizeBtn) {
-			editAddSizeBtn.addEventListener('click', () => {
-				addEditSizeRow();
-				updateEditTotalStock();
-			});
-		}
-
-
-		// === 編輯商品尺寸欄位 ===
-		function updateEditTotalStock() {
-			const quantityInputs = editSizeContainer.querySelectorAll('.quantity-input');
-			let total = 0;
-			quantityInputs.forEach(input => {
-				const val = parseInt(input.value);
-				total += isNaN(val) ? 0 : val;
-			});
-			if (total == 0){
-				editStockInput.value = '無庫存';
-			}else{
-				editStockInput.value = total;
-			}
-		}
-		console.log("DOMContentLoaded 事件處理完成。");
-	});
-	
-	
-	// ==== 聯絡資訊功能 ====
-
-	const contactBtn = document.getElementById('view-contact-btn');
-	const contactModal = document.getElementById('contact-modal');
-	const cancelContactBtn = document.getElementById('cancel-contact-btn');
-	const contactForm = document.getElementById('contact-form');
-
-	contactBtn.addEventListener('click', async () => {
-	  try {
-		const doc = await db.collection('settings').doc('contact').get();
-		if (doc.exists) {
-		  const data = doc.data();
-		  document.getElementById('contact-email').value = data.email || '';
-		  document.getElementById('contact-phone').value = data.phone || '';
-		  document.getElementById('contact-address').value = data.address || '';
-		  document.getElementById('contact-hours').value = data.serviceHours || '';
-		} else {
-		  alert('找不到聯絡資訊，將顯示空白欄位');
-		}
-		contactModal.classList.add('is-open');
-	  } catch (error) {
-		console.error("讀取聯絡資訊錯誤：", error);
-		alert("讀取失敗，請稍後重試");
-	  }
-	});
-
-	cancelContactBtn.addEventListener('click', () => {
-	  contactModal.classList.remove('is-open');
-	});
-
-	contactForm.addEventListener('submit', async (e) => {
-	  e.preventDefault();
-	  const newData = {
-		email: document.getElementById('contact-email').value,
-		phone: document.getElementById('contact-phone').value,
-		address: document.getElementById('contact-address').value,
-		serviceHours: document.getElementById('contact-hours').value
-	  };
-
-	  try {
-		await db.collection('settings').doc('contact').set(newData, { merge: true });
-		alert("聯絡資訊已更新！");
-		contactModal.classList.remove('is-open');
-	  } catch (error) {
-		console.error("更新聯絡資訊錯誤：", error);
-		alert("更新失敗，請稍後重試");
-	  }
-	});
-      </script>
+            if (editAddSizeBtn) {
+                editAddSizeBtn.addEventListener('click', () => {
+                    addEditSizeRow();
+                    updateEditTotalStock();
+                });
+            }
 
 
-  </body>
-  </html>
+            // === 編輯商品尺寸欄位 ===
+            function updateEditTotalStock() {
+                const quantityInputs = editSizeContainer.querySelectorAll('.quantity-input');
+                let total = 0;
+                quantityInputs.forEach(input => {
+                    const val = parseInt(input.value);
+                    total += isNaN(val) ? 0 : val;
+                });
+                if (total == 0) {
+                    editStockInput.value = '無庫存';
+                } else {
+                    editStockInput.value = total;
+                }
+            }
+            console.log("DOMContentLoaded 事件處理完成。");
+        });
+
+
+        // ==== 聯絡資訊功能 ====
+
+        const contactBtn = document.getElementById('view-contact-btn');
+        const contactModal = document.getElementById('contact-modal');
+        const cancelContactBtn = document.getElementById('cancel-contact-btn');
+        const contactForm = document.getElementById('contact-form');
+
+        contactBtn.addEventListener('click', async () => {
+            try {
+                const doc = await db.collection('settings').doc('contact').get();
+                if (doc.exists) {
+                    const data = doc.data();
+                    document.getElementById('contact-email').value = data.email || '';
+                    document.getElementById('contact-phone').value = data.phone || '';
+                    document.getElementById('contact-address').value = data.address || '';
+                    document.getElementById('contact-hours').value = data.serviceHours || '';
+                } else {
+                    alert('找不到聯絡資訊，將顯示空白欄位');
+                }
+                contactModal.classList.add('is-open');
+            } catch (error) {
+                console.error("讀取聯絡資訊錯誤：", error);
+                alert("讀取失敗，請稍後重試");
+            }
+        });
+
+        cancelContactBtn.addEventListener('click', () => {
+            contactModal.classList.remove('is-open');
+        });
+
+        contactForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const newData = {
+                email: document.getElementById('contact-email').value,
+                phone: document.getElementById('contact-phone').value,
+                address: document.getElementById('contact-address').value,
+                serviceHours: document.getElementById('contact-hours').value
+            };
+
+            try {
+                await db.collection('settings').doc('contact').set(newData, {
+                    merge: true
+                });
+                alert("聯絡資訊已更新！");
+                contactModal.classList.remove('is-open');
+            } catch (error) {
+                console.error("更新聯絡資訊錯誤：", error);
+                alert("更新失敗，請稍後重試");
+            }
+        });
+    </script>
+
+
+</body>
+
+</html>
