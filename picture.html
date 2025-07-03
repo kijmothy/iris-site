@@ -130,7 +130,7 @@
 	  return db.collection('settings').doc('git').get().then(doc => {
 		if (doc.exists && doc.data().token) {
 		  GITHUB_TOKEN = doc.data().token;
-		  console.log("✔ 取得 GITHUB_TOKEN：", GITHUB_TOKEN);
+		  console.log("✔ 取得 GITHUB_TOKEN：");
 		} else {
 		  console.warn("⚠️ 找不到 GitHub token 設定");
 		}
