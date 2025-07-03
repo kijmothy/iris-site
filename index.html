@@ -377,6 +377,7 @@
             } else {
                 cartItems.push({
                     id: product.id,
+					sku: product.sku,
                     name: product.name,
                     price: product.price,
 					size: size, // 👈 儲存尺寸
@@ -387,6 +388,7 @@
             }
             saveCartItems(cartItems);
             console.log(`商品 "${product.name}" 已加入購物車。目前購物車商品總數: ${getCartItems().reduce((sum, item) => sum + item.quantity, 0)}`);
+            console.log('cartItems',cartItems);
             alert(`"${product.name}" 已成功加入購物車！`); 
         }
 
