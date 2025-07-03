@@ -179,7 +179,6 @@
     });
 
     uploadBtn.addEventListener('click', async () => {
-	
 	  const folder = folderInput.value.trim();
 	  // ✅ 檢查是否有輸入商品編號
 	  if (!folder) {
@@ -187,7 +186,7 @@
 		folderInput.focus();
 		return;
 	  }
-	  const files = imageInput.files;
+	  const files = selectedFiles.length ? selectedFiles : imageInput.files;
 	  if (!files.length) return;
 
 	  uploadBtn.disabled = true;
