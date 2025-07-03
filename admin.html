@@ -509,8 +509,8 @@
 
               console.log("Attempting to add product data:", newProductData);
 
-              if (!newProductData.name || !newProductData.sku || isNaN(newProductData.price) || isNaN(newProductData.stock)) {
-                  alert("請填寫所有必填欄位 (商品名稱、SKU、價格、庫存)。");
+              if (!newProductData.name || !newProductData.sku || isNaN(newProductData.price)) {
+                  alert("請填寫所有必填欄位 (商品名稱、SKU、價格)。");
                   console.warn("Missing required fields:", newProductData);
                   return;
               }
