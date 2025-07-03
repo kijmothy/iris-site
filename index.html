@@ -419,8 +419,9 @@
 					cartItems[index].quantity--;
 				} else {
 					// ✅ 準備要移除該項目，詢問使用者
+					const sizeText = size ? `（尺寸：${size}）` : '';
 					const itemName = cartItems[index].name || '這項商品';
-					const confirmed = confirm(`確定要從購物車移除「${itemName}」嗎？`);
+					const confirmed = confirm(`確定要從購物車移除「${itemName}」${sizeText}嗎？`);
 					if (!confirmed) return;
 					cartItems.splice(index, 1);
 				}
