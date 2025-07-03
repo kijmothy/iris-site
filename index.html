@@ -375,14 +375,13 @@
             if (existingItemIndex > -1) {
                 cartItems[existingItemIndex].quantity += quantity;
             } else {
-				imageUrls = product.imageUrls && product.imageUrls.length > 0 ? product.imageUrls[0] : 'https://via.placeholder.com/60x60?text=No+Image'
                 cartItems.push({
                     id: product.id,
                     name: product.name,
                     price: product.price,
 					size: size, // 👈 儲存尺寸
                     // 確保購物車項目圖片也有正確的佔位符，使用 imageUrls
-                    image: `images/${product.sku}/${imageUrls}`,
+                    image: product.imageUrls,
                     quantity: quantity
                 });
             }
@@ -423,13 +422,15 @@
                 cartTotalPrice.textContent = '$0';
                 return;
             }
-
+ 
             let total = 0;
             items.forEach(item => {
                 const itemDiv = document.createElement('div');
+				const imageSrc = item.image && item.image.length > 0 ? item.image[0] : ''
                 itemDiv.className = 'flex items-center space-x-4 bg-gray-50 p-3 rounded-md shadow-sm';
+
                 itemDiv.innerHTML = `
-                    <img src="${item.image}" alt="${item.name}" class="w-16 h-16 object-cover rounded-md">
+                    <img src="${imageSrc}" alt="${item.name}" class="w-16 h-16 object-cover rounded-md">
                     <div class="flex-1">
                         <h4 class="font-semibold text-gray-800">${item.name}</h4>
 						<p class="text-sm text-gray-600">尺寸: ${item.size || '未選擇'}</p>
