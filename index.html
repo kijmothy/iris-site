@@ -352,10 +352,6 @@
             const totalCount = items.reduce((sum, item) => sum + item.quantity, 0);
             if (desktopCartCount) desktopCartCount.textContent = totalCount;
             if (mobileCartCount) mobileCartCount.textContent = totalCount;
-			
-            document.querySelectorAll('.view-images-btn').forEach(button => {
-				button.addEventListener('click', handleViewImages);
-            });
         }
 
         // 添加商品到購物車
@@ -434,6 +430,11 @@
 
         // 渲染購物車 Modal 中的商品列表
         function renderCartItems() {
+		
+			document.querySelectorAll('.view-images-btn').forEach(button => {
+				button.addEventListener('click', handleViewImages);
+            });
+			
             const items = getCartItems();
             cartItemsList.innerHTML = ''; // 清空購物車列表
 
@@ -941,7 +942,7 @@
 		function handleViewImages(e) {
 		  const id = e.currentTarget.dataset.id;
 		  console.log("View images button clicked for ID:", id);
-            const product = allProductsData.find(p => p.id === productId);
+          const product = allProductsData.find(p => p.id === id);
 
 		  if (product) {
 			  openPreviewModal(product);
