@@ -325,6 +325,9 @@
 		const clearCartButton = document.getElementById('clear-cart-button');
 
 
+		const imagePreviewModal = document.getElementById('image-preview-modal');
+		const previewModalCloseButton = document.getElementById('preview-modal-close-button');
+	  
         let allProductsData = []; // 儲存所有商品資料
         let currentModalProductId = null; // 儲存目前 Modal 中顯示的商品ID
 
@@ -431,10 +434,6 @@
         // 渲染購物車 Modal 中的商品列表
         function renderCartItems() {
 		
-			document.querySelectorAll('.view-images-btn').forEach(button => {
-				button.addEventListener('click', handleViewImages);
-            });
-			
             const items = getCartItems();
             cartItemsList.innerHTML = ''; // 清空購物車列表
 
@@ -475,6 +474,10 @@
                 total += item.price * item.quantity;
             });
             cartTotalPrice.textContent = `$${total.toLocaleString()}`;
+			
+			document.querySelectorAll('.view-images-btn').forEach(button => {
+				button.addEventListener('click', handleViewImages);
+            });
         }
 
 
@@ -937,6 +940,7 @@
 		// 頁面載入後執行
 		document.addEventListener('DOMContentLoaded', () => {
 			loadContactInfo();
+			previewModalCloseButton.addEventListener('click', closePreviewModal);
 		});
 		
 		function handleViewImages(e) {
@@ -1003,6 +1007,10 @@
 
 			  imagePreviewModal.classList.add('is-open');
 			  console.log("Image preview modal opened.");
+		  }
+		  
+		  function closePreviewModal() {
+			  closeAllModals(); // 確保關閉所有 Modal
 		  }
     </script>
 </body>
