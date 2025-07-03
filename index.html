@@ -940,7 +940,10 @@
 		// 頁面載入後執行
 		document.addEventListener('DOMContentLoaded', () => {
 			loadContactInfo();
-			previewModalCloseButton.addEventListener('click', imagePreviewModal.classList.remove('is-open'));
+			previewModalCloseButton.addEventListener('click', () => {
+			  imagePreviewModal.classList.remove('is-open');
+			});
+
 		});
 		
 		function handleViewImages(e) {
