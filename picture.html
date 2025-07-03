@@ -50,10 +50,12 @@
 				</div>
 				<input type="file" id="imageInput" accept="image/*" multiple class="hidden" />
 
-
-			  <button id="uploadBtn" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 disabled:opacity-50" disabled>
-				上傳圖片
-			  </button>
+				<button id="uploadBtn"
+				  class="mt-4 mb-2 w-full bg-indigo-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-indigo-700 transition disabled:opacity-50"
+				  disabled>
+				  <i class="fas fa-upload mr-2"></i>上傳圖片
+				</button>
+			  
 				<!-- 預覽區 -->
 				<div id="previewArea" class="flex flex-wrap gap-4 mt-4"></div>
 			</div>
@@ -177,10 +179,17 @@
     });
 
     uploadBtn.addEventListener('click', async () => {
+	
+	  const folder = folderInput.value.trim();
+	  // ✅ 檢查是否有輸入商品編號
+	  if (!folder) {
+		alert('⚠️ 請先輸入商品編號（資料夾名稱）');
+		folderInput.focus();
+		return;
+	  }
 	  const files = imageInput.files;
 	  if (!files.length) return;
 
-	  const folder = folderInput.value.trim();
 	  uploadBtn.disabled = true;
 	  uploadBtn.textContent = '上傳中...';
 
@@ -231,6 +240,7 @@
 	  alert('全部上傳完成');
 	  uploadBtn.textContent = '上傳圖片';
 	  imageInput.value = '';                     // 清空 input
+	  folderInput.value = '';                     // 清空 input
 	  document.getElementById('previewArea').innerHTML = '';  // 清空預覽
 	  uploadBtn.disabled = true;                // 避免未選檔仍可點擊
 	});
@@ -459,66 +469,6 @@
 	}
 
 
-	// ✅ 上傳按鈕邏輯（改為使用 selectedFiles）
-	uploadBtn.addEventListener('click', async () => {
-	  if (!selectedFiles.length) return;
-	  const folder = folderInput.value.trim();
-
-	  uploadBtn.disabled = true;
-	  uploadBtn.textContent = '上傳中...';
-
-	  for (const file of selectedFiles) {
-		const filename = file.name;
-		const fullPath = folder ? `${folder}/${filename}` : filename;
-
-		const reader = new FileReader();
-		await new Promise((resolve, reject) => {
-		  reader.onload = async () => {
-			const base64 = reader.result.split(',')[1];
-			const url = `${GITHUB_API}/${fullPath}`;
-			const body = {
-			  message: `upload ${fullPath}`,
-			  content: base64,
-			  branch: BRANCH
-			};
-
-			try {
-			  const res = await fetch(url, {
-				method: 'PUT',
-				headers: {
-				  Authorization: `Bearer ${GITHUB_TOKEN}`,
-				  'Content-Type': 'application/json'
-				},
-				body: JSON.stringify(body)
-			  });
-
-			  const data = await res.json();
-			  if (res.ok) {
-				const folderContainer = getOrCreateFolderContainer(folder);
-				renderImageItem({ name: fullPath, url: `${RAW_BASE}/${fullPath}` }, folderContainer.querySelector('.images'));
-			  } else {
-				alert(`上傳 ${filename} 失敗: ` + data.message);
-			  }
-			} catch (err) {
-			  console.error(`上傳 ${filename} 發生錯誤`, err);
-			}
-
-			resolve();
-		  };
-		  reader.onerror = reject;
-		  reader.readAsDataURL(file);
-		});
-	  }
-
-	  alert('全部上傳完成');
-
-	  // ✅ 清空狀態
-	  selectedFiles = [];
-	  imageInput.value = '';
-	  previewArea.innerHTML = '';
-	  uploadBtn.disabled = true;
-	  uploadBtn.textContent = '上傳圖片';
-	});
 		
 	// 獲取登出按鈕
 	const logoutButton = document.getElementById('logout-button');
