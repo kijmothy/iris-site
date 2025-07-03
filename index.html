@@ -430,7 +430,7 @@
                 itemDiv.className = 'flex items-center space-x-4 bg-gray-50 p-3 rounded-md shadow-sm';
 
                 itemDiv.innerHTML = `
-                    <img src="${imageSrc}" alt="${item.name}" class="w-16 h-16 object-cover rounded-md">
+                    <img src="`images/${product.sku}/${imageSrc}`" alt="${item.name}" class="w-16 h-16 object-cover rounded-md">
                     <div class="flex-1">
                         <h4 class="font-semibold text-gray-800">${item.name}</h4>
 						<p class="text-sm text-gray-600">尺寸: ${item.size || '未選擇'}</p>
