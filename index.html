@@ -375,13 +375,14 @@
             if (existingItemIndex > -1) {
                 cartItems[existingItemIndex].quantity += quantity;
             } else {
+				imageUrls = product.imageUrls && product.imageUrls.length > 0 ? product.imageUrls[0] : 'https://via.placeholder.com/60x60?text=No+Image'
                 cartItems.push({
                     id: product.id,
                     name: product.name,
                     price: product.price,
 					size: size, // 👈 儲存尺寸
                     // 確保購物車項目圖片也有正確的佔位符，使用 imageUrls
-                    image: product.imageUrls && product.imageUrls.length > 0 ? product.imageUrls[0] : 'https://via.placeholder.com/60x60?text=No+Image',
+                    image: `images/${product.sku}/${imageUrls}`,
                     quantity: quantity
                 });
             }
@@ -552,11 +553,11 @@
 
                 // 檢查 imageUrls 陣列是否存在且有內容
                 if (product.imageUrls && product.imageUrls.length > 0) {
-                    modalMainImage.src = product.imageUrls[0]; // 設定主圖片
+                    modalMainImage.src = `images/${product.sku}/${product.imageUrls[0]}`; // 設定主圖片
                     
                     product.imageUrls.forEach((imageUrl, index) => {
                         const img = document.createElement('img');
-                        img.src = imageUrl; // 設定縮圖圖片
+                        img.src = `images/${product.sku}/${imageUrl}`; // 設定縮圖圖片
                         img.alt = `Thumbnail ${index + 1}`;
                         img.dataset.fullUrl = imageUrl; 
                         img.classList.add('w-full', 'h-20', 'object-cover', 'rounded-md', 'cursor-pointer', 'border-2', 'border-transparent', 'hover:border-indigo-400', 'transition', 'duration-200');
@@ -649,7 +650,7 @@
 			
             card.innerHTML = `
 			  ${tagHtml}
-			  <img src="${imageUrl}" alt="${product.name}" class="w-full h-64 object-cover">
+			  <img src="images/${product.sku}/${imageUrl}" alt="${product.name}" class="w-full h-64 object-cover">
 			  <div class="p-5">
 				<h3 class="text-xl font-semibold text-gray-800 mb-2 truncate">${product.name}</h3>
 				<p class="text-gray-600 text-sm mb-3 line-clamp-2">${product.description}</p>
