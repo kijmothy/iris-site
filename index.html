@@ -559,7 +559,7 @@
                         const img = document.createElement('img');
                         img.src = `images/${product.sku}/${imageUrl}`; // 設定縮圖圖片
                         img.alt = `Thumbnail ${index + 1}`;
-                        img.dataset.fullUrl = imageUrl; 
+                        img.dataset.fullUrl = `images/${product.sku}/${imageUrl}`; 
                         img.classList.add('w-full', 'h-20', 'object-cover', 'rounded-md', 'cursor-pointer', 'border-2', 'border-transparent', 'hover:border-indigo-400', 'transition', 'duration-200');
                         if (index === 0) {
                             img.classList.add('thumbnail-active'); 
