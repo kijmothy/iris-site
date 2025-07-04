@@ -411,7 +411,7 @@
                 return;
             }
 
-            // ✅ 新增尺寸庫存判斷
+            // ✅ 新增尺寸現貨判斷
             if (size) {
                 const selectedSize = product.sizes.find(s => s.size === size);
                 if (!selectedSize) {
@@ -419,13 +419,13 @@
                     return;
                 }
 
-                // 🔍 檢查目前購物車內此商品尺寸的數量，加總後不能超過庫存
+                // 🔍 檢查目前購物車內此商品尺寸的數量，加總後不能超過現貨
                 const currentCartItems = getCartItems();
                 const existingItem = currentCartItems.find(item => item.id === productId && item.size === size);
                 const existingQty = existingItem ? existingItem.quantity : 0;
 
                 if (existingQty + quantity > selectedSize.quantity) {
-                    alert(`此尺寸「${size}」的庫存只剩 ${selectedSize.quantity} 件，無法加入更多`);
+                    alert(`此尺寸「${size}」的現貨只剩 ${selectedSize.quantity} 件，無法加入更多`);
                     return;
                 }
             }
@@ -578,10 +578,10 @@
                     product.sizes.forEach(data => {
                         const option = document.createElement('option');
                         option.value = data.size;
-                        // option.textContent = `${data.size} (庫存: ${data.quantity})`;
+                        // option.textContent = `${data.size} (現貨: ${data.quantity})`;
                         option.textContent = `${data.size}`;
                         modalSizeSelect.appendChild(option);
-                        //加總庫存
+                        //加總現貨
                         stock += data.quantity;
                         validSizes.push(`${data.size}(${data.quantity})`); // ✅ 儲存有效尺寸
                     });
@@ -593,7 +593,7 @@
                 currentModalProductId = productId;
 
 
-                // 動態控制加入購物車按鈕與庫存文字
+                // 動態控制加入購物車按鈕與現貨文字
                 function updateAddToCartButtonState() {
                     const selectedSize = modalSizeSelect.value;
                     const selectedData = product.sizes.find(s => s.size === selectedSize);
@@ -601,7 +601,7 @@
 
                     if (!selectedData || selectedData.quantity < 1) {
                         modalAddToCartButton.disabled = true;
-                        modalAddToCartButton.innerHTML = '<i class="fas fa-ban mr-2"></i>無庫存';
+                        modalAddToCartButton.innerHTML = '<i class="fas fa-ban mr-2"></i>無現貨';
                         modalAddToCartButton.classList.remove('bg-indigo-600', 'hover:bg-indigo-700');
                         modalAddToCartButton.classList.add('bg-gray-300', 'cursor-not-allowed');
 
@@ -613,7 +613,7 @@
                         modalAddToCartButton.classList.remove('bg-gray-300', 'cursor-not-allowed');
                         modalAddToCartButton.classList.add('bg-indigo-600', 'hover:bg-indigo-700');
 
-                        stockInfoEl.textContent = `剩餘庫存：${selectedData.quantity}`;
+                        stockInfoEl.textContent = `剩餘現貨：${selectedData.quantity}`;
                         stockInfoEl.classList.remove('text-red-500');
                     }
                 }
@@ -654,7 +654,7 @@
                     console.warn(`Product ${productId} has no images. Using placeholder.`);
                 }
 
-                // 當尺寸變更時，自動檢查庫存
+                // 當尺寸變更時，自動檢查現貨
                 modalSizeSelect.addEventListener('change', updateAddToCartButtonState);
 
                 // 初始也跑一次（預設第一個尺寸）
@@ -713,7 +713,7 @@
             if (!product.sizes.empty) {
                 const validSizes = [];
                 product.sizes.forEach(data => {
-                    //加總庫存
+                    //加總現貨
                     stock += data.quantity;
                     validSizes.push(`${data.size}(${data.quantity})`); // ✅ 儲存有效尺寸
                 });
