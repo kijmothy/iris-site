@@ -159,7 +159,7 @@
 					<!-- 折扣 -->
 					<div>
 					  <label for="product-discount-rate" class="block mb-1 text-gray-700 font-medium">折扣（例如：75 表示 75 折）</label>
-					  <input type="number" id="product-discount-rate" placeholder="折扣" min="0" max="100" class="p-3 border rounded-lg w-full focus:ring-2 focus:ring-indigo-500">
+					  <input type="number" id="product-discount-rate" placeholder="折扣" min="0" max="100" class="p-3 border rounded-lg w-full focus:ring-2 focus:ring-indigo-500" value="100">
 					</div>
 					<div class="col-span-1 md:col-span-2">
                         <label class="block text-gray-700 mb-2 font-medium">尺寸與數量</label>
@@ -414,6 +414,16 @@
             var editStockInput = document.getElementById('edit-product-stock');
             var editDiscountRateInput = document.getElementById('edit-product-discount-rate');
             console.log("DOMContentLoaded 觸發，開始綁定事件...");
+			document.getElementById('edit-product-discount-rate').addEventListener('input', function () {
+				let val = parseFloat(this.value);
+				if (val > 100) this.value = 100;
+				if (val < 0) this.value = 0;
+			});
+			document.getElementById('product-discount-rate').addEventListener('input', function () {
+				let val = parseFloat(this.value);
+				if (val > 100) this.value = 100;
+				if (val < 0) this.value = 0;
+			});
 
             // 獲取登出按鈕
             const logoutButton = document.getElementById('logout-button');
