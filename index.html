@@ -619,107 +619,109 @@
 
 
         // Function to open the image modal
-        function openImageModal(productId) {
-            const product = allProductsData.find(p => p.id === productId);
-            // 定義一個通用的佔位符圖片 URL
-            const defaultPlaceholder = 'https://via.placeholder.com/400x300?text=No+Image';
+       function openImageModal(productId) {
+		  const product = allProductsData.find(p => p.id === productId);
+		  const defaultPlaceholder = 'https://via.placeholder.com/400x300?text=No+Image';
 
-            if (product) {
-                modalSizeSelect.innerHTML = '';
-                let stock = 0
-                let sizesHtml = 'N/A';
-                if (!product.sizes.empty) {
-                    const validSizes = [];
-                    product.sizes.forEach(data => {
-                        const option = document.createElement('option');
-                        option.value = data.size;
-                        // option.textContent = `${data.size} (現貨: ${data.quantity})`;
-                        option.textContent = `${data.size}`;
-                        modalSizeSelect.appendChild(option);
-                        //加總現貨
-                        stock += data.quantity;
-                        validSizes.push(`${data.size}(${data.quantity})`); // ✅ 儲存有效尺寸
-                    });
-                    if (validSizes.length > 0) {
-                        sizesHtml = validSizes.join(', ');
-                    }
-                }
+		  if (!product) {
+			console.error(`Product with ID ${productId} not found.`);
+			return;
+		  }
 
-                currentModalProductId = productId;
+		  modalSizeSelect.innerHTML = '';
+		  let stock = 0;
+		  let sizesHtml = 'N/A';
+		  if (!product.sizes?.empty) {
+			const validSizes = [];
+			product.sizes.forEach(data => {
+			  const option = document.createElement('option');
+			  option.value = data.size;
+			  option.textContent = data.size;
+			  modalSizeSelect.appendChild(option);
 
+			  stock += data.quantity;
+			  validSizes.push(`${data.size}(${data.quantity})`);
+			});
+			if (validSizes.length > 0) {
+			  sizesHtml = validSizes.join(', ');
+			}
+		  }
 
-                // 動態控制加入購物車按鈕與現貨文字
-                function updateAddToCartButtonState() {
-                    const selectedSize = modalSizeSelect.value;
-                    const selectedData = product.sizes.find(s => s.size === selectedSize);
-                    const stockInfoEl = document.getElementById('size-stock-info');
+		  currentModalProductId = productId;
 
-                    if (!selectedData || selectedData.quantity < 1) {
-                        modalAddToCartButton.disabled = true;
-                        modalAddToCartButton.innerHTML = '<i class="fas fa-ban mr-2"></i>無現貨';
-                        modalAddToCartButton.classList.remove('bg-indigo-600', 'hover:bg-indigo-700');
-                        modalAddToCartButton.classList.add('bg-gray-300', 'cursor-not-allowed');
+		  // 控制加入購物車按鈕
+		  function updateAddToCartButtonState() {
+			const selectedSize = modalSizeSelect.value;
+			const selectedData = product.sizes.find(s => s.size === selectedSize);
+			const stockInfoEl = document.getElementById('size-stock-info');
 
-                        stockInfoEl.textContent = `此尺寸已售完`;
-                        stockInfoEl.classList.add('text-red-500');
-                    } else {
-                        modalAddToCartButton.disabled = false;
-                        modalAddToCartButton.innerHTML = '<i class="fas fa-shopping-cart mr-2"></i>加入購物車';
-                        modalAddToCartButton.classList.remove('bg-gray-300', 'cursor-not-allowed');
-                        modalAddToCartButton.classList.add('bg-indigo-600', 'hover:bg-indigo-700');
+			if (!selectedData || selectedData.quantity < 1) {
+			  modalAddToCartButton.disabled = true;
+			  modalAddToCartButton.innerHTML = '<i class="fas fa-ban mr-2"></i>無現貨';
+			  modalAddToCartButton.classList.remove('bg-indigo-600', 'hover:bg-indigo-700');
+			  modalAddToCartButton.classList.add('bg-gray-300', 'cursor-not-allowed');
+			  stockInfoEl.textContent = `此尺寸已售完`;
+			  stockInfoEl.classList.add('text-red-500');
+			} else {
+			  modalAddToCartButton.disabled = false;
+			  modalAddToCartButton.innerHTML = '<i class="fas fa-shopping-cart mr-2"></i>加入購物車';
+			  modalAddToCartButton.classList.remove('bg-gray-300', 'cursor-not-allowed');
+			  modalAddToCartButton.classList.add('bg-indigo-600', 'hover:bg-indigo-700');
+			  stockInfoEl.textContent = `剩餘現貨：${selectedData.quantity}`;
+			  stockInfoEl.classList.remove('text-red-500');
+			}
+		  }
 
-                        stockInfoEl.textContent = `剩餘現貨：${selectedData.quantity}`;
-                        stockInfoEl.classList.remove('text-red-500');
-                    }
-                }
+		  // 資料設定區塊
+		  modalProductTitle.textContent = product.name;
+		  modalProductSku.textContent = product.sku;
+		  modalProductDescription.textContent = product.description;
+		  modalProductSizes.textContent = `可選尺寸：${sizesHtml}`;
 
+		  // 價格格式化顯示
+		  const hasDiscount = product.discountRate !== undefined && product.discountRate < 100;
+		  const discountedPrice = hasDiscount
+			? Math.ceil(product.price * (product.discountRate / 100))
+			: product.price;
 
-                modalProductTitle.textContent = product.name;
-				modalProductSku.textContent = product.sku;
-                modalProductDescription.textContent = product.description;
-                modalProductSizes.textContent = `尺寸: ${sizesHtml}`;
-				
-				const hasDiscount = product.discountRate !== undefined && product.discountRate < 100; 
-				const discountedPrice = hasDiscount ? Math.ceil(product.price * (product.discountRate / 100)) : product.price;
-				modalProductPrice.innerHTML = hasDiscount
-				  ? `<span class='text-gray-400 line-through text-base mr-2'>$${product.price.toLocaleString()}</span><span class='text-red-500 font-bold text-2xl'>$${discountedPrice.toLocaleString()}（${product.discountRate}折）</span>`
-				  : `<span class='text-indigo-600 font-bold text-2xl'>$${product.price.toLocaleString()}</span>`;
+		  modalProductPrice.innerHTML = hasDiscount
+			? `
+			  <div class="text-right space-y-1 leading-snug">
+				<div class="text-gray-400 line-through text-sm">$${product.price.toLocaleString()}</div>
+				<div class="text-red-500 font-bold text-xl">
+				  $${discountedPrice.toLocaleString()} <span class="text-sm">（${product.discountRate}折）</span>
+				</div>
+			  </div>
+			`
+			: `
+			  <div class="text-indigo-600 font-bold text-xl text-right">
+				$${product.price.toLocaleString()}
+			  </div>`;
 
-                modalThumbnails.innerHTML = '';
-                console.log('openImageModal product.imageUrls ')
-                console.log(product.imageUrls)
+		  // 縮圖處理
+		  modalThumbnails.innerHTML = '';
+		  if (product.imageUrls && product.imageUrls.length > 0) {
+			modalMainImage.src = `images/${product.sku}/${product.imageUrls[0]}`;
+			product.imageUrls.forEach((url, index) => {
+			  const thumb = document.createElement('img');
+			  thumb.src = `images/${product.sku}/${url}`;
+			  thumb.dataset.fullUrl = `images/${product.sku}/${url}`;
+			  thumb.alt = `Thumbnail ${index + 1}`;
+			  thumb.className = 'w-full h-20 object-cover rounded-md cursor-pointer border-2 border-transparent hover:border-indigo-400 transition duration-200';
+			  if (index === 0) thumb.classList.add('thumbnail-active');
+			  modalThumbnails.appendChild(thumb);
+			});
+		  } else {
+			modalMainImage.src = defaultPlaceholder;
+			console.warn(`Product ${productId} has no images.`);
+		  }
 
-                // 檢查 imageUrls 陣列是否存在且有內容
-                if (product.imageUrls && product.imageUrls.length > 0) {
-                    modalMainImage.src = `images/${product.sku}/${product.imageUrls[0]}`; // 設定主圖片
+		  modalSizeSelect.addEventListener('change', updateAddToCartButtonState);
+		  updateAddToCartButtonState();
 
-                    product.imageUrls.forEach((imageUrl, index) => {
-                        const img = document.createElement('img');
-                        img.src = `images/${product.sku}/${imageUrl}`; // 設定縮圖圖片
-                        img.alt = `Thumbnail ${index + 1}`;
-                        img.dataset.fullUrl = `images/${product.sku}/${imageUrl}`;
-                        img.classList.add('w-full', 'h-20', 'object-cover', 'rounded-md', 'cursor-pointer', 'border-2', 'border-transparent', 'hover:border-indigo-400', 'transition', 'duration-200');
-                        if (index === 0) {
-                            img.classList.add('thumbnail-active');
-                        }
-                        modalThumbnails.appendChild(img);
-                    });
-                } else {
-                    modalMainImage.src = defaultPlaceholder; // 如果沒有圖片，使用佔位符圖片
-                    console.warn(`Product ${productId} has no images. Using placeholder.`);
-                }
+		  openModal(imageModal);
+		}
 
-                // 當尺寸變更時，自動檢查現貨
-                modalSizeSelect.addEventListener('change', updateAddToCartButtonState);
-
-                // 初始也跑一次（預設第一個尺寸）
-                updateAddToCartButtonState();
-
-                openModal(imageModal); // 使用通用函數打開圖片 Modal
-            } else {
-                console.error(`Product with ID ${productId} not found.`);
-            }
-        }
 
         // Function to close the image modal
         function closeImageModal() {
@@ -741,71 +743,92 @@
 
         // Helper function to create product card HTML
         function createProductCard(product) {
-            const card = document.createElement('div');
-            card.className = 'bg-white rounded-lg shadow-lg overflow-hidden card-hover transition duration-300 relative cursor-pointer';
-            card.dataset.productId = product.id; // Store Firestore document ID
+		  const card = document.createElement('div');
+		  card.className = 'bg-white rounded-lg shadow-lg overflow-hidden card-hover transition duration-300 relative cursor-pointer flex flex-col';
+		  card.dataset.productId = product.id;
 
-            let tagHtml = '';
-            // Condition for "新品" tag: either '新品' in tags OR is_new is true
-            if ((product.tags && product.tags.includes('新品')) || product.is_new === true) {
-                tagHtml += '<span class="tag new">新品</span>';
-            }
-            // 檢查 is_featured 屬性來決定是否顯示熱門標籤
-            if (product.is_featured === true) {
-                tagHtml += '<span class="tag popular" style="left: 4.5rem;">熱門</span>'; // Offset for multiple tags
-            }
-            // 只有當沒有熱門標籤時才考慮限量標籤的偏移
-            else if (product.tags && product.tags.includes('限量')) {
-                tagHtml += '<span class="tag limited" style="left: 4.5rem;">限量</span>'; // Offset for multiple tags
-            }
+		  // 標籤區塊
+		  let tagHtml = '';
+		  if ((product.tags && product.tags.includes('新品')) || product.is_new === true) {
+			tagHtml += '<span class="tag new">新品</span>';
+		  }
+		  if (product.is_featured === true) {
+			tagHtml += '<span class="tag popular" style="left: 4.5rem;">熱門</span>';
+		  } else if (product.tags && product.tags.includes('限量')) {
+			tagHtml += '<span class="tag limited" style="left: 4.5rem;">限量</span>';
+		  }
 
+		  // 圖片
+		  const imageUrl = product.imageUrls?.length > 0
+			? product.imageUrls[0]
+			: 'https://via.placeholder.com/400x300?text=No+Image';
 
-            // 確保 product.imageUrls 存在且有內容，否則使用佔位符圖片
-            const imageUrl = product.imageUrls && product.imageUrls.length > 0 ? product.imageUrls[0] : 'https://via.placeholder.com/400x300?text=No+Image'; // Default placeholder
+		  // 尺寸顯示
+		  let sizesHtml = 'N/A';
+		  let stock = 0;
+		  if (!product.sizes?.empty) {
+			const validSizes = [];
+			product.sizes.forEach(data => {
+			  stock += data.quantity;
+			  validSizes.push(`${data.size}(${data.quantity})`);
+			});
+			if (validSizes.length > 0) {
+			  sizesHtml = validSizes.join(', ');
+			}
+		  }
 
-            let stock = 0
-            let sizesHtml = 'N/A';
-            if (!product.sizes.empty) {
-                const validSizes = [];
-                product.sizes.forEach(data => {
-                    //加總現貨
-                    stock += data.quantity;
-                    validSizes.push(`${data.size}(${data.quantity})`); // ✅ 儲存有效尺寸
-                });
-                if (validSizes.length > 0) {
-                    sizesHtml = validSizes.join(', ');
-                }
-            }
-            const isOutOfStock = stock < 1;
+		  // 價格區塊
+		  const hasDiscount = product.discountRate !== undefined && product.discountRate < 100;
+		  const discountedPrice = hasDiscount
+			? Math.ceil(product.price * (product.discountRate / 100))
+			: product.price;
 
-            const buttonHtml = isOutOfStock ?
-                `<button class="add-to-cart-btn bg-gray-300 text-white text-sm font-medium py-2 px-4 rounded-md transition duration-300 cursor-not-allowed" disabled>
-				  <i class="fas fa-ban mr-2"></i>已售完
-				</button>` :
-                `<button class="add-to-cart-btn bg-indigo-500 hover:bg-indigo-600 text-white text-sm font-medium py-2 px-4 rounded-md transition duration-300" data-product-id="${product.id}">
-				  <i class="fas fa-eye mr-2"></i>販售中
-				</button>`;
-				
-			const hasDiscount = product.discountRate !== undefined && product.discountRate < 100;
-			const discountedPrice = hasDiscount ? Math.ceil(product.price * (product.discountRate / 100)) : product.price;
-			const priceHtml = hasDiscount
-			  ? `<span class="text-gray-500 line-through text-sm mr-2">$${product.price.toLocaleString()}</span><span class="text-red-500 font-bold text-lg">$${discountedPrice.toLocaleString()}（${product.discountRate}折）</span>`
-			  : `<span class="text-indigo-600 font-bold text-lg">$${product.price.toLocaleString()}</span>`;
-            card.innerHTML = `
-			  ${tagHtml}
-			  <img src="images/${product.sku}/${imageUrl}" alt="${product.name}" class="w-full h-64 object-cover">
-			  <div class="p-5">
-				<h3 class="text-xl font-semibold text-gray-800 mb-2 truncate">${product.name}</h3>
-				<p class="text-gray-600 text-sm mb-3 line-clamp-2">${product.sku}</p>
-				<p class="text-gray-500 text-xs mb-2">尺寸: ${sizesHtml}</p>
-				<div class="flex justify-between items-center">
-				  ${priceHtml}
+		  const priceHtml = hasDiscount
+			? `
+			  <div class="text-right space-y-1 leading-snug">
+				<div class="text-gray-400 line-through text-sm">$${product.price.toLocaleString()}</div>
+				<div class="text-red-500 font-bold text-xl">
+				  $${discountedPrice.toLocaleString()} <span class="text-sm">（${product.discountRate}折）</span>
+				</div>
+			  </div>
+			`
+			: `
+			  <div class="text-indigo-600 font-bold text-xl text-right">
+				$${product.price.toLocaleString()}
+			  </div>
+			`;
+
+		  // 販售按鈕
+		  const isOutOfStock = stock < 1;
+		  const buttonHtml = isOutOfStock
+			? `<button class="bg-gray-300 text-white text-xs font-medium py-1.5 px-3 rounded-md cursor-not-allowed" disabled>
+				 <i class="fas fa-ban mr-1"></i>已售完
+			   </button>`
+			: `<button class="add-to-cart-btn bg-indigo-500 hover:bg-indigo-600 text-white text-xs font-medium py-1.5 px-3 rounded-md transition duration-300" data-product-id="${product.id}">
+				 <i class="fas fa-eye mr-1"></i>販售中
+			   </button>`;
+
+		  // 實際插入卡片內容
+		  card.innerHTML = `
+			${tagHtml}
+			<img src="images/${product.sku}/${imageUrl}" alt="${product.name}" class="w-full h-64 object-cover">
+			<div class="p-5 flex flex-col justify-between flex-grow">
+			  <div class="mb-3">
+				<h3 class="text-base md:text-lg font-semibold text-gray-800 truncate">${product.name}</h3>
+				<p class="text-gray-500 text-sm">${product.sku}</p>
+				<p class="text-gray-400 text-xs mt-1">尺寸: ${sizesHtml}</p>
+			  </div>
+			  <div class="mt-auto space-y-2">
+				${priceHtml}
+				<div class="text-right">
 				  ${buttonHtml}
 				</div>
 			  </div>
-			`;
-            return card;
-        }
+			</div>
+		  `;
+
+		  return card;
+		}
 
         // Function to render products into a specific section
         function renderProducts(products, targetElementId) {
