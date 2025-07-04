@@ -132,12 +132,35 @@
             <div class="mb-8">
                 <h3 class="text-xl font-semibold mb-4">新增商品</h3>
                 <form id="add-product-form" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <input type="text" id="product-name" placeholder="商品名稱" class="p-3 border rounded-lg focus:ring-2 focus:ring-indigo-500" required>
-                    <input type="text" id="product-sku" placeholder="商品編號 (SKU)" class="p-3 border rounded-lg focus:ring-2 focus:ring-indigo-500" required>
-                    <input type="number" id="product-price" placeholder="價格" class="p-3 border rounded-lg focus:ring-2 focus:ring-indigo-500" required>
-                    <input type="text" id="product-stock" placeholder="庫存數量" class="p-3 border rounded-lg focus:ring-2 focus:ring-indigo-500" disabled>
-					<input type="number" id="product-discount-rate" placeholder="折扣（例如：75 表示 75 折）" min="0" max="100" class="p-3 border rounded-lg focus:ring-2 focus:ring-indigo-500">
-                    
+                    <!-- 商品名稱 -->
+					<div>
+					  <label for="product-name" class="block mb-1 text-gray-700 font-medium">商品名稱</label>
+					  <input type="text" id="product-name" placeholder="商品名稱" class="p-3 border rounded-lg w-full focus:ring-2 focus:ring-indigo-500" required>
+					</div>
+
+					<!-- 商品編號 -->
+					<div>
+					  <label for="product-sku" class="block mb-1 text-gray-700 font-medium">商品編號 (SKU)</label>
+					  <input type="text" id="product-sku" placeholder="商品編號" class="p-3 border rounded-lg w-full focus:ring-2 focus:ring-indigo-500" required>
+					</div>
+
+					<!-- 價格 -->
+					<div>
+					  <label for="product-price" class="block mb-1 text-gray-700 font-medium">價格</label>
+					  <input type="number" id="product-price" placeholder="價格" class="p-3 border rounded-lg w-full focus:ring-2 focus:ring-indigo-500" required>
+					</div>
+
+					<!-- 庫存數量（自動） -->
+					<div>
+					  <label for="product-stock" class="block mb-1 text-gray-700 font-medium">庫存數量（自動計算）</label>
+					  <input type="text" id="product-stock" placeholder="庫存數量" class="p-3 border rounded-lg w-full focus:ring-2 focus:ring-indigo-500" disabled>
+					</div>
+
+					<!-- 折扣 -->
+					<div>
+					  <label for="product-discount-rate" class="block mb-1 text-gray-700 font-medium">折扣（例如：75 表示 75 折）</label>
+					  <input type="number" id="product-discount-rate" placeholder="折扣" min="0" max="100" class="p-3 border rounded-lg w-full focus:ring-2 focus:ring-indigo-500">
+					</div>
 					<div class="col-span-1 md:col-span-2">
                         <label class="block text-gray-700 mb-2 font-medium">尺寸與數量</label>
                         <div id="size-quantity-container" class="space-y-2"></div>
@@ -227,12 +250,35 @@
             <form id="edit-product-form">
                 <input type="hidden" id="edit-product-id">
                 <div class="space-y-4">
-                    <input type="text" id="edit-product-name" placeholder="商品名稱" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-indigo-500" required>
-                    <input type="text" id="edit-product-sku" placeholder="商品編號 (SKU)" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-indigo-500" required>
-                    <input type="number" id="edit-product-price" placeholder="價格" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-indigo-500" required>
-                    <input type="text" id="edit-product-stock" placeholder="庫存數量" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-indigo-500" disabled>
-					<input type="number" id="edit-product-discount-rate" placeholder="折扣（例如：75 表示 75 折）" min="0" max="100" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-indigo-500">
+                    <!-- 商品名稱 -->
+					<div>
+					  <label for="edit-product-name" class="block mb-1 text-gray-700 font-medium">商品名稱</label>
+					  <input type="text" id="edit-product-name" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-indigo-500" required>
+					</div>
 
+					<!-- SKU -->
+					<div>
+					  <label for="edit-product-sku" class="block mb-1 text-gray-700 font-medium">商品編號 (SKU)</label>
+					  <input type="text" id="edit-product-sku" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-indigo-500" required>
+					</div>
+
+					<!-- 價格 -->
+					<div>
+					  <label for="edit-product-price" class="block mb-1 text-gray-700 font-medium">價格</label>
+					  <input type="number" id="edit-product-price" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-indigo-500" required>
+					</div>
+
+					<!-- 庫存 -->
+					<div>
+					  <label for="edit-product-stock" class="block mb-1 text-gray-700 font-medium">庫存數量（自動計算）</label>
+					  <input type="text" id="edit-product-stock" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-indigo-500" disabled>
+					</div>
+
+					<!-- 折扣 -->
+					<div>
+					  <label for="edit-product-discount-rate" class="block mb-1 text-gray-700 font-medium">折扣（例如：75 表示 75 折）</label>
+					  <input type="number" id="edit-product-discount-rate" min="0" max="100" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-indigo-500">
+					</div>
                     <div class="col-span-1 md:col-span-2">
                         <label class="block text-gray-700 mb-2 font-medium">尺寸與數量</label>
                         <div class="space-y-2" id="edit-size-quantity-container"></div>
