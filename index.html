@@ -93,7 +93,59 @@
             font-weight: bold;
             line-height: 1;
         }
-    </style>
+		/* 卡片 */
+		.scrollbar-hide::-webkit-scrollbar {
+		  display: none;
+		}
+		.scrollbar-hide {
+		  -ms-overflow-style: none;
+		  scrollbar-width: none;
+		}
+		.scroll-btn {
+		  position: absolute;
+		  top: 50%;
+		  transform: translateY(-50%);
+		  background-color: rgba(255, 255, 255, 0.9);
+		  border-radius: 9999px;
+		  padding: 0.5rem;
+		  z-index: 10;
+		  box-shadow: 0 0 5px rgba(0,0,0,0.2);
+		  cursor: pointer;
+		  transition: opacity 0.3s, filter 0.3s;
+		}
+		.scroll-btn.disabled {
+		  opacity: 0.3;
+		  cursor: not-allowed;
+		  filter: grayscale(100%);
+		  pointer-events: none;
+		}
+		.scroll-btn:hover:not(.disabled) {
+		  background-color: rgba(229, 231, 235, 0.9);
+		}
+		.scroll-btn.left-0 {
+		  left: -12px;
+		}
+		.scroll-btn.right-0 {
+		  right: -12px;
+		}
+		.scroll-container > * {
+		  flex: 1 1 auto;
+		  min-width: calc(100% / 4 - 1.5rem);
+		  max-width: calc(100% / 4 - 1.5rem);
+		}
+		@media (max-width: 1024px) {
+		  .scroll-container > * {
+			min-width: calc(100% / 2 - 1rem);
+			max-width: calc(100% / 2 - 1rem);
+		  }
+		}
+		@media (max-width: 640px) {
+		  .scroll-container > * {
+			min-width: 100%;
+			max-width: 100%;
+		  }
+		}
+</style>
 </head>
 
 <body class="relative min-h-screen">
@@ -143,27 +195,71 @@
     </header>
 
     <main class="container mx-auto px-4 py-12">
-        <section id="new-arrivals" class="mb-16">
-            <h2 class="text-3xl font-bold text-gray-800 mb-8 text-center">✨ 新品上市 ✨</h2>
-            <div id="new-arrivals-products" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-                <p class="text-center text-gray-500 col-span-full">載入中...</p>
-            </div>
-        </section>
+		<section id="new-arrivals" class="mb-16 relative">
+		  <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center">✨ 新品上市 ✨</h2>
+		  <!-- ✅ 搜尋欄位：新品 -->
+		  <div class="mb-4 text-center">
+			<input type="text" id="search-new" placeholder="搜尋新品名稱或編號"
+				class="w-full max-w-md px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+		  </div>
+		  <div class="relative">
+			<button class="scroll-btn left-0" data-target="#new-arrivals-products">
+			  <i class="fas fa-chevron-left"></i>
+			</button>
+			<div class="overflow-x-auto">
+			  <div id="new-arrivals-products" class="flex gap-6 overflow-x-auto pb-2 scrollbar-hide scroll-container">
+				<!-- 商品卡片們會被插入這裡 -->
+			  </div>
+			</div>
+			<button class="scroll-btn right-0" data-target="#new-arrivals-products">
+			  <i class="fas fa-chevron-right"></i>
+			</button>
+		  </div>
+		</section>
 
-        <section id="popular-items" class="mb-16">
-            <h2 class="text-3xl font-bold text-gray-800 mb-8 text-center">🔥 熱門商品 🔥</h2>
-            <div id="popular-items-products" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-                <p class="text-center text-gray-500 col-span-full">載入中...</p>
-            </div>
-        </section>
+		<section id="popular-items" class="mb-16 relative">
+		  <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center">🔥 熱門商品 🔥</h2>
+		  <!-- ✅ 搜尋欄位：熱門 -->
+		  <div class="mb-4 text-center">
+			<input type="text" id="search-popular" placeholder="搜尋熱門名稱或編號"
+				class="w-full max-w-md px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+		  </div>
+		  <div class="relative">
+			<button class="scroll-btn left-0" data-target="#popular-items-products">
+			  <i class="fas fa-chevron-left"></i>
+			</button>
+			<div class="overflow-x-auto">
+			  <div id="popular-items-products" class="flex gap-6 overflow-x-auto pb-2 scrollbar-hide scroll-container">
+				<!-- 商品卡片們會被插入這裡 -->
+			  </div>
+			</div>
+			<button class="scroll-btn right-0" data-target="#popular-items-products">
+			  <i class="fas fa-chevron-right"></i>
+			</button>
+		  </div>
+		</section>
 
-        <section id="all-products">
-            <h2 class="text-3xl font-bold text-gray-800 mb-8 text-center">🛍️ 所有商品 🛍️</h2>
-            <div id="all-products-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-                <p class="text-center text-gray-500 col-span-full">載入中...</p>
-            </div>
-        </section>
-
+		<section id="all-products" class="mb-16 relative">
+		  <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center">🛍️ 所有商品 🛍️</h2>
+		  <!-- ✅ 搜尋欄位：所有商品 -->
+		  <div class="mb-4 text-center">
+			<input type="text" id="search-all" placeholder="搜尋所有商品名稱或編號"
+			  class="w-full max-w-md px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+		  </div>
+		  <div class="relative">
+			<button class="scroll-btn left-0" data-target="#all-products-grid">
+			  <i class="fas fa-chevron-left"></i>
+			</button>
+			<div class="overflow-x-auto">
+			  <div id="all-products-grid" class="flex gap-6 overflow-x-auto pb-2 scrollbar-hide scroll-container">
+				<!-- 商品卡片們會被插入這裡 -->
+			  </div>
+			</div>
+			<button class="scroll-btn right-0" data-target="#all-products-grid">
+			  <i class="fas fa-chevron-right"></i>
+			</button>
+		  </div>
+		</section>
         <div class="container mx-auto px-4 my-12">
             <hr class="border-t-2 border-gray-300 w-full mx-auto shadow-md" />
         </div>
@@ -197,11 +293,11 @@
     </main>
 	
 	<!-- 購物須知 Modal -->
-	<div id="info-modal" class="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50 hidden">
+	<div id="info-modal" class="modal fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 z-50">
 	  <div class="bg-white rounded-lg shadow-xl w-11/12 md:w-[900px] lg:w-[1000px] max-h-[90vh] overflow-hidden relative">
 		
 		<!-- 固定的關閉按鈕 -->
-		<button onclick="document.getElementById('info-modal').classList.add('hidden')" class="absolute top-3 right-3 text-gray-500 hover:text-gray-700 text-2xl z-10">
+		<button onclick="document.getElementById('info-modal').classList.remove('is-open')" class="absolute top-3 right-3 text-gray-500 hover:text-gray-700 text-2xl z-10">
 		  <i class="fas fa-times-circle"></i>
 		</button>
 
@@ -831,20 +927,20 @@
 		}
 
         // Function to render products into a specific section
-        function renderProducts(products, targetElementId) {
-            const container = document.getElementById(targetElementId);
-            container.innerHTML = ''; // Clear existing content
+		function renderProducts(products, containerId) {
+		  return new Promise(resolve => {
+			const container = document.getElementById(containerId);
+			container.innerHTML = '';
+			console.log(`[renderProducts] rendering ${products?.length || 0} items to #${containerId}`);
+			products.forEach(product => {
+			  const card = createProductCard(product);
+			  container.appendChild(card);
+			});
+			resolve();
+		  });
+		}
 
-            if (products.length === 0) {
-                container.innerHTML = '<p class="text-center text-gray-500 col-span-full">目前沒有相關商品。</p>';
-                return;
-            }
-
-            products.forEach(product => {
-                const card = createProductCard(product);
-                container.appendChild(card);
-            });
-        }
+		
 		function loadShoppingInfo() {
 		  db.collection('settings').doc('shopping_info').get().then(doc => {
 			if (doc.exists) {
@@ -866,16 +962,100 @@
 			}
 		  });
 		}
+		
+		function initSearch(){
+			document.getElementById('search-new')?.addEventListener('input', (e) => {
+			  const keyword = e.target.value.trim().toLowerCase();
+			  const filtered = allProductsData.filter(p =>
+				((p.tags && p.tags.includes('新品')) || p.is_new === true) &&
+				(p.name.toLowerCase().includes(keyword) || p.sku.toLowerCase().includes(keyword))
+			  );
+			  renderProducts(filtered, 'new-arrivals-products');
+			});
+
+			document.getElementById('search-popular')?.addEventListener('input', (e) => {
+			  const keyword = e.target.value.trim().toLowerCase();
+			  const filtered = allProductsData.filter(p =>
+				p.is_featured === true &&
+				(p.name.toLowerCase().includes(keyword) || p.sku.toLowerCase().includes(keyword))
+			  );
+			  renderProducts(filtered, 'popular-items-products');
+			});
+
+			document.getElementById('search-all')?.addEventListener('input', (e) => {
+			  const keyword = e.target.value.trim().toLowerCase();
+			  const filtered = allProductsData.filter(p =>
+				(p.name.toLowerCase().includes(keyword) || p.sku.toLowerCase().includes(keyword))
+			  );
+			  renderProducts(filtered, 'all-products-grid');
+			});
+		}
         // 頁面載入後執行
         document.addEventListener('DOMContentLoaded', () => {
-            loadContactInfo();
             previewModalCloseButton.addEventListener('click', () => {
                 imagePreviewModal.classList.remove('is-open');
             });
 
 		
-			// shopping_info
+            loadContactInfo();
+			
 			loadShoppingInfo();
+			initSearch()
+			// Card Scroll Button
+			const updateScrollButtonState = (container, leftBtn, rightBtn) => {
+				const scrollLeft = container.scrollLeft;
+				const maxScrollLeft = container.scrollWidth - container.clientWidth;
+				const buffer = 10;
+				if (leftBtn) leftBtn.classList.toggle('disabled', scrollLeft <= buffer);
+				if (rightBtn) rightBtn.classList.toggle('disabled', scrollLeft >= maxScrollLeft - buffer);
+			  };
+			  const updateScrollButtonsManually = () => {
+				const allPairs = [
+				  ['#new-arrivals-products', '#new-arrivals .left-0', '#new-arrivals .right-0'],
+				  ['#popular-items-products', '#popular-items .left-0', '#popular-items .right-0'],
+				  ['#all-products-grid', '#all-products .left-0', '#all-products .right-0']
+				];
+				allPairs.forEach(([containerSel, leftSel, rightSel]) => {
+				  const container = document.querySelector(containerSel);
+				  const leftBtn = document.querySelector(leftSel);
+				  const rightBtn = document.querySelector(rightSel);
+				  if (!container) return;
+				  updateScrollButtonState(container, leftBtn, rightBtn);
+				});
+			  };
+
+			  document.querySelectorAll('.scroll-btn').forEach(btn => {
+				btn.addEventListener('click', () => {
+				  const targetId = btn.dataset.target;
+				  const container = document.querySelector(targetId);
+				  if (!container) return;
+
+				  const direction = btn.classList.contains('left-0') ? -1 : 1;
+				  const card = container.querySelector(':scope > *');
+				  const scrollAmount = card ? card.offsetWidth + 24 : 300;
+
+				  container.scrollBy({
+					left: direction * scrollAmount,
+					behavior: 'smooth'
+				  });
+				});
+			  });
+
+			  const allPairs = [
+				['#new-arrivals-products', '#new-arrivals .left-0', '#new-arrivals .right-0'],
+				['#popular-items-products', '#popular-items .left-0', '#popular-items .right-0'],
+				['#all-products-grid', '#all-products .left-0', '#all-products .right-0']
+			  ];
+
+			  allPairs.forEach(([containerSel, leftSel, rightSel]) => {
+				const container = document.querySelector(containerSel);
+				const leftBtn = document.querySelector(leftSel);
+				const rightBtn = document.querySelector(rightSel);
+				if (!container) return;
+				const update = () => updateScrollButtonState(container, leftBtn, rightBtn);
+				container.addEventListener('scroll', update);
+				window.addEventListener('resize', update);
+			  });
 			
 			// Fetch products from Firestore
             productsCollection.onSnapshot(snapshot => {
@@ -888,18 +1068,22 @@
 
                 // Filter products for New Arrivals (either based on '新品' tag OR is_new boolean)
                 const newArrivals = products.filter(p =>
-                    (p.tags && p.tags.includes('新品')) || p.is_new === true
-                ).slice(0, 4); // Example: show top 4 new
-                renderProducts(newArrivals, 'new-arrivals-products');
+                    (p.tags && p.tags.includes('新品')) || p.is_new === true); // Filter by is_new = true
 
                 // Filter products for Popular Items based on is_featured attribute
-                const popularItems = products.filter(p => p.is_featured === true).slice(0, 4); // Filter by is_featured = true
-                renderProducts(popularItems, 'popular-items-products');
+                const popularItems = products.filter(p => p.is_featured === true); // Filter by is_featured = true
 
-                // Render all products
-                renderProducts(products, 'all-products-grid');
 
                 updateCartCount(); // 頁面載入時更新購物車數量
+				
+
+			  
+			  // ✅ 商品載入後再觸發一次初始化（Promise 等待）
+			  Promise.all([
+				renderProducts(newArrivals, 'new-arrivals-products'),
+				renderProducts(popularItems, 'popular-items-products'),
+				renderProducts(products, 'all-products-grid')
+			  ]).then(updateScrollButtonsManually);
 
             }, error => {
                 console.error("Error fetching products from Firestore: ", error);

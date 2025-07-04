@@ -372,7 +372,7 @@
 	</div>
 	
 	<!-- 購物須知編輯 Modal -->
-	<div id="shopping-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 hidden">
+	<div id="shopping-modal" class="modal fixed inset-0 bg-black bg-opacity-50 justify-center items-center z-50">
 	  <div class="bg-white rounded-lg shadow-xl w-11/12 md:w-[900px] lg:w-[1000px] max-h-[90vh] overflow-hidden relative">
 
 		<!-- Modal 內容（可垂直捲動） -->
@@ -1303,7 +1303,6 @@
 		// 開啟 modal 並載入資料
 		shoppingBtn.addEventListener('click', async () => {
 		  try {
-                console.log("shoppingBtn click");
 			const doc = await db.collection('settings').doc('shopping_info').get();
 			const data = doc.exists ? doc.data() : {};
 			document.getElementById('purchaseStatement').value = data.purchaseStatement || '';
@@ -1333,7 +1332,7 @@
 		  try {
 			await db.collection('settings').doc('shopping_info').set(newData, { merge: true });
 			alert("購物須知已儲存！");
-			shoppingModal.classList.remove('is-open');;
+			shoppingModal.classList.remove('is-open');
 		  } catch (err) {
 			console.error("儲存購物須知失敗：", err);
 			alert("儲存時發生錯誤");
