@@ -493,7 +493,7 @@
 				     : `<span class='text-indigo-600 font-bold text-2xl'>$${item.price.toLocaleString()}</span>`;
 
 
-				const subtotal = itemDiscountedPrice * item.quantity;
+				const subtotal = discountedPrice * item.quantity;
 				total += subtotal;
                 itemDiv.innerHTML = `
                     <img src="images/${item.sku}/${imageSrc}" alt="${item.name}" class="w-16 h-16 object-cover rounded-md">
