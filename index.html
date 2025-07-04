@@ -605,6 +605,7 @@
                 modalProductDescription.textContent = product.description;
                 modalProductSizes.textContent = `尺寸: ${sizesHtml}`;
 				
+				const hasDiscount = product.discountRate !== undefined && product.discountRate < 100;
 				modalProductPrice.innerHTML = hasDiscount
 				  ? `<span class='text-gray-400 line-through text-base mr-2'>$${product.price.toLocaleString()}</span><span class='text-red-500 font-bold text-2xl'>$${discountedPrice.toLocaleString()}（${product.discountRate}折）</span>`
 				  : `<span class='text-indigo-600 font-bold text-2xl'>$${product.price.toLocaleString()}</span>`;
