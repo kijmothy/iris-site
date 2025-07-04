@@ -145,6 +145,44 @@
 			max-width: 100%;
 		  }
 		}
+		/* ✅ 所有商品滑動容器 */
+		#all-products-grid {
+		  display: flex;
+		  gap: 1.5rem;
+		  scroll-snap-type: x mandatory;
+		  overflow-x: auto;
+		}
+
+		/* ✅ 每一組顯示 8 張卡片（2 行 × 4 欄） */
+		.product-slide-group {
+		  scroll-snap-align: start;
+		  flex: 0 0 100%;
+		  display: grid;
+		  grid-template-columns: repeat(4, minmax(0, 1fr));
+		  gap: 1.5rem;
+		  place-items: start; /* 保持卡片靠上不變形 */
+		}
+
+		/* ✅ 補位空卡片占格子不佔空間 */
+		.product-slide-group > .invisible {
+		  height: 0;
+		  pointer-events: none;
+		}
+
+		/* ✅ RWD 支援（小裝置每排 1 或 2 張） */
+		@media (max-width: 1024px) {
+		  .product-slide-group {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+		  }
+		}
+
+		@media (max-width: 640px) {
+		  .product-slide-group {
+			grid-template-columns: repeat(1, minmax(0, 1fr));
+		  }
+		}
+
+
 </style>
 </head>
 
@@ -241,8 +279,8 @@
 			  <i class="fas fa-chevron-left"></i>
 			</button>
 			<div class="overflow-x-auto">
-			  <div id="all-products-grid" class="flex gap-6 overflow-x-auto pb-2 scrollbar-hide scroll-container">
-				<!-- 商品卡片們會被插入這裡 -->
+			  <div id="all-products-grid" class="scrollbar-hide overflow-x-auto pb-2">
+				<!-- 商品卡片群組會被 JS 動態插入 -->
 			  </div>
 			</div>
 			<button class="scroll-btn right-0" data-target="#all-products-grid">
@@ -921,14 +959,46 @@
 		  return new Promise(resolve => {
 			const container = document.getElementById(containerId);
 			container.innerHTML = '';
-			console.log(`[renderProducts] rendering ${products?.length || 0} items to #${containerId}`);
-			products.forEach(product => {
-			  const card = createProductCard(product);
-			  container.appendChild(card);
-			});
+
+			const isAllProducts = containerId === 'all-products-grid';
+
+			if (isAllProducts) {
+			  const groupSize = 8;
+			  for (let i = 0; i < products.length; i += groupSize) {
+				const group = document.createElement('div');
+				group.className = 'product-slide-group';
+
+				const slice = products.slice(i, i + groupSize);
+
+				// 真實商品卡片
+				slice.forEach(product => {
+				  const card = createProductCard(product);
+				  group.appendChild(card);
+				});
+
+				// 不足 8 張時補空白佔位卡
+				const remaining = groupSize - slice.length;
+				for (let j = 0; j < remaining; j++) {
+				  const placeholder = document.createElement('div');
+				  placeholder.className = 'invisible';
+				  group.appendChild(placeholder);
+				}
+
+				container.appendChild(group);
+			  }
+			} else {
+			  // 非 all-products 區塊，直接插卡片
+			  products.forEach(product => {
+				const card = createProductCard(product);
+				container.appendChild(card);
+			  });
+			}
+
 			resolve();
 		  });
 		}
+
+
 
 		
 		function loadShoppingInfo() {
