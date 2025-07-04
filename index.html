@@ -195,13 +195,13 @@
     </header>
 
     <main class="container mx-auto px-4 py-12">
+	  <!-- ✅ 搜尋欄 -->
+	  <div class="mb-10 text-center">
+		<input type="text" id="global-product-search" placeholder="搜尋商品名稱或編號（同步篩選全部）"
+		  class="w-full max-w-xl px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+	  </div>
 		<section id="new-arrivals" class="mb-16 relative">
 		  <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center">✨ 新品上市 ✨</h2>
-		  <!-- ✅ 搜尋欄位：新品 -->
-		  <div class="mb-4 text-center">
-			<input type="text" id="search-new" placeholder="搜尋新品名稱或編號"
-				class="w-full max-w-md px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
-		  </div>
 		  <div class="relative">
 			<button class="scroll-btn left-0" data-target="#new-arrivals-products">
 			  <i class="fas fa-chevron-left"></i>
@@ -219,11 +219,6 @@
 
 		<section id="popular-items" class="mb-16 relative">
 		  <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center">🔥 熱門商品 🔥</h2>
-		  <!-- ✅ 搜尋欄位：熱門 -->
-		  <div class="mb-4 text-center">
-			<input type="text" id="search-popular" placeholder="搜尋熱門名稱或編號"
-				class="w-full max-w-md px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
-		  </div>
 		  <div class="relative">
 			<button class="scroll-btn left-0" data-target="#popular-items-products">
 			  <i class="fas fa-chevron-left"></i>
@@ -241,11 +236,6 @@
 
 		<section id="all-products" class="mb-16 relative">
 		  <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center">🛍️ 所有商品 🛍️</h2>
-		  <!-- ✅ 搜尋欄位：所有商品 -->
-		  <div class="mb-4 text-center">
-			<input type="text" id="search-all" placeholder="搜尋所有商品名稱或編號"
-			  class="w-full max-w-md px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
-		  </div>
 		  <div class="relative">
 			<button class="scroll-btn left-0" data-target="#all-products-grid">
 			  <i class="fas fa-chevron-left"></i>
@@ -963,32 +953,60 @@
 		  });
 		}
 		
-		function initSearch(){
-			document.getElementById('search-new')?.addEventListener('input', (e) => {
-			  const keyword = e.target.value.trim().toLowerCase();
-			  const filtered = allProductsData.filter(p =>
-				((p.tags && p.tags.includes('新品')) || p.is_new === true) &&
-				(p.name.toLowerCase().includes(keyword) || p.sku.toLowerCase().includes(keyword))
-			  );
-			  renderProducts(filtered, 'new-arrivals-products');
+		const updateScrollButtonState = (container, leftBtn, rightBtn) => {
+			const scrollLeft = container.scrollLeft;
+			const maxScrollLeft = container.scrollWidth - container.clientWidth;
+			const buffer = 10;
+			if (leftBtn) leftBtn.classList.toggle('disabled', scrollLeft <= buffer);
+			if (rightBtn) rightBtn.classList.toggle('disabled', scrollLeft >= maxScrollLeft - buffer);
+		  };
+		  const updateScrollButtonsManually = () => {
+		  console.log('updateScrollButtonsManually...');
+			const allPairs = [
+			  ['#new-arrivals-products', '#new-arrivals .left-0', '#new-arrivals .right-0'],
+			  ['#popular-items-products', '#popular-items .left-0', '#popular-items .right-0'],
+			  ['#all-products-grid', '#all-products .left-0', '#all-products .right-0']
+			];
+			allPairs.forEach(([containerSel, leftSel, rightSel]) => {
+			  const container = document.querySelector(containerSel);
+			  const leftBtn = document.querySelector(leftSel);
+			  const rightBtn = document.querySelector(rightSel);
+			  if (!container) return;
+			  updateScrollButtonState(container, leftBtn, rightBtn);
 			});
+		};
+		
+		function initGlobalSearchInput(){
+			const globalSearchInput = document.getElementById('global-product-search');
 
-			document.getElementById('search-popular')?.addEventListener('input', (e) => {
-			  const keyword = e.target.value.trim().toLowerCase();
-			  const filtered = allProductsData.filter(p =>
-				p.is_featured === true &&
-				(p.name.toLowerCase().includes(keyword) || p.sku.toLowerCase().includes(keyword))
-			  );
-			  renderProducts(filtered, 'popular-items-products');
-			});
+			if (globalSearchInput) {
+			  globalSearchInput.addEventListener('input', () => {
+				const keyword = globalSearchInput.value.trim().toLowerCase();
 
-			document.getElementById('search-all')?.addEventListener('input', (e) => {
-			  const keyword = e.target.value.trim().toLowerCase();
-			  const filtered = allProductsData.filter(p =>
-				(p.name.toLowerCase().includes(keyword) || p.sku.toLowerCase().includes(keyword))
-			  );
-			  renderProducts(filtered, 'all-products-grid');
-			});
+				const isMatch = (p) => (
+				  p.name.toLowerCase().includes(keyword) ||
+				  p.sku.toLowerCase().includes(keyword)
+				);
+
+				const newArrivals = allProductsData.filter(p =>
+				  ((p.tags && p.tags.includes('新品')) || p.is_new === true) && isMatch(p)
+				);
+
+				const popularItems = allProductsData.filter(p =>
+				  p.is_featured === true && isMatch(p)
+				);
+
+				const allItems = allProductsData.filter(isMatch);
+
+				Promise.all([
+				  renderProducts(newArrivals, 'new-arrivals-products'),
+				  renderProducts(popularItems, 'popular-items-products'),
+				  renderProducts(allItems, 'all-products-grid')
+				]).then(() => {
+				  updateScrollButtonsManually(); // ✅ 篩選後重新啟用/禁用左右滑動按鈕
+				});
+			  });
+			}
 		}
         // 頁面載入後執行
         document.addEventListener('DOMContentLoaded', () => {
@@ -999,31 +1017,10 @@
 		
             loadContactInfo();
 			loadShoppingInfo();
-			initSearch();
+			initGlobalSearchInput();
 			openInfoModal();
 			
 			// Card Scroll Button
-			const updateScrollButtonState = (container, leftBtn, rightBtn) => {
-				const scrollLeft = container.scrollLeft;
-				const maxScrollLeft = container.scrollWidth - container.clientWidth;
-				const buffer = 10;
-				if (leftBtn) leftBtn.classList.toggle('disabled', scrollLeft <= buffer);
-				if (rightBtn) rightBtn.classList.toggle('disabled', scrollLeft >= maxScrollLeft - buffer);
-			  };
-			  const updateScrollButtonsManually = () => {
-				const allPairs = [
-				  ['#new-arrivals-products', '#new-arrivals .left-0', '#new-arrivals .right-0'],
-				  ['#popular-items-products', '#popular-items .left-0', '#popular-items .right-0'],
-				  ['#all-products-grid', '#all-products .left-0', '#all-products .right-0']
-				];
-				allPairs.forEach(([containerSel, leftSel, rightSel]) => {
-				  const container = document.querySelector(containerSel);
-				  const leftBtn = document.querySelector(leftSel);
-				  const rightBtn = document.querySelector(rightSel);
-				  if (!container) return;
-				  updateScrollButtonState(container, leftBtn, rightBtn);
-				});
-			  };
 
 			  document.querySelectorAll('.scroll-btn').forEach(btn => {
 				btn.addEventListener('click', () => {
