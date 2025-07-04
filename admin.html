@@ -371,30 +371,35 @@
 		</div>
 	</div>
 	
-	<!-- 購物須知 Modal -->
-	<div id="shopping-modal" class="modal fixed inset-0 bg-black bg-opacity-50 justify-center items-center z-50">
-	  <div class="bg-white p-8 rounded-lg shadow-xl w-11/12 md:w-2/3 lg:w-1/2 max-h-[90vh] overflow-y-auto">
-		<h3 class="text-2xl font-bold mb-6">購物須知</h3>
-		<form id="shopping-form" class="space-y-6">
-		  <div>
-			<label for="purchaseStatement" class="block text-sm font-medium text-gray-700 mb-1">代購聲明</label>
-			<textarea id="purchaseStatement" rows="6" class="w-full border p-3 rounded"></textarea>
-		  </div>
-		  <div>
-			<label for="purchaseProcess" class="block text-sm font-medium text-gray-700 mb-1">購買流程</label>
-			<textarea id="purchaseProcess" rows="6" class="w-full border p-3 rounded"></textarea>
-		  </div>
-		  <div>
-			<label for="returnPolicy" class="block text-sm font-medium text-gray-700 mb-1">瑕疵退貨說明</label>
-			<textarea id="returnPolicy" rows="6" class="w-full border p-3 rounded"></textarea>
-		  </div>
-		  <div class="flex justify-end space-x-4">
-			<button type="button" id="cancel-shopping-btn" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">取消</button>
-			<button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700">儲存</button>
-		  </div>
-		</form>
+	<!-- 購物須知編輯 Modal -->
+	<div id="shopping-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 hidden">
+	  <div class="bg-white rounded-lg shadow-xl w-11/12 md:w-[900px] lg:w-[1000px] max-h-[90vh] overflow-hidden relative">
+
+		<!-- Modal 內容（可垂直捲動） -->
+		<div class="p-8 overflow-y-auto max-h-[85vh]">
+		  <h3 class="text-2xl font-bold mb-6">購物須知</h3>
+		  <form id="shopping-form" class="space-y-6">
+			<div>
+			  <label for="purchaseStatement" class="block text-sm font-medium text-gray-700 mb-1">代購聲明</label>
+			  <textarea id="purchaseStatement" rows="6" class="w-full border p-3 rounded whitespace-nowrap overflow-x-auto resize-none"></textarea>
+			</div>
+			<div>
+			  <label for="purchaseProcess" class="block text-sm font-medium text-gray-700 mb-1">購買流程</label>
+			  <textarea id="purchaseProcess" rows="6" class="w-full border p-3 rounded whitespace-nowrap overflow-x-auto resize-none"></textarea>
+			</div>
+			<div>
+			  <label for="returnPolicy" class="block text-sm font-medium text-gray-700 mb-1">瑕疵退貨說明</label>
+			  <textarea id="returnPolicy" rows="6" class="w-full border p-3 rounded whitespace-nowrap overflow-x-auto resize-none"></textarea>
+			</div>
+			<div class="flex justify-end space-x-4 sticky bottom-0 bg-white pt-4">
+			  <button type="button" id="cancel-shopping-btn" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">取消</button>
+			  <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700">儲存</button>
+			</div>
+		  </form>
+		</div>
 	  </div>
 	</div>
+
 
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>

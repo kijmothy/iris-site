@@ -196,29 +196,51 @@
         </section>
     </main>
 	
-	<div id="info-modal" class="modal fixed inset-0 bg-black bg-opacity-60 justify-center items-center z-50">
-	  <div class="bg-white p-6 rounded-lg shadow-xl max-w-2xl w-full relative overflow-y-auto max-h-[80vh]">
-		<button onclick="closeInfoModal()" class="absolute top-3 right-3 text-gray-500 hover:text-gray-700 text-2xl">
+	<!-- 購物須知 Modal -->
+	<div id="info-modal" class="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50 hidden">
+	  <div class="bg-white rounded-lg shadow-xl w-11/12 md:w-[900px] lg:w-[1000px] max-h-[90vh] overflow-hidden relative">
+		
+		<!-- 固定的關閉按鈕 -->
+		<button onclick="document.getElementById('info-modal').classList.add('hidden')" class="absolute top-3 right-3 text-gray-500 hover:text-gray-700 text-2xl z-10">
 		  <i class="fas fa-times-circle"></i>
 		</button>
-		<h2 class="text-2xl font-bold mb-4 text-center">📝 購物須知</h2>
 
-		<div class="space-y-6 text-gray-700 text-sm leading-relaxed">
-		  <div>
-			<h3 class="font-semibold text-indigo-600 mb-1">📌 代購聲明</h3>
-			<p id="purchase-statement">載入中...</p>
-		  </div>
-		  <div>
-			<h3 class="font-semibold text-indigo-600 mb-1">🛒 購買流程</h3>
-			<p id="purchase-process">載入中...</p>
-		  </div>
-		  <div>
-			<h3 class="font-semibold text-indigo-600 mb-1">📦 瑕疵退貨</h3>
-			<p id="return-policy" class="text-sm text-gray-700 leading-relaxed space-y-1">載入中...</p>
+		<!-- Modal 內容區塊（可垂直捲動） -->
+		<div class="p-6 overflow-y-auto max-h-[85vh]">
+		  <h2 class="text-2xl font-bold mb-6 text-center">📝 購物須知</h2>
+
+		  <div class="space-y-8 text-gray-700 text-sm leading-relaxed">
+			
+			<!-- 📌 代購聲明 -->
+			<div>
+			  <h3 class="font-semibold text-indigo-600 mb-2">📌 代購聲明</h3>
+			  <div class="overflow-x-auto">
+				<pre id="purchase-statement" class="whitespace-nowrap text-sm text-gray-800">載入中...</pre>
+			  </div>
+			</div>
+
+			<!-- 🛒 購買流程 -->
+			<div>
+			  <h3 class="font-semibold text-indigo-600 mb-2">🛒 購買流程</h3>
+			  <div class="overflow-x-auto">
+				<pre id="purchase-process" class="whitespace-nowrap text-sm text-gray-800">載入中...</pre>
+			  </div>
+			</div>
+
+			<!-- 📦 瑕疵退貨 -->
+			<div>
+			  <h3 class="font-semibold text-indigo-600 mb-2">📦 瑕疵退貨</h3>
+			  <div class="overflow-x-auto">
+				<pre id="return-policy" class="whitespace-nowrap text-sm text-gray-800">載入中...</pre>
+			  </div>
+			</div>
+
 		  </div>
 		</div>
 	  </div>
 	</div>
+
+
 
 	
     <div id="image-modal" class="modal fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 z-50">
