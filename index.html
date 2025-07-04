@@ -189,10 +189,38 @@
                     </li>
                 </ul>
                 <p id="contact-service-hours" class="text-sm text-gray-500 mt-6 text-center">載入中...</p>
+				<div class="text-center mt-6">
+				  <button onclick="openInfoModal()" class="text-indigo-600 hover:underline text-sm">查看購物須知</button>
+				</div>
             </div>
         </section>
     </main>
+	
+	<div id="info-modal" class="modal fixed inset-0 bg-black bg-opacity-60 justify-center items-center z-50">
+	  <div class="bg-white p-6 rounded-lg shadow-xl max-w-2xl w-full relative overflow-y-auto max-h-[80vh]">
+		<button onclick="closeInfoModal()" class="absolute top-3 right-3 text-gray-500 hover:text-gray-700 text-2xl">
+		  <i class="fas fa-times-circle"></i>
+		</button>
+		<h2 class="text-2xl font-bold mb-4 text-center">📝 購物須知</h2>
 
+		<div class="space-y-6 text-gray-700 text-sm leading-relaxed">
+		  <div>
+			<h3 class="font-semibold text-indigo-600 mb-1">📌 代購聲明</h3>
+			<p id="purchase-statement">載入中...</p>
+		  </div>
+		  <div>
+			<h3 class="font-semibold text-indigo-600 mb-1">🛒 購買流程</h3>
+			<p id="purchase-process">載入中...</p>
+		  </div>
+		  <div>
+			<h3 class="font-semibold text-indigo-600 mb-1">📦 瑕疵退貨</h3>
+			<p id="return-policy" class="text-sm text-gray-700 leading-relaxed space-y-1">載入中...</p>
+		  </div>
+		</div>
+	  </div>
+	</div>
+
+	
     <div id="image-modal" class="modal fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 z-50">
         <div class="bg-white rounded-lg shadow-xl max-w-4xl w-full flex flex-col md:flex-row relative">
             <button id="modal-close-button" class="absolute top-3 right-3 text-gray-600 hover:text-gray-900 text-3xl z-[60]">
@@ -326,7 +354,7 @@
         const db = firebase.firestore();
         const storage = firebase.storage();
         const productsCollection = db.collection('products'); // Firestore collection
-
+		
         // Mobile menu toggle
         const mobileMenuButton = document.getElementById('mobile-menu-button');
         const mobileMenu = document.getElementById('mobile-menu');
@@ -772,9 +800,39 @@
                 container.appendChild(card);
             });
         }
+		function loadShoppingInfo() {
+		  db.collection('settings').doc('shopping_info').get().then(doc => {
+			if (doc.exists) {
+			  const data = doc.data();
 
-        // Fetch products from Firestore
+			  const purchaseStatementText = data.purchaseStatement || '';
+			  const purchaseStatementHtml = purchaseStatementText.split('\n').map(line => `<p>${line}</p>`).join('');
+			  document.getElementById('purchase-statement').innerHTML = purchaseStatementHtml;
+			  
+			  
+			  const purchaseProcessText = data.purchaseProcess || '';
+			  const purchaseProcessHtml = purchaseProcessText.split('\n').map(line => `<p>${line}</p>`).join('');
+			  document.getElementById('purchase-process').innerHTML = purchaseProcessHtml;
+
+			  const returnPolicyText = data.returnPolicy || '';
+			  const returnPolicyHtml = returnPolicyText.split('\n').map(line => `<p>${line}</p>`).join('');
+			  document.getElementById('return-policy').innerHTML = returnPolicyHtml;
+
+			}
+		  });
+		}
+        // 頁面載入後執行
         document.addEventListener('DOMContentLoaded', () => {
+            loadContactInfo();
+            previewModalCloseButton.addEventListener('click', () => {
+                imagePreviewModal.classList.remove('is-open');
+            });
+
+		
+			// shopping_info
+			loadShoppingInfo();
+			
+			// Fetch products from Firestore
             productsCollection.onSnapshot(snapshot => {
                 let products = snapshot.docs.map(doc => ({
                     id: doc.id,
@@ -1063,16 +1121,7 @@
                 console.error("讀取聯絡資訊時出錯：", error);
             });
         }
-
-        // 頁面載入後執行
-        document.addEventListener('DOMContentLoaded', () => {
-            loadContactInfo();
-            previewModalCloseButton.addEventListener('click', () => {
-                imagePreviewModal.classList.remove('is-open');
-            });
-
-        });
-
+		
         function handleViewImages(e) {
             const id = e.currentTarget.dataset.id;
             console.log("View images button clicked for ID:", id);
@@ -1149,6 +1198,19 @@
         function closePreviewModal() {
             closeAllModals(); // 確保關閉所有 Modal
         }
+		function openInfoModal() {
+			const modal = document.getElementById('info-modal');
+			modal.classList.add('is-open');
+			modal.style.display = 'flex';
+		}
+
+		function closeInfoModal() {
+			const modal = document.getElementById('info-modal');
+			modal.classList.remove('is-open');
+			setTimeout(() => {
+				modal.style.display = 'none';
+			}, 300);
+		}
     </script>
 </body>
 
