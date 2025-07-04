@@ -115,8 +115,11 @@
                     <i class="fas fa-image"></i>前往圖片管理
                 </a>
                 <button id="view-contact-btn" class="bg-gray-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-gray-700 transition duration-300">
-                    <i class="fas fa-address-book mr-1"></i>聯絡資訊
+                    <i class="fas fa-address-book mr-1"></i>檢視聯絡資訊
                 </button>
+				<button id="view-shopping-btn" class="bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-indigo-700 transition duration-300">
+				  <i class="fas fa-info-circle mr-1"></i>檢視購物須知
+				</button>
                 <button id="logout-button" class="bg-red-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-red-600 transition duration-300">
                     <i class="fas fa-sign-out-alt mr-1"></i>登出
                 </button>
@@ -367,6 +370,31 @@
 			</form>
 		</div>
 	</div>
+	
+	<!-- 購物須知 Modal -->
+	<div id="shopping-modal" class="modal fixed inset-0 bg-black bg-opacity-50 justify-center items-center z-50">
+	  <div class="bg-white p-8 rounded-lg shadow-xl w-11/12 md:w-2/3 lg:w-1/2 max-h-[90vh] overflow-y-auto">
+		<h3 class="text-2xl font-bold mb-6">購物須知</h3>
+		<form id="shopping-form" class="space-y-6">
+		  <div>
+			<label for="purchaseStatement" class="block text-sm font-medium text-gray-700 mb-1">代購聲明</label>
+			<textarea id="purchaseStatement" rows="6" class="w-full border p-3 rounded"></textarea>
+		  </div>
+		  <div>
+			<label for="purchaseProcess" class="block text-sm font-medium text-gray-700 mb-1">購買流程</label>
+			<textarea id="purchaseProcess" rows="6" class="w-full border p-3 rounded"></textarea>
+		  </div>
+		  <div>
+			<label for="returnPolicy" class="block text-sm font-medium text-gray-700 mb-1">瑕疵退貨說明</label>
+			<textarea id="returnPolicy" rows="6" class="w-full border p-3 rounded"></textarea>
+		  </div>
+		  <div class="flex justify-end space-x-4">
+			<button type="button" id="cancel-shopping-btn" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">取消</button>
+			<button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700">儲存</button>
+		  </div>
+		</form>
+	  </div>
+	</div>
 
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
@@ -473,6 +501,7 @@
             const searchInput = document.getElementById('searchProductName');
             const itemsPerPageSelector = document.getElementById('itemsPerPageSelect');
             const paginationControls = document.getElementById('paginationControls');
+
 
             if (!productListContainer || !addForm || !editModal || !editForm || !cancelEditBtn || !imagePreviewModal || !previewModalCloseButton || !deleteConfirmModal || !cancelDeleteBtn || !searchInput || !itemsPerPageSelector || !paginationControls) {
                 console.error("無法取得部分必要的 DOM 元素，部分功能可能無法運作。");
@@ -1258,6 +1287,54 @@
                 alert("更新失敗，請稍後重試");
             }
         });
+				
+
+        // ==== 購物須知功能 ====
+		const shoppingBtn = document.getElementById('view-shopping-btn');
+		const shoppingModal = document.getElementById('shopping-modal');
+		const shoppingForm = document.getElementById('shopping-form');
+		const cancelShoppingBtn = document.getElementById('cancel-shopping-btn');
+
+		// 開啟 modal 並載入資料
+		shoppingBtn.addEventListener('click', async () => {
+		  try {
+                console.log("shoppingBtn click");
+			const doc = await db.collection('settings').doc('shopping_info').get();
+			const data = doc.exists ? doc.data() : {};
+			document.getElementById('purchaseStatement').value = data.purchaseStatement || '';
+			document.getElementById('purchaseProcess').value = data.purchaseProcess || '';
+			document.getElementById('returnPolicy').value = data.returnPolicy || '';
+			shoppingModal.classList.add('is-open');
+		  } catch (err) {
+			console.error("讀取購物須知失敗：", err);
+			alert("讀取購物須知時發生錯誤");
+		  }
+		});
+
+		// 關閉 modal
+		cancelShoppingBtn.addEventListener('click', () => {
+		  shoppingModal.classList.remove('is-open');
+		});
+
+		// 表單送出儲存
+		shoppingForm.addEventListener('submit', async (e) => {
+		  e.preventDefault();
+		  const newData = {
+			purchaseStatement: document.getElementById('purchaseStatement').value,
+			purchaseProcess: document.getElementById('purchaseProcess').value,
+			returnPolicy: document.getElementById('returnPolicy').value,
+		  };
+
+		  try {
+			await db.collection('settings').doc('shopping_info').set(newData, { merge: true });
+			alert("購物須知已儲存！");
+			shoppingModal.classList.remove('is-open');;
+		  } catch (err) {
+			console.error("儲存購物須知失敗：", err);
+			alert("儲存時發生錯誤");
+		  }
+		});
+
     </script>
 
 
