@@ -214,10 +214,28 @@
 
             <div>
                 <h3 class="text-xl font-semibold mb-4">管理現有商品</h3>
+				<!-- 批次操作區塊 -->
+				<div class="flex items-center gap-4 mb-4">
+				  <select id="bulk-action-select" class="border border-gray-300 rounded px-4 py-2 text-gray-700">
+					<option value="">選擇批次操作</option>
+					<option value="feature-true">設為熱門</option>
+					<option value="feature-false">取消熱門</option>
+					<option value="new-true">設為新品</option>
+					<option value="new-false">取消新品</option>
+					<option value="discontinued-true">標記為停售</option>
+					<option value="discontinued-false">設為販售中</option>
+				  </select>
+				  <button id="execute-bulk-action" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">
+					套用批次操作
+				  </button>
+				</div>
                 <div class="overflow-x-auto rounded-lg border border-gray-200">
                     <table class="w-full text-left fixed-header-table">
                         <thead class="bg-gray-100">
                             <tr>
+								<th class="px-2 py-4 text-center w-[40px]">
+								  <input type="checkbox" id="select-all-products" class="w-4 h-4">
+								</th>
                                 <th class="p-4">商品</th>
                                 <th class="p-4">SKU</th>
                                 <th class="p-4">原價</th>
@@ -526,6 +544,56 @@
                 });
             }
 
+			// === 批次操作功能 ===
+			function getSelectedProductIds() {
+			  return Array.from(document.querySelectorAll('.select-product-checkbox:checked')).map(cb => cb.dataset.id);
+			}
+
+			document.getElementById('execute-bulk-action').addEventListener('click', async () => {
+			  const action = document.getElementById('bulk-action-select').value;
+			  const selectedIds = getSelectedProductIds();
+
+			  if (!action) {
+				alert('請選擇要執行的操作');
+				return;
+			  }
+
+			  if (selectedIds.length === 0) {
+				alert('請先勾選要更新的商品');
+				return;
+			  }
+
+			  let field, value;
+			  if (action.startsWith('feature')) {
+				field = 'is_featured';
+				value = action.endsWith('true');
+			  } else if (action.startsWith('new')) {
+				field = 'is_new';
+				value = action.endsWith('true');
+			  } else if (action.startsWith('discontinued')) {
+				field = 'is_discontinued';
+				value = action.endsWith('true');
+			  }
+
+			  try {
+				const updates = selectedIds.map(id =>
+				  db.collection('products').doc(id).update({ [field]: value })
+				);
+				await Promise.all(updates);
+				alert('批次更新完成！');
+			  } catch (err) {
+				console.error('批次更新錯誤：', err);
+				alert('更新失敗，請查看錯誤資訊');
+			  }
+			});
+
+			// === 全選 checkbox 功能 ===
+			document.getElementById('select-all-products').addEventListener('change', function () {
+			  const checked = this.checked;
+			  document.querySelectorAll('.select-product-checkbox').forEach(cb => {
+				cb.checked = checked;
+			  });
+			});
 
             // --- Modal 控制函式 ---
             // 通用關閉所有 Modal 的函數
@@ -900,6 +968,9 @@
                     row.classList.add('border-b', 'hover:bg-gray-50');
                     url = `${product.imageUrls && product.imageUrls.length > 0 ? product.imageUrls[0] : 'https://placehold.co/48x48/cccccc/333333?text=N/A'}`
                     row.innerHTML = `
+					  <td class="px-2 py-4 text-center w-[40px]">
+						<input type="checkbox" class="select-product-checkbox w-4 h-4" data-id="${product.id}">
+					  </td>
 					  <td class="p-4 flex items-center space-x-3">
 						  <img src="images/${product.sku}/${url}" class="w-12 h-12 rounded-md object-cover" onerror="this.src='https://placehold.co/48x48/cccccc/333333?text=Img'">
 						  <span class="font-medium">${product.name || '無名稱'}</span>
