@@ -486,8 +486,6 @@
                 const itemDiv = document.createElement('div');
                 const imageSrc = item.image && item.image.length > 0 ? item.image[0] : ''
                 itemDiv.className = 'flex items-center space-x-4 bg-gray-50 p-3 rounded-md shadow-sm';
-				const subtotal = itemDiscountedPrice * item.quantity;
-				total += subtotal;
 
 				const itemDiscountedPrice = item.discountRate && item.discountRate < 100
 				  ? Math.ceil(item.price * (item.discountRate / 100))
@@ -496,6 +494,8 @@
 				  <p class="text-sm text-gray-600">原價: <span class="line-through">$${item.price.toLocaleString()}</span></p>
 				  <p class="text-sm text-red-500 font-bold">折扣後: $${itemDiscountedPrice.toLocaleString()}（${item.discountRate}折）</p>
 				`;
+				const subtotal = itemDiscountedPrice * item.quantity;
+				total += subtotal;
                 itemDiv.innerHTML = `
                     <img src="images/${item.sku}/${imageSrc}" alt="${item.name}" class="w-16 h-16 object-cover rounded-md">
                     <div class="flex-1">
@@ -605,7 +605,8 @@
                 modalProductDescription.textContent = product.description;
                 modalProductSizes.textContent = `尺寸: ${sizesHtml}`;
 				
-				const hasDiscount = product.discountRate !== undefined && product.discountRate < 100;
+				const hasDiscount = product.discountRate !== undefined && product.discountRate < 100; 
+				const discountedPrice = hasDiscount ? Math.ceil(product.price * (product.discountRate / 100)) : product.price;
 				modalProductPrice.innerHTML = hasDiscount
 				  ? `<span class='text-gray-400 line-through text-base mr-2'>$${product.price.toLocaleString()}</span><span class='text-red-500 font-bold text-2xl'>$${discountedPrice.toLocaleString()}（${product.discountRate}折）</span>`
 				  : `<span class='text-indigo-600 font-bold text-2xl'>$${product.price.toLocaleString()}</span>`;
